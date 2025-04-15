@@ -10,7 +10,9 @@
     <!-- Estilos -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/carousel-styles.css') }}">
-    <link rel="stylesheet" href="https://unpkg.com/lucide-static@0.298.0/font/lucide.css">
+    <link rel="stylesheet" href="{{ asset('css/hero-touch-carousel.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/mobile-carousel.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/hero-carousel.css') }}"> 
     
     <!-- Fontes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

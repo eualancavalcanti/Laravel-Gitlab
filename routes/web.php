@@ -1,0 +1,67 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ContentController;
+use App\Http\Controllers\ActorController;
+use App\Http\Controllers\CreatorController;
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Add to routes/web.php
+Route::get('/terms', function () {
+    return view('pages.terms');
+})->name('terms');
+
+Route::get('/privacy', function () {
+    return view('pages.privacy');
+})->name('privacy');
+
+Route::get('/faq', function () {
+    return view('pages.faq');
+})->name('faq');
+
+Route::get('/contact', function () {
+    return view('pages.contact');
+})->name('contact');
+
+Route::get('/about', function () {
+    return view('pages.about');
+})->name('about');
+
+// Add other footer menu routes
+Route::get('/catalog', function () {
+    return view('pages.catalog');
+})->name('catalog');
+
+Route::get('/pay-per-view', function () {
+    return view('pages.pay-per-view');
+})->name('pay-per-view');
+
+Route::get('/creators', function () {
+    return view('pages.creators');
+})->name('creators');
+
+Route::get('/news', function () {
+    return view('pages.news');
+})->name('news');
+
+Route::get('/system-status', function () {
+    return view('pages.system-status');
+})->name('system-status');
+
+Route::get('/report-issue', function () {
+    return view('pages.report-issue');
+})->name('report-issue');
+
+Route::get('/cookies', function () {
+    return view('pages.cookies');
+})->name('cookies');
+
+Route::get('/licenses', function () {
+    return view('pages.licenses');
+})->name('licenses');
+
+Route::get('/dmca', function () {
+    return view('pages.dmca');
+})->name('dmca');

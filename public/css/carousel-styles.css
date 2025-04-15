@@ -1,0 +1,217 @@
+/* Melhorias no carrossel para experiência mobile otimizada */
+
+/* Container de carrossel */
+.carousel-container {
+    position: relative;
+    margin: 0 -2rem;
+    padding: 0 2rem;
+    overflow: hidden;
+    touch-action: pan-y; /* Permite scroll vertical mas intercepta horizontal */
+}
+
+/* Trilha do carrossel - suaviza o arrastar */
+.content-grid, 
+.actors-carousel {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-snap-type: x mandatory;
+    padding: 1rem 2rem;
+    -webkit-overflow-scrolling: touch; /* Scroll inercial para iOS */
+    will-change: transform; /* Otimização para GPU */
+    user-select: none; /* Impede seleção de texto durante arrastar */
+    cursor: grab;
+}
+
+/* Esconde a barra de rolagem */
+.content-grid::-webkit-scrollbar,
+.actors-carousel::-webkit-scrollbar {
+    display: none;
+}
+
+/* Estado de arrastar ativo */
+.content-grid.dragging,
+.actors-carousel.dragging {
+    cursor: grabbing !important;
+    scroll-behavior: auto !important;
+}
+
+/* Items do carrossel */
+.content-card,
+.actor-card,
+.creator-card {
+    scroll-snap-align: start;
+    transform: translateZ(0); /* Força aceleração de hardware */
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+    -webkit-tap-highlight-color: transparent; /* Remove highlight de toque */
+}
+
+/* Estado dos cards durante arrastar */
+.dragging .content-card,
+.dragging .actor-card,
+.dragging .creator-card {
+    transition: none !important;
+}
+
+/* Feedback visual durante arrastar */
+.dragging {
+    cursor: grabbing;
+}
+
+/* Botões de navegação do carrossel */
+.carousel-nav {
+    display: flex;
+    gap: 1rem;
+    z-index: 10;
+}
+
+.nav-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+    -webkit-tap-highlight-color: transparent;
+    will-change: transform, opacity;
+}
+
+.nav-btn:active {
+    transform: scale(0.92);
+}
+
+.nav-btn:not(:disabled):hover {
+    background: var(--hot-red);
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(255, 51, 51, 0.4);
+}
+
+.nav-btn.disabled,
+.nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Feedback de toque para dispositivos mobile */
+@media (hover: none) {
+    .content-card:active,
+    .actor-card:active,
+    .creator-card:active {
+        transform: scale(0.98);
+    }
+}
+
+/* Animação de deslize para novos items */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.content-card.new-item,
+.actor-card.new-item,
+.creator-card.new-item {
+    animation: slideIn 0.5s ease forwards;
+}
+
+/* Ajustes responsivos para o carrossel */
+@media (max-width: 768px) {
+    .carousel-container {
+        margin: 0 -1rem;
+        padding: 0 1rem;
+    }
+    
+    .content-grid, 
+    .actors-carousel {
+        gap: 1rem;
+        padding: 1rem;
+    }
+    
+    .nav-btn {
+        width: 36px;
+        height: 36px;
+    }
+    
+    /* Melhores contrastes e tamanhos para mobile */
+    .content-overlay h3 {
+        font-size: 1.1rem;
+        max-width: 90%;
+    }
+    
+    .watching-info {
+        font-size: 0.8rem;
+    }
+}
+
+/* Para telas menores e toque */
+@media (max-width: 480px) {
+    .content-grid, 
+    .actors-carousel {
+        scroll-padding-left: 1rem;
+    }
+    
+    .nav-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Estilos específicos para o Hero */
+.hero-slides {
+    touch-action: pan-y;
+    user-select: none;
+}
+
+/* Indicador visual de deslize para usuários novos */
+.swipe-indicator {
+    position: absolute;
+    bottom: 5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.9rem;
+    color: white;
+    pointer-events: none;
+    z-index: 10;
+    animation: fadeIn 1s ease, fadeOut 1s ease 5s forwards;
+}
+
+.swipe-indicator i {
+    animation: slideLeftRight 1.5s infinite;
+}
+
+@keyframes slideLeftRight {
+    0%, 100% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; visibility: hidden; }
+}

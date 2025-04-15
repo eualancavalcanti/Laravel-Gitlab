@@ -3,92 +3,139 @@
 
 @section('title', 'Criadores - HotBoys')
 
-@section('page-title', 'Nossos Criadores')
+@section('page-title', 'Criadores em Destaque')
 
 @section('page-content')
     <div class="creators-container">
-        <div class="creators-header">
-            <div class="creators-search">
-                <input type="text" id="creators-search-input" placeholder="Buscar criadores por nome ou categoria">
-                <button class="search-btn"><i class="lucide-search"></i></button>
-            </div>
-            
-            <div class="creators-filters">
-                <div class="filter-group">
-                    <label>Categorias</label>
-                    <div class="filter-options">
-                        <button class="filter-option active" data-filter="all">Todos</button>
-                        <button class="filter-option" data-filter="exclusive">Exclusivos</button>
-                        <button class="filter-option" data-filter="trending">Em Alta</button>
-                        <button class="filter-option" data-filter="new">Novos</button>
-                        <button class="filter-option" data-filter="verified">Verificados</button>
-                    </div>
-                </div>
-                
-                <div class="filter-group">
-                    <label>Ordenar por</label>
-                    <select id="sort-select">
-                        <option value="popular">Mais populares</option>
-                        <option value="recent">Mais recentes</option>
-                        <option value="rating">Melhor avaliados</option>
-                        <option value="videos">Mais vídeos</option>
-                    </select>
-                </div>
-            </div>
+        <!-- Seção introdutória -->
+        <div class="creators-intro">
+            <h2>Os melhores criadores de conteúdo adulto do Brasil</h2>
+            <p>A HotBoys reúne os criadores mais desejados e talentosos, oferecendo conteúdos exclusivos que você não encontrará em nenhum outro lugar. Conheça nossos destaques e tenha acesso ilimitado assinando nosso plano VIP.</p>
         </div>
         
-        <div class="creators-grid" id="creators-grid">
-            <!-- Cards dos criadores serão inseridos aqui dinamicamente via JS ou loop Blade -->
-            
-            @forelse($creators as $creator)
-                <div class="creator-card" 
-                     data-rating="{{ $creator->rating }}" 
-                     data-videos="{{ $creator->videos }}" 
-                     data-followers="{{ $creator->followers }}"
-                     data-tags="{{ $creator->tags->implode('name', ',') }}"
-                     data-exclusive="{{ $creator->exclusive ? 'true' : 'false' }}"
-                     data-verified="{{ $creator->verified ? 'true' : 'false' }}"
-                     data-trending="{{ $creator->trending ? 'true' : 'false' }}"
-                     data-new="{{ $creator->created_at->diffInDays() < 30 ? 'true' : 'false' }}">
-                    
-                    <div class="creator-card-header">
-                        <div class="creator-image" style="background-image: url('{{ asset($creator->image) }}')">
-                            <div class="creator-badges">
-                                @if($creator->verified)
-                                    <span class="badge verified">
-                                        <i class="lucide-badge-check"></i>
-                                    </span>
-                                @endif
-                                
-                                @if($creator->exclusive)
-                                    <span class="badge exclusive">
-                                        <i class="lucide-crown"></i>
-                                    </span>
-                                @endif
-                                
-                                @if($creator->trending)
-                                    <span class="badge trending">
-                                        <i class="lucide-trending-up"></i>
-                                    </span>
-                                @endif
-                                
-                                @if($creator->created_at->diffInDays() < 30)
-                                    <span class="badge new">
-                                        <i class="lucide-sparkles"></i>
-                                    </span>
-                                @endif
-                            </div>
+        <!-- Criadores Fixos em Destaque -->
+        <div class="featured-creators">
+            <!-- Criadores gerados manualmente, sem depender de dados dinâmicos -->
+            @php
+            // Array com dados fictícios dos criadores
+            $mockCreators = [
+                [
+                    'name' => 'Diego Martins',
+                    'role' => 'Ator Principal',
+                    'image' => 'images/creators/creator1.jpg', // Ajuste o caminho conforme necessário
+                    'videos' => 52,
+                    'followers' => '220K',
+                    'rating' => 4.9,
+                    'tags' => ['Premium', 'Exclusivo', 'Top 10'],
+                    'verified' => true,
+                    'exclusive' => true,
+                    'trending' => false,
+                    'new' => false
+                ],
+                [
+                    'name' => 'Bruno Costa',
+                    'role' => 'Ator e Produtor',
+                    'image' => 'images/creators/creator2.jpg',
+                    'videos' => 48,
+                    'followers' => '185K',
+                    'rating' => 4.8,
+                    'tags' => ['VIP', 'Tendência', 'Público Favorito'],
+                    'verified' => true,
+                    'exclusive' => false,
+                    'trending' => true,
+                    'new' => false
+                ],
+                [
+                    'name' => 'Leonardo Silva',
+                    'role' => 'Novo Talento',
+                    'image' => 'images/creators/creator3.jpg',
+                    'videos' => 15,
+                    'followers' => '95K',
+                    'rating' => 4.7,
+                    'tags' => ['Novidade', 'Em Alta', 'Revelação'],
+                    'verified' => true,
+                    'exclusive' => false,
+                    'trending' => false,
+                    'new' => true
+                ],
+                [
+                    'name' => 'Rafael Oliveira',
+                    'role' => 'Produtor Exclusivo',
+                    'image' => 'images/creators/creator4.jpg',
+                    'videos' => 37,
+                    'followers' => '175K',
+                    'rating' => 4.8,
+                    'tags' => ['Exclusivo', 'Premium', 'Sensual'],
+                    'verified' => true,
+                    'exclusive' => true,
+                    'trending' => true,
+                    'new' => false
+                ],
+                [
+                    'name' => 'Matheus Alves',
+                    'role' => 'Ator Revelação',
+                    'image' => 'images/creators/creator5.jpg',
+                    'videos' => 23,
+                    'followers' => '120K',
+                    'rating' => 4.6,
+                    'tags' => ['Revelação', 'Sensual', 'Fetiche'],
+                    'verified' => false,
+                    'exclusive' => false,
+                    'trending' => true,
+                    'new' => true
+                ],
+                [
+                    'name' => 'Lucas Mendes',
+                    'role' => 'Ator Principal',
+                    'image' => 'images/creators/creator6.jpg',
+                    'videos' => 42,
+                    'followers' => '210K',
+                    'rating' => 4.9,
+                    'tags' => ['Premium', 'Top 5', 'Exclusivo'],
+                    'verified' => true,
+                    'exclusive' => true,
+                    'trending' => false,
+                    'new' => false
+                ]
+            ];
+            @endphp
+
+            @foreach($mockCreators as $creator)
+                <div class="creator-card">
+                    <div class="creator-image" style="background-image: url('{{ asset($creator['image']) }}')">
+                        <div class="creator-badges">
+                            @if($creator['verified'])
+                                <span class="badge verified">
+                                    <i class="lucide-badge-check"></i>
+                                </span>
+                            @endif
+                            
+                            @if($creator['exclusive'])
+                                <span class="badge exclusive">
+                                    <i class="lucide-crown"></i>
+                                </span>
+                            @endif
+                            
+                            @if($creator['trending'])
+                                <span class="badge trending">
+                                    <i class="lucide-trending-up"></i>
+                                </span>
+                            @endif
+                            
+                            @if($creator['new'])
+                                <span class="badge new">
+                                    <i class="lucide-sparkles"></i>
+                                </span>
+                            @endif
                         </div>
-                        
-                        <h3 class="creator-name">{{ $creator->name }}</h3>
-                        <p class="creator-role">{{ $creator->role }}</p>
                     </div>
-                    
+                    <h3>{{ $creator['name'] }}</h3>
+                    <p class="creator-role">{{ $creator['role'] }}</p>
                     <div class="creator-stats">
                         <div class="stat">
                             <i class="lucide-video"></i>
                             <div class="stat-info">
-                                <span class="stat-value">{{ $creator->videos }}</span>
+                                <span class="stat-value">{{ $creator['videos'] }}</span>
                                 <span class="stat-label">Vídeos</span>
                             </div>
                         </div>
@@ -96,7 +143,7 @@
                         <div class="stat">
                             <i class="lucide-users"></i>
                             <div class="stat-info">
-                                <span class="stat-value">{{ $creator->followers }}</span>
+                                <span class="stat-value">{{ $creator['followers'] }}</span>
                                 <span class="stat-label">Seguidores</span>
                             </div>
                         </div>
@@ -104,67 +151,173 @@
                         <div class="stat">
                             <i class="lucide-star"></i>
                             <div class="stat-info">
-                                <span class="stat-value">{{ number_format($creator->rating, 1) }}</span>
+                                <span class="stat-value">{{ $creator['rating'] }}</span>
                                 <span class="stat-label">Avaliação</span>
                             </div>
                         </div>
                     </div>
-                    
                     <div class="creator-tags">
-                        @foreach($creator->tags->take(3) as $tag)
-                            <span class="tag">{{ $tag->name }}</span>
+                        @foreach($creator['tags'] as $tag)
+                            <span class="tag">{{ $tag }}</span>
                         @endforeach
-                        
-                        @if($creator->tags->count() > 3)
-                            <span class="tag more">+{{ $creator->tags->count() - 3 }}</span>
-                        @endif
                     </div>
-                    
-                    <div class="creator-actions">
-                        <a href="{{ route('creators.show', $creator->id) }}" class="btn-primary">Ver Perfil</a>
-                        <button class="btn-follow" data-id="{{ $creator->id }}">
-                            <i class="lucide-plus"></i> Seguir
+                    <div class="creator-preview">
+                        <button class="btn-locked">
+                            <i class="lucide-lock"></i> Conteúdo Exclusivo para Assinantes
                         </button>
                     </div>
                 </div>
-            @empty
-                <div class="no-results">
-                    <i class="lucide-search-x"></i>
-                    <h3>Nenhum criador encontrado</h3>
-                    <p>Tente ajustar seus filtros ou termos de busca.</p>
-                </div>
-            @endforelse
+            @endforeach
         </div>
         
-        <div class="pagination-container">
-            {{ $creators->links() }}
+        <!-- Destaques e números -->
+        <div class="creators-stats-section">
+            <div class="stats-container">
+                <div class="creator-stat-card">
+                    <div class="stat-number">100+</div>
+                    <div class="stat-label">Criadores exclusivos</div>
+                </div>
+                
+                <div class="creator-stat-card">
+                    <div class="stat-number">5.000+</div>
+                    <div class="stat-label">Vídeos disponíveis</div>
+                </div>
+                
+                <div class="creator-stat-card">
+                    <div class="stat-number">20+</div>
+                    <div class="stat-label">Novos vídeos por semana</div>
+                </div>
+                
+                <div class="creator-stat-card">
+                    <div class="stat-number">4.8</div>
+                    <div class="stat-label">Avaliação média</div>
+                </div>
+            </div>
         </div>
         
-        <div class="become-creator">
-            <div class="become-creator-content">
-                <h2>Quer se tornar um criador no HotBoys?</h2>
-                <p>Ganhe dinheiro compartilhando seu conteúdo premium com milhões de fãs. Nossos criadores ganham em média R$ 15.000 por mês.</p>
-                <a href="{{ route('creators.apply') }}" class="btn-primary">Quero ser Criador</a>
-            </div>
-            <div class="benefits">
-                <div class="benefit">
-                    <i class="lucide-dollar-sign"></i>
-                    <h3>Ganhos Garantidos</h3>
-                    <p>Receba até 80% dos lucros gerados com seu conteúdo</p>
+        <!-- Seção de incentivo -->
+        <div class="creators-cta">
+            <h2>Tenha acesso a todos os criadores e seus conteúdos</h2>
+            <p>Assine agora o HotBoys VIP e desfrute de acesso ilimitado a todos os vídeos e criadores exclusivos da plataforma. Novos conteúdos são adicionados diariamente!</p>
+            
+            <div class="pricing-cards">
+                <div class="pricing-card">
+                    <div class="pricing-name">Mensal</div>
+                    <div class="pricing-price">R$ 49,90<span>/mês</span></div>
+                    <ul class="pricing-features">
+                        <li><i class="lucide-check"></i> Acesso a todos os criadores</li>
+                        <li><i class="lucide-check"></i> Conteúdo em 4K Ultra HD</li>
+                        <li><i class="lucide-check"></i> Sem anúncios</li>
+                        <li><i class="lucide-check"></i> Download offline</li>
+                    </ul>
+                    <a href="/signup" class="btn-primary">Assinar Agora</a>
                 </div>
                 
-                <div class="benefit">
-                    <i class="lucide-shield"></i>
-                    <h3>Proteção de Conteúdo</h3>
-                    <p>Nosso sistema protege seu conteúdo contra vazamentos</p>
-                </div>
-                
-                <div class="benefit">
-                    <i class="lucide-bar-chart"></i>
-                    <h3>Analytics Completo</h3>
-                    <p>Acompanhe seu desempenho e entenda seu público</p>
+                <div class="pricing-card featured">
+                    <div class="pricing-tag">Mais vantajoso</div>
+                    <div class="pricing-name">Anual</div>
+                    <div class="pricing-price">R$ 29,90<span>/mês</span></div>
+                    <div class="pricing-save">Economize R$ 240 por ano</div>
+                    <ul class="pricing-features">
+                        <li><i class="lucide-check"></i> Acesso a todos os criadores</li>
+                        <li><i class="lucide-check"></i> Conteúdo em 4K Ultra HD</li>
+                        <li><i class="lucide-check"></i> Sem anúncios</li>
+                        <li><i class="lucide-check"></i> Download offline</li>
+                        <li><i class="lucide-check"></i> Acesso prioritário a novos vídeos</li>
+                        <li><i class="lucide-check"></i> Conteúdo exclusivo para assinantes anuais</li>
+                    </ul>
+                    <a href="/signup?plan=annual" class="btn-primary">Assinar com Desconto</a>
                 </div>
             </div>
+            
+            <p class="satisfaction-guarantee">
+                <i class="lucide-shield"></i> Satisfação garantida ou seu dinheiro de volta em até 7 dias
+            </p>
+        </div>
+        
+        <!-- Seção de depoimentos -->
+        <div class="testimonials-section">
+            <h2>O que dizem nossos assinantes</h2>
+            <div class="testimonials">
+                <div class="testimonial">
+                    <div class="testimonial-rating">
+                        <i class="lucide-star"></i>
+                        <i class="lucide-star"></i>
+                        <i class="lucide-star"></i>
+                        <i class="lucide-star"></i>
+                        <i class="lucide-star"></i>
+                    </div>
+                    <p class="testimonial-text">"A melhor plataforma que já assinei. Os criadores são incríveis e o conteúdo é de altíssima qualidade. Vale cada centavo!"</p>
+                    <p class="testimonial-author">Alexandre M., assinante VIP há 2 anos</p>
+                </div>
+                
+                <div class="testimonial">
+                    <div class="testimonial-rating">
+                        <i class="lucide-star"></i>
+                        <i class="lucide-star"></i>
+                        <i class="lucide-star"></i>
+                        <i class="lucide-star"></i>
+                        <i class="lucide-star"></i>
+                    </div>
+                    <p class="testimonial-text">"Depois que conheci o HotBoys, cancelei todas as outras assinaturas. A qualidade do conteúdo e dos criadores é incomparável."</p>
+                    <p class="testimonial-author">Ricardo T., assinante VIP há 1 ano</p>
+                </div>
+                
+                <div class="testimonial">
+                    <div class="testimonial-rating">
+                        <i class="lucide-star"></i>
+                        <i class="lucide-star"></i>
+                        <i class="lucide-star"></i>
+                        <i class="lucide-star"></i>
+                        <i class="lucide-star"></i>
+                    </div>
+                    <p class="testimonial-text">"Os criadores exclusivos do HotBoys são simplesmente os melhores. Experimentei o plano mensal e logo mudei para o anual. Vale muito a pena!"</p>
+                    <p class="testimonial-author">Marcos S., assinante VIP há 8 meses</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- FAQ simplificado -->
+        <div class="creators-faq">
+            <h2>Perguntas Frequentes</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>Como posso ter acesso a todos os criadores?</h3>
+                    <i class="lucide-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Para ter acesso completo a todos os criadores e seus conteúdos exclusivos, você precisa assinar um dos nossos planos VIP. Com a assinatura, você tem acesso ilimitado a todos os vídeos da plataforma.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>Posso cancelar minha assinatura a qualquer momento?</h3>
+                    <i class="lucide-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Sim, você pode cancelar sua assinatura quando quiser. Não há período de fidelidade. Seu acesso permanecerá ativo até o final do período pago. Oferecemos garantia de satisfação e reembolso em até 7 dias após a assinatura.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>Com que frequência são adicionados novos vídeos?</h3>
+                    <i class="lucide-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Adicionamos novos vídeos diariamente e novos criadores todos os meses. Em média, mais de 20 novos vídeos exclusivos são disponibilizados por semana, garantindo que você sempre tenha conteúdo novo para assistir.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Final CTA forte -->
+        <div class="final-cta">
+            <h2>Não perca mais tempo!</h2>
+            <p>Junte-se aos milhares de assinantes satisfeitos e tenha acesso aos melhores criadores de conteúdo adulto do Brasil.</p>
+            <a href="/signup" class="btn-primary cta-pulse">Começar Agora</a>
+            <p class="final-note">Proteção de privacidade garantida. Sua cobrança aparecerá como "HB Digital Services" na fatura.</p>
         </div>
     </div>
 @endsection
@@ -177,118 +330,34 @@
         padding: 0 1rem;
     }
     
-    /* Header e Filtros */
-    .creators-header {
-        margin-bottom: 2rem;
+    /* Seção de introdução */
+    .creators-intro {
+        text-align: center;
+        margin-bottom: 3rem;
     }
     
-    .creators-search {
-        position: relative;
-        margin-bottom: 1.5rem;
+    .creators-intro h2 {
+        font-size: clamp(1.5rem, 3vw, 2.2rem);
+        margin-bottom: 1rem;
+        background: var(--gradient-hot);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
     
-    .creators-search input {
-        width: 100%;
-        padding: 1rem 3rem 1rem 1.5rem;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 50px;
-        color: white;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-    }
-    
-    .creators-search input:focus {
-        outline: none;
-        box-shadow: 0 0 15px rgba(255, 51, 51, 0.3);
-        border-color: var(--hot-red);
-        background: rgba(255, 255, 255, 0.15);
-    }
-    
-    .search-btn {
-        position: absolute;
-        right: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
-        color: var(--hot-red);
-        cursor: pointer;
-        font-size: 1.2rem;
-    }
-    
-    .creators-filters {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1.5rem;
-        align-items: center;
-    }
-    
-    .filter-group {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-    
-    .filter-group label {
-        font-size: 0.9rem;
+    .creators-intro p {
+        max-width: 800px;
+        margin: 0 auto;
         color: var(--text-secondary);
+        font-size: clamp(1rem, 2vw, 1.1rem);
+        line-height: 1.6;
     }
     
-    .filter-options {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-    
-    .filter-option {
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        background: rgba(255, 255, 255, 0.1);
-        border: none;
-        color: var(--text-secondary);
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-    
-    .filter-option:hover {
-        background: rgba(255, 51, 51, 0.2);
-        color: white;
-    }
-    
-    .filter-option.active {
-        background: var(--hot-red);
-        color: white;
-    }
-    
-    #sort-select {
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: white;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 10px center;
-        background-size: 16px;
-        padding-right: 30px;
-    }
-    
-    #sort-select:focus {
-        outline: none;
-        box-shadow: 0 0 15px rgba(255, 51, 51, 0.3);
-        border-color: var(--hot-red);
-    }
-    
-    /* Grid de Criadores */
-    .creators-grid {
+    /* Criadores em destaque */
+    .featured-creators {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 4rem;
     }
     
     .creator-card {
@@ -299,6 +368,8 @@
         transition: all 0.3s ease;
         display: flex;
         flex-direction: column;
+        text-align: center;
+        cursor: pointer;
     }
     
     .creator-card:hover {
@@ -307,16 +378,11 @@
         border-color: rgba(255, 51, 51, 0.3);
     }
     
-    .creator-card-header {
-        text-align: center;
-        padding: 0 1rem;
-    }
-    
     .creator-image {
-        width: 120px;
-        height: 120px;
+        width: 150px;
+        height: 150px;
         border-radius: 50%;
-        margin: 1.5rem auto 1rem;
+        margin: 2rem auto 1rem;
         background-size: cover;
         background-position: center;
         position: relative;
@@ -363,21 +429,20 @@
         color: black;
     }
     
-    .creator-name {
+    .creator-card h3 {
         margin: 0.5rem 0 0.2rem;
-        font-size: 1.2rem;
+        font-size: 1.5rem;
     }
     
     .creator-role {
         color: var(--text-secondary);
-        margin: 0 0 1rem;
-        font-size: 0.9rem;
+        margin: 0 0 1.5rem;
+        font-size: 1rem;
     }
     
     .creator-stats {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 0.5rem;
         padding: 1rem;
         background: rgba(0, 0, 0, 0.2);
     }
@@ -407,194 +472,366 @@
     .creator-tags {
         display: flex;
         flex-wrap: wrap;
+        justify-content: center;
         gap: 0.5rem;
-        padding: 1rem;
+        padding: 1.5rem 1rem;
     }
     
     .tag {
         background: rgba(255, 51, 51, 0.15);
         color: var(--text-primary);
-        padding: 0.2rem 0.7rem;
+        padding: 0.3rem 0.8rem;
         border-radius: 15px;
         font-size: 0.8rem;
     }
     
-    .tag.more {
-        background: rgba(255, 255, 255, 0.1);
+    .creator-preview {
+        padding: 0 1rem 1.5rem;
     }
     
-    .creator-actions {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0.7rem;
-        padding: 0 1rem 1rem;
-        margin-top: auto;
-    }
-    
-    .creator-actions .btn-primary,
-    .creator-actions .btn-follow {
+    .btn-locked {
         width: 100%;
-        text-align: center;
-        padding: 0.7rem;
+        padding: 0.8rem;
+        background: rgba(0, 0, 0, 0.3);
+        color: var(--text-secondary);
+        border: 1px dashed rgba(255, 51, 51, 0.5);
         border-radius: var(--border-radius-button);
-        font-weight: 600;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
         cursor: pointer;
         transition: all 0.3s ease;
     }
     
-    .btn-primary {
-        background: var(--gradient-hot);
+    .btn-locked:hover {
+        background: rgba(255, 51, 51, 0.1);
         color: white;
-        border: none;
-        display: inline-flex;
+    }
+    
+    /* Seção de estatísticas */
+    .creators-stats-section {
+        padding: 3rem 0;
+        margin-bottom: 4rem;
+        background: linear-gradient(145deg, rgba(255, 51, 51, 0.1), rgba(255, 26, 26, 0.05));
+        border-radius: var(--border-radius-card);
+        border: 1px solid rgba(255, 51, 51, 0.2);
+    }
+    
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+    }
+    
+    .creator-stat-card {
+        text-align: center;
+    }
+    
+    .creator-stat-card .stat-number {
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--hot-red);
+        margin-bottom: 0.5rem;
+    }
+    
+    .creator-stat-card .stat-label {
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+    }
+    
+    /* Seção de incentivo/CTA */
+    .creators-cta {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+    
+    .creators-cta h2 {
+        font-size: clamp(1.5rem, 3vw, 2.2rem);
+        margin-bottom: 1rem;
+    }
+    
+    .creators-cta > p {
+        max-width: 800px;
+        margin: 0 auto 3rem;
+        color: var(--text-secondary);
+        font-size: clamp(1rem, 2vw, 1.1rem);
+    }
+    
+    .pricing-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .pricing-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: var(--border-radius-card);
+        padding: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .pricing-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(255, 51, 51, 0.2);
+    }
+    
+    .pricing-card.featured {
+        background: linear-gradient(145deg, rgba(255, 51, 51, 0.1), rgba(255, 26, 26, 0.05));
+        border: 2px solid var(--hot-red);
+        transform: scale(1.05);
+    }
+    
+    .pricing-card.featured:hover {
+        transform: scale(1.05) translateY(-5px);
+    }
+    
+    .pricing-tag {
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--hot-red);
+        color: white;
+        padding: 0.5rem 1.5rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        box-shadow: 0 5px 15px rgba(255, 51, 51, 0.3);
+    }
+    
+    .pricing-name {
+        font-size: 1.3rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .pricing-price {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--hot-red);
+        margin-bottom: 1rem;
+    }
+    
+    .pricing-price span {
+        font-size: 1rem;
+        font-weight: normal;
+        color: var(--text-secondary);
+    }
+    
+    .pricing-save {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.5rem;
+        border-radius: 5px;
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .pricing-features {
+        list-style: none;
+        margin: 0 0 2rem;
+        padding: 0;
+        text-align: left;
+    }
+    
+    .pricing-features li {
+        display: flex;
         align-items: center;
-        justify-content: center;
+        gap: 0.5rem;
+        margin-bottom: 0.8rem;
+        color: var(--text-secondary);
+    }
+    
+    .pricing-features li i {
+        color: var(--hot-red);
+    }
+    
+    .pricing-card .btn-primary {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1.1rem;
         text-decoration: none;
     }
     
-    .btn-follow {
-        background: rgba(255, 255, 255, 0.1);
-        color: white;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        display: inline-flex;
+    .satisfaction-guarantee {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        display: flex;
         align-items: center;
         justify-content: center;
         gap: 0.5rem;
     }
     
-    .btn-primary:hover, 
-    .btn-follow:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(255, 51, 51, 0.3);
+    /* Seção de depoimentos */
+    .testimonials-section {
+        margin-bottom: 4rem;
     }
     
-    .no-results {
-        grid-column: 1 / -1;
+    .testimonials-section h2 {
         text-align: center;
-        padding: 3rem 1rem;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: var(--border-radius-card);
-    }
-    
-    .no-results i {
-        font-size: 3rem;
-        color: var(--hot-red);
-        margin-bottom: 1rem;
-        opacity: 0.6;
-    }
-    
-    .no-results h3 {
-        margin: 0 0 0.5rem;
-    }
-    
-    .no-results p {
-        color: var(--text-secondary);
-    }
-    
-    /* Paginação */
-    .pagination-container {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 3rem;
-    }
-    
-    /* Torne-se um Criador */
-    .become-creator {
-        margin-top: 4rem;
-        padding: 3rem 2rem;
-        background: linear-gradient(145deg, rgba(255, 51, 51, 0.15), rgba(255, 26, 26, 0.05));
-        border-radius: var(--border-radius-card);
-        text-align: center;
-        border: 1px solid rgba(255, 51, 51, 0.2);
-    }
-    
-    .become-creator-content {
-        max-width: 700px;
-        margin: 0 auto 3rem;
-    }
-    
-    .become-creator h2 {
-        margin-top: 0;
-        font-size: 2rem;
-    }
-    
-    .become-creator p {
         margin-bottom: 2rem;
-        color: var(--text-secondary);
-        font-size: 1.1rem;
     }
     
-    .benefits {
+    .testimonials {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 2rem;
     }
     
-    .benefit {
-        background: rgba(0, 0, 0, 0.3);
-        padding: 2rem 1.5rem;
+    .testimonial {
+        background: rgba(255, 255, 255, 0.05);
         border-radius: var(--border-radius-card);
+        padding: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
         transition: all 0.3s ease;
     }
     
-    .benefit:hover {
+    .testimonial:hover {
         transform: translateY(-5px);
-        background: rgba(255, 51, 51, 0.1);
+        background: rgba(255, 51, 51, 0.05);
+        border-color: rgba(255, 51, 51, 0.2);
     }
     
-    .benefit i {
-        font-size: 2.5rem;
+    .testimonial-rating {
+        margin-bottom: 1rem;
+        color: #FFD700;
+    }
+    
+    .testimonial-text {
+        font-style: italic;
+        margin-bottom: 1rem;
+        line-height: 1.6;
+    }
+    
+    .testimonial-author {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        text-align: right;
+    }
+    
+    /* FAQ simplificado */
+    .creators-faq {
+        margin-bottom: 4rem;
+    }
+    
+    .creators-faq h2 {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .faq-item {
+        margin-bottom: 1rem;
+        border-radius: 10px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .faq-question {
+        padding: 1.2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+    }
+    
+    .faq-question h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+    
+    .faq-question i {
         color: var(--hot-red);
+        transition: transform 0.3s ease;
+    }
+    
+    .faq-item.active .faq-question i {
+        transform: rotate(180deg);
+    }
+    
+    .faq-answer {
+        padding: 0 1.2rem;
+        max-height: 0;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .faq-item.active .faq-answer {
+        padding: 0 1.2rem 1.2rem;
+        max-height: 500px;
+    }
+    
+    /* Final CTA */
+    .final-cta {
+        text-align: center;
+        padding: 3rem;
+        background: linear-gradient(145deg, rgba(255, 51, 51, 0.15), rgba(255, 26, 26, 0.1));
+        border-radius: var(--border-radius-card);
+        margin-bottom: 2rem;
+    }
+    
+    .final-cta h2 {
+        font-size: 2rem;
         margin-bottom: 1rem;
     }
     
-    .benefit h3 {
-        margin: 0 0 0.5rem;
+    .final-cta p {
+        max-width: 600px;
+        margin: 0 auto 2rem;
+        font-size: 1.1rem;
     }
     
-    .benefit p {
-        margin: 0;
-        font-size: 0.9rem;
+    .cta-pulse {
+        display: inline-block;
+        padding: 1rem 2.5rem;
+        font-size: 1.2rem;
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    .final-note {
+        margin-top: 1.5rem;
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        opacity: 0.7;
     }
     
     /* Responsividade */
     @media (max-width: 992px) {
-        .benefits {
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        .pricing-card.featured {
+            transform: scale(1);
+        }
+        
+        .pricing-card.featured:hover {
+            transform: translateY(-5px);
+        }
+        
+        .pricing-cards {
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
     }
     
     @media (max-width: 768px) {
-        .creators-filters {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 1rem;
-        }
-        
-        .filter-group {
-            width: 100%;
-        }
-        
-        .filter-options {
-            overflow-x: auto;
-            padding-bottom: 0.5rem;
-            width: 100%;
-            flex-wrap: nowrap;
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        .filter-option {
-            white-space: nowrap;
-        }
-        
-        #sort-select {
-            width: 100%;
+        .final-cta {
+            padding: 2rem 1rem;
         }
     }
     
     @media (max-width: 576px) {
-        .creator-actions {
-            grid-template-columns: 1fr;
+        .creator-stats {
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
         }
     }
 </style>
@@ -603,167 +840,80 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Elementos DOM
-        const searchInput = document.getElementById('creators-search-input');
-        const filterButtons = document.querySelectorAll('.filter-option');
-        const sortSelect = document.getElementById('sort-select');
-        const creatorCards = document.querySelectorAll('.creator-card');
-        const creatorGrid = document.getElementById('creators-grid');
+        // FAQ accordion functionality
+        const faqItems = document.querySelectorAll('.faq-item');
         
-        // Estado atual dos filtros
-        let currentFilter = 'all';
-        let currentSort = 'popular';
-        let searchTerm = '';
-        
-        // Botões de filtro
-        filterButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                // Atualizar estado ativo dos botões
-                filterButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            
+            question.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
                 
-                // Atualizar filtro atual
-                currentFilter = button.dataset.filter;
-                
-                // Aplicar filtros
-                applyFilters();
-            });
-        });
-        
-        // Select de ordenação
-        sortSelect.addEventListener('change', () => {
-            currentSort = sortSelect.value;
-            applyFilters();
-        });
-        
-        // Input de busca
-        searchInput.addEventListener('input', () => {
-            searchTerm = searchInput.value.toLowerCase();
-            applyFilters();
-        });
-        
-        // Botões de seguir
-        const followButtons = document.querySelectorAll('.btn-follow');
-        followButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const creatorId = this.dataset.id;
-                
-                // Toggle estado visual para feedback imediato
-                if (this.classList.contains('following')) {
-                    this.classList.remove('following');
-                    this.innerHTML = '<i class="lucide-plus"></i> Seguir';
-                    this.style.background = 'rgba(255, 255, 255, 0.1)';
-                } else {
-                    this.classList.add('following');
-                    this.innerHTML = '<i class="lucide-check"></i> Seguindo';
-                    this.style.background = 'var(--hot-red)';
-                }
-                
-                // Aqui você enviaria uma requisição AJAX para atualizar o estado no servidor
-                // Por exemplo:
-                /*
-                fetch('/api/creators/' + creatorId + '/follow', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Success:', data);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    // Reverter a UI em caso de erro
+                // Close all items
+                faqItems.forEach(faq => {
+                    faq.classList.remove('active');
                 });
-                */
+                
+                // If it wasn't active, open it
+                if (!isActive) {
+                    item.classList.add('active');
+                }
             });
         });
         
-        // Função principal para aplicar filtros
-        function applyFilters() {
-            let hasVisibleCards = false;
-            
-            creatorCards.forEach(card => {
-                // Verificar se o card atende ao filtro de categoria
-                let matchesFilter = currentFilter === 'all' || card.dataset[currentFilter] === 'true';
-                
-                // Verificar se o card atende ao termo de busca
-                let matchesSearch = true;
-                if (searchTerm.length >= 2) {
-                    const creatorName = card.querySelector('.creator-name').textContent.toLowerCase();
-                    const creatorRole = card.querySelector('.creator-role').textContent.toLowerCase();
-                    const creatorTags = card.dataset.tags.toLowerCase();
-                    
-                    matchesSearch = creatorName.includes(searchTerm) || 
-                                    creatorRole.includes(searchTerm) ||
-                                    creatorTags.includes(searchTerm);
-                }
-                
-                // Mostrar ou esconder com base nos filtros
-                if (matchesFilter && matchesSearch) {
-                    card.style.display = 'flex';
-                    hasVisibleCards = true;
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-            
-            // Verificar se há cartões visíveis
-            if (!hasVisibleCards) {
-                // Se não houver resultados, mostrar mensagem
-                let noResults = document.querySelector('.no-results');
-                if (!noResults) {
-                    noResults = document.createElement('div');
-                    noResults.className = 'no-results';
-                    noResults.innerHTML = `
-                        <i class="lucide-search-x"></i>
-                        <h3>Nenhum criador encontrado</h3>
-                        <p>Tente ajustar seus filtros ou termos de busca.</p>
-                    `;
-                    creatorGrid.appendChild(noResults);
-                }
-            } else {
-                // Se houver resultados, remover mensagem de "sem resultados"
-                const noResults = document.querySelector('.no-results');
-                if (noResults) {
-                    noResults.remove();
-                }
-                
-                // Aplicar ordenação aos cartões visíveis
-                const visibleCards = Array.from(creatorCards).filter(card => card.style.display !== 'none');
-                sortCards(visibleCards, currentSort);
-            }
-        }
+        // Botões bloqueados redirecionam para assinatura
+        const lockedButtons = document.querySelectorAll('.btn-locked');
         
-        // Função para ordenar os cartões
-        function sortCards(cards, sortBy) {
-            // Desanexar cartões para reordenação
-            cards.forEach(card => card.remove());
-            
-            // Ordenar com base no critério selecionado
-            cards.sort((a, b) => {
-                switch (sortBy) {
-                    case 'popular':
-                        return parseInt(b.dataset.followers) - parseInt(a.dataset.followers);
-                    case 'recent':
-                        // Assumindo que cartões "novos" são mais recentes
-                        if (a.dataset.new === 'true' && b.dataset.new !== 'true') return -1;
-                        if (a.dataset.new !== 'true' && b.dataset.new === 'true') return 1;
-                        return parseInt(b.dataset.followers) - parseInt(a.dataset.followers);
-                    case 'rating':
-                        return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
-                    case 'videos':
-                        return parseInt(b.dataset.videos) - parseInt(a.dataset.videos);
-                    default:
-                        return 0;
+        lockedButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                window.location.href = '/signup';
+            });
+        });
+        
+        // Adicionar interatividade aos cards para melhorar a taxa de conversão
+        const creatorCards = document.querySelectorAll('.creator-card');
+        
+        creatorCards.forEach(card => {
+            // Efeito de hover mais pronunciado
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) scale(1.02)';
+                this.style.boxShadow = '0 15px 30px rgba(255, 51, 51, 0.3)';
+                
+                // Destacar o botão de conteúdo bloqueado
+                const lockedBtn = this.querySelector('.btn-locked');
+                if (lockedBtn) {
+                    lockedBtn.style.background = 'rgba(255, 51, 51, 0.2)';
+                    lockedBtn.style.borderColor = 'rgba(255, 51, 51, 0.8)';
+                    lockedBtn.style.color = 'white';
                 }
             });
             
-            // Reapender cartões ordenados
-            cards.forEach(card => creatorGrid.appendChild(card));
-        }
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+                this.style.boxShadow = '';
+                
+                // Reverter destaque do botão
+                const lockedBtn = this.querySelector('.btn-locked');
+                if (lockedBtn) {
+                    lockedBtn.style.background = '';
+                    lockedBtn.style.borderColor = '';
+                    lockedBtn.style.color = '';
+                }
+            });
+            
+            // Todo o card é clicável e redireciona para assinatura
+            card.addEventListener('click', function(e) {
+                // Não redirecionar se clicar em links internos
+                if (e.target.tagName.toLowerCase() === 'a' || 
+                    e.target.closest('a') || 
+                    e.target.tagName.toLowerCase() === 'button' || 
+                    e.target.closest('button')) {
+                    return;
+                }
+                
+                window.location.href = '/signup';
+            });
+        });
     });
 </script>
 @endpush

@@ -1,4 +1,3 @@
-<!-- resources/views/pages/pay-per-view.blade.php -->
 @extends('layouts.page')
 
 @section('title', 'Conteúdo Exclusivo - Pay-per-view - HotBoys')
@@ -44,166 +43,39 @@
         </div>
         
         <div class="ppv-content">
-            <div class="ppv-item" data-category="professional" data-duration="medium" data-price="medium">
-                <div class="ppv-thumbnail">
-                    <img src="/api/placeholder/320/180" alt="Thumbnail do vídeo">
-                    <span class="ppv-duration">22:15</span>
-                    <div class="ppv-preview-btn">
-                        <i class="lucide-play"></i> Prévia
+            @foreach($ppvItems as $item)
+                <div class="ppv-item" data-category="{{ $item['category'] }}" data-duration="{{ str_contains($item['duration'], ':') && explode(':', $item['duration'])[0] > 30 ? 'long' : (str_contains($item['duration'], ':') && explode(':', $item['duration'])[0] < 10 ? 'short' : 'medium') }}" data-price="{{ $item['price'] < 15 ? 'low' : ($item['price'] > 30 ? 'high' : 'medium') }}">
+                    <div class="ppv-thumbnail">
+                        @if($item['category'] === 'exclusive')
+                            <div class="ppv-exclusive-badge">Exclusivo</div>
+                        @endif
+                        <img src="{{ $item['thumbnail'] }}" alt="{{ $item['title'] }}">
+                        <span class="ppv-duration">{{ $item['duration'] }}</span>
+                        <div class="ppv-preview-btn" data-id="{{ $item['id'] }}">
+                            <i class="lucide-play"></i> Prévia
+                        </div>
+                    </div>
+                    
+                    <div class="ppv-info">
+                        <h3>{{ $item['title'] }}</h3>
+                        <div class="ppv-creator">
+                            <img src="{{ $item['creator']['avatar'] }}" alt="Avatar de {{ $item['creator']['name'] }}" class="creator-avatar">
+                            <span>{{ $item['creator']['name'] }}</span>
+                            @if($item['creator']['verified'])
+                                <i class="lucide-badge-check verified-badge"></i>
+                            @endif
+                        </div>
+                        <div class="ppv-details">
+                            <span class="ppv-views"><i class="lucide-eye"></i> {{ $item['views'] }}</span>
+                            <span class="ppv-rating"><i class="lucide-star"></i> {{ $item['rating'] }}</span>
+                        </div>
+                        <div class="ppv-price">
+                            <span class="price-tag">R$ {{ number_format($item['price'], 2, ',', '.') }}</span>
+                            <button class="buy-btn" data-id="{{ $item['id'] }}">Comprar</button>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="ppv-info">
-                    <h3>Noite Quente em São Paulo</h3>
-                    <div class="ppv-creator">
-                        <img src="/api/placeholder/30/30" alt="Avatar do criador" class="creator-avatar">
-                        <span>Lucas Silva</span>
-                        <i class="lucide-badge-check verified-badge"></i>
-                    </div>
-                    <div class="ppv-details">
-                        <span class="ppv-views"><i class="lucide-eye"></i> 12.4k</span>
-                        <span class="ppv-rating"><i class="lucide-star"></i> 4.8</span>
-                    </div>
-                    <div class="ppv-price">
-                        <span class="price-tag">R$ 24,90</span>
-                        <button class="buy-btn">Comprar</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="ppv-item" data-category="amateur" data-duration="short" data-price="low">
-                <div class="ppv-thumbnail">
-                    <img src="/api/placeholder/320/180" alt="Thumbnail do vídeo">
-                    <span class="ppv-duration">08:45</span>
-                    <div class="ppv-preview-btn">
-                        <i class="lucide-play"></i> Prévia
-                    </div>
-                </div>
-                
-                <div class="ppv-info">
-                    <h3>Primera Vez</h3>
-                    <div class="ppv-creator">
-                        <img src="/api/placeholder/30/30" alt="Avatar do criador" class="creator-avatar">
-                        <span>Pedro Alvarez</span>
-                    </div>
-                    <div class="ppv-details">
-                        <span class="ppv-views"><i class="lucide-eye"></i> 5.2k</span>
-                        <span class="ppv-rating"><i class="lucide-star"></i> 4.5</span>
-                    </div>
-                    <div class="ppv-price">
-                        <span class="price-tag">R$ 12,90</span>
-                        <button class="buy-btn">Comprar</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="ppv-item" data-category="exclusive" data-duration="long" data-price="high">
-                <div class="ppv-thumbnail">
-                    <div class="ppv-exclusive-badge">Exclusivo</div>
-                    <img src="/api/placeholder/320/180" alt="Thumbnail do vídeo">
-                    <span class="ppv-duration">45:20</span>
-                    <div class="ppv-preview-btn">
-                        <i class="lucide-play"></i> Prévia
-                    </div>
-                </div>
-                
-                <div class="ppv-info">
-                    <h3>Encontro Inesquecível no Rio</h3>
-                    <div class="ppv-creator">
-                        <img src="/api/placeholder/30/30" alt="Avatar do criador" class="creator-avatar">
-                        <span>Bruno Costa</span>
-                        <i class="lucide-badge-check verified-badge"></i>
-                    </div>
-                    <div class="ppv-details">
-                        <span class="ppv-views"><i class="lucide-eye"></i> 24.7k</span>
-                        <span class="ppv-rating"><i class="lucide-star"></i> 4.9</span>
-                    </div>
-                    <div class="ppv-price">
-                        <span class="price-tag">R$ 39,90</span>
-                        <button class="buy-btn">Comprar</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="ppv-item" data-category="fetish" data-duration="medium" data-price="medium">
-                <div class="ppv-thumbnail">
-                    <img src="/api/placeholder/320/180" alt="Thumbnail do vídeo">
-                    <span class="ppv-duration">18:30</span>
-                    <div class="ppv-preview-btn">
-                        <i class="lucide-play"></i> Prévia
-                    </div>
-                </div>
-                
-                <div class="ppv-info">
-                    <h3>Dominação Total</h3>
-                    <div class="ppv-creator">
-                        <img src="/api/placeholder/30/30" alt="Avatar do criador" class="creator-avatar">
-                        <span>Master Felipe</span>
-                        <i class="lucide-badge-check verified-badge"></i>
-                    </div>
-                    <div class="ppv-details">
-                        <span class="ppv-views"><i class="lucide-eye"></i> 18.3k</span>
-                        <span class="ppv-rating"><i class="lucide-star"></i> 4.7</span>
-                    </div>
-                    <div class="ppv-price">
-                        <span class="price-tag">R$ 27,90</span>
-                        <button class="buy-btn">Comprar</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="ppv-item" data-category="professional" data-duration="long" data-price="high">
-                <div class="ppv-thumbnail">
-                    <img src="/api/placeholder/320/180" alt="Thumbnail do vídeo">
-                    <span class="ppv-duration">32:10</span>
-                    <div class="ppv-preview-btn">
-                        <i class="lucide-play"></i> Prévia
-                    </div>
-                </div>
-                
-                <div class="ppv-info">
-                    <h3>Massagem Especial</h3>
-                    <div class="ppv-creator">
-                        <img src="/api/placeholder/30/30" alt="Avatar do criador" class="creator-avatar">
-                        <span>André Martins</span>
-                        <i class="lucide-badge-check verified-badge"></i>
-                    </div>
-                    <div class="ppv-details">
-                        <span class="ppv-views"><i class="lucide-eye"></i> 32.1k</span>
-                        <span class="ppv-rating"><i class="lucide-star"></i> 4.9</span>
-                    </div>
-                    <div class="ppv-price">
-                        <span class="price-tag">R$ 34,90</span>
-                        <button class="buy-btn">Comprar</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="ppv-item" data-category="amateur" data-duration="short" data-price="low">
-                <div class="ppv-thumbnail">
-                    <img src="/api/placeholder/320/180" alt="Thumbnail do vídeo">
-                    <span class="ppv-duration">09:55</span>
-                    <div class="ppv-preview-btn">
-                        <i class="lucide-play"></i> Prévia
-                    </div>
-                </div>
-                
-                <div class="ppv-info">
-                    <h3>Experiência na Praia</h3>
-                    <div class="ppv-creator">
-                        <img src="/api/placeholder/30/30" alt="Avatar do criador" class="creator-avatar">
-                        <span>Gustavo Menezes</span>
-                    </div>
-                    <div class="ppv-details">
-                        <span class="ppv-views"><i class="lucide-eye"></i> 7.8k</span>
-                        <span class="ppv-rating"><i class="lucide-star"></i> 4.3</span>
-                    </div>
-                    <div class="ppv-price">
-                        <span class="price-tag">R$ 14,90</span>
-                        <button class="buy-btn">Comprar</button>
-                    </div>
-                </div>
-            </div>
+            @endforeach
         </div>
         
         <div class="ppv-more">
@@ -227,7 +99,7 @@
                 <i class="lucide-package"></i>
                 <h3>Economize com pacotes</h3>
                 <p>Prefere mais conteúdo? Confira nossos pacotes de vídeos com descontos especiais ou considere uma assinatura mensal para acesso ilimitado.</p>
-                <a href="{{ route('plans') }}" class="link-arrow">Ver planos <i class="lucide-arrow-right"></i></a>
+                <a href="#" class="link-arrow">Ver planos <i class="lucide-arrow-right"></i></a>
             </div>
         </div>
         
@@ -235,7 +107,7 @@
             <div class="creator-cta">
                 <h2>É um criador de conteúdo?</h2>
                 <p>Venda seus vídeos exclusivos na nossa plataforma e ganhe até 85% em cada venda. Tenha controle total sobre seus preços e conteúdos.</p>
-                <a href="{{ route('become-creator') }}" class="btn-primary">Torne-se um criador</a>
+                <a href="#" class="btn-primary">Torne-se um criador</a>
             </div>
         </div>
     </div>
@@ -671,13 +543,20 @@
         position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);
+        transform: translate(-50%, -40%);
+        opacity: 0;
+        transition: all 0.3s ease;
         width: 90%;
         max-width: 800px;
         background: #1a1a1a;
         border-radius: 15px;
         overflow: hidden;
         box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    }
+    
+    .modal-content.modal-active {
+        transform: translate(-50%, -50%);
+        opacity: 1;
     }
     
     .modal-header {
@@ -791,6 +670,159 @@
         box-shadow: 0 5px 15px rgba(255, 51, 51, 0.3);
     }
     
+    /* Estilos para estados vazios e feedback */
+    .empty-state {
+        padding: 3rem;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        grid-column: 1 / -1;
+        margin: 2rem 0;
+    }
+    
+    .empty-state i {
+        font-size: 3rem;
+        color: var(--hot-red);
+        opacity: 0.6;
+        margin-bottom: 1rem;
+        display: inline-block;
+    }
+    
+    .empty-state h3 {
+        margin-bottom: 1rem;
+    }
+    
+    .empty-state p {
+        color: var(--text-secondary);
+        margin-bottom: 1.5rem;
+    }
+    
+    .btn-reset-filters {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 0.6rem 1.2rem;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-reset-filters:hover {
+        background: rgba(255, 51, 51, 0.2);
+        border-color: rgba(255, 51, 51, 0.4);
+    }
+    
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 0.8rem 1.8rem;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-block;
+        text-decoration: none;
+    }
+    
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.05);
+    }
+    
+    /* Popup de sucesso na compra */
+    .success-popup {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 2000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.3s ease forwards;
+    }
+    
+    .popup-closing {
+        animation: fadeOut 0.3s ease forwards;
+    }
+    
+    .success-content {
+        background: #1a1a1a;
+        border-radius: 15px;
+        padding: 2.5rem;
+        max-width: 500px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        animation: scaleIn 0.3s ease forwards;
+    }
+    
+    .popup-closing .success-content {
+        animation: scaleOut 0.3s ease forwards;
+    }
+    
+    .success-content i {
+        font-size: 4rem;
+        color: #2ecc71;
+        margin-bottom: 1.5rem;
+    }
+    
+    .success-content h3 {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+    }
+    
+    .success-content p {
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+    }
+    
+    .success-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+    
+    /* Animações */
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+    }
+    
+    @keyframes scaleIn {
+        from { transform: scale(0.9); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+    
+    @keyframes scaleOut {
+        from { transform: scale(1); opacity: 1; }
+        to { transform: scale(0.9); opacity: 0; }
+    }
+    
+    .new-item {
+        animation: slideInUp 0.5s ease forwards;
+    }
+    
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
     /* Responsividade */
     @media (max-width: 768px) {
         .preview-price {
@@ -810,6 +842,14 @@
         .ppv-filters select {
             width: 100%;
         }
+        
+        .success-buttons {
+            flex-direction: column;
+        }
+        
+        .success-content {
+            padding: 2rem 1.5rem;
+        }
     }
 </style>
 @endpush
@@ -828,6 +868,8 @@
             const durationValue = filterDuration.value;
             const priceValue = filterPrice.value;
             
+            let visibleCount = 0;
+            
             ppvItems.forEach(item => {
                 const categoryMatch = categoryValue === 'all' || item.dataset.category === categoryValue;
                 const durationMatch = durationValue === 'all' || item.dataset.duration === durationValue;
@@ -835,10 +877,42 @@
                 
                 if (categoryMatch && durationMatch && priceMatch) {
                     item.style.display = 'block';
+                    visibleCount++;
                 } else {
                     item.style.display = 'none';
                 }
             });
+            
+            // Mostrar mensagem se não houver resultados
+            const noResultsMessage = document.querySelector('.no-results-message');
+            if (visibleCount === 0) {
+                if (!noResultsMessage) {
+                    const message = document.createElement('div');
+                    message.className = 'no-results-message';
+                    message.innerHTML = `
+                        <div class="empty-state">
+                            <i class="lucide-search-x"></i>
+                            <h3>Nenhum conteúdo encontrado</h3>
+                            <p>Tente ajustar seus filtros ou termos de busca.</p>
+                            <button class="btn-reset-filters">Limpar filtros</button>
+                        </div>
+                    `;
+                    document.querySelector('.ppv-content').appendChild(message);
+                    
+                    // Adicionar evento para o botão de limpar filtros
+                    message.querySelector('.btn-reset-filters').addEventListener('click', resetFilters);
+                }
+            } else if (noResultsMessage) {
+                noResultsMessage.remove();
+            }
+        }
+        
+        function resetFilters() {
+            filterCategory.value = 'all';
+            filterDuration.value = 'all';
+            filterPrice.value = 'all';
+            document.getElementById('ppv-search-input').value = '';
+            applyFilters();
         }
         
         filterCategory.addEventListener('change', applyFilters);
@@ -857,6 +931,8 @@
                 return;
             }
             
+            let visibleCount = 0;
+            
             ppvItems.forEach(item => {
                 const title = item.querySelector('h3').textContent.toLowerCase();
                 const creator = item.querySelector('.ppv-creator span').textContent.toLowerCase();
@@ -864,10 +940,34 @@
                 
                 if (title.includes(searchTerm) || creator.includes(searchTerm) || category.includes(searchTerm)) {
                     item.style.display = 'block';
+                    visibleCount++;
                 } else {
                     item.style.display = 'none';
                 }
             });
+            
+            // Mostrar mensagem se não houver resultados
+            const noResultsMessage = document.querySelector('.no-results-message');
+            if (visibleCount === 0) {
+                if (!noResultsMessage) {
+                    const message = document.createElement('div');
+                    message.className = 'no-results-message';
+                    message.innerHTML = `
+                        <div class="empty-state">
+                            <i class="lucide-search-x"></i>
+                            <h3>Nenhum resultado para "${searchTerm}"</h3>
+                            <p>Tente usar termos diferentes ou navegue por categorias.</p>
+                            <button class="btn-reset-filters">Limpar busca</button>
+                        </div>
+                    `;
+                    document.querySelector('.ppv-content').appendChild(message);
+                    
+                    // Adicionar evento para o botão de limpar filtros
+                    message.querySelector('.btn-reset-filters').addEventListener('click', resetFilters);
+                }
+            } else if (noResultsMessage) {
+                noResultsMessage.remove();
+            }
         });
         
         // Modal de prévia
@@ -885,43 +985,221 @@
                 const ppvItem = btn.closest('.ppv-item');
                 const title = ppvItem.querySelector('h3').textContent;
                 const price = ppvItem.querySelector('.price-tag').textContent;
+                const thumbnail = ppvItem.querySelector('img').src.replace('400', '640').replace('225', '360');
                 
                 // Atualiza o modal
                 previewTitle.textContent = title;
                 previewPriceTag.textContent = price;
+                document.querySelector('.preview-placeholder').src = thumbnail;
                 
                 // Mostra o modal
                 previewModal.style.display = 'block';
                 document.body.style.overflow = 'hidden'; // Impede rolagem
+                
+                // Adiciona animação de entrada
+                setTimeout(() => {
+                    document.querySelector('.modal-content').classList.add('modal-active');
+                }, 10);
             });
         });
         
         closeModalBtn.addEventListener('click', () => {
-            previewModal.style.display = 'none';
-            document.body.style.overflow = 'auto'; // Restaura rolagem
+            document.querySelector('.modal-content').classList.remove('modal-active');
+            
+            // Espera a animação terminar antes de esconder o modal
+            setTimeout(() => {
+                previewModal.style.display = 'none';
+                document.body.style.overflow = 'auto'; // Restaura rolagem
+            }, 300);
         });
         
         // Fecha modal ao clicar fora dele
         previewModal.addEventListener('click', (e) => {
             if (e.target === previewModal) {
-                previewModal.style.display = 'none';
-                document.body.style.overflow = 'auto';
+                document.querySelector('.modal-content').classList.remove('modal-active');
+                
+                // Espera a animação terminar antes de esconder o modal
+                setTimeout(() => {
+                    previewModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }, 300);
             }
+        });
+        
+        // Botões de compra
+        const buyButtons = document.querySelectorAll('.buy-btn, .buy-btn-large');
+        buyButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = this.dataset.id || this.closest('.ppv-item')?.querySelector('.buy-btn').dataset.id;
+                
+                // Simular início do processo de compra
+                this.innerHTML = '<i class="lucide-loader"></i> Processando...';
+                this.disabled = true;
+                
+                // Simular processamento
+                setTimeout(() => {
+                    // Criar um popup de sucesso
+                    const successPopup = document.createElement('div');
+                    successPopup.className = 'success-popup';
+                    successPopup.innerHTML = `
+                        <div class="success-content">
+                            <i class="lucide-check-circle"></i>
+                            <h3>Compra realizada com sucesso!</h3>
+                            <p>Você já pode começar a assistir seu conteúdo.</p>
+                            <div class="success-buttons">
+                                <button class="btn-primary">Assistir agora</button>
+                                <button class="btn-secondary close-popup">Continuar navegando</button>
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(successPopup);
+                    
+                    // Resetar botão
+                    this.innerHTML = 'Comprar';
+                    this.disabled = false;
+                    
+                    // Se estiver no modal, fechar o modal
+                    if (previewModal.style.display === 'block') {
+                        closeModalBtn.click();
+                    }
+                    
+                    // Adicionar evento para fechar o popup
+                    successPopup.querySelector('.close-popup').addEventListener('click', () => {
+                        successPopup.classList.add('popup-closing');
+                        setTimeout(() => {
+                            successPopup.remove();
+                        }, 300);
+                    });
+                    
+                    // Adicionar evento para o botão "Assistir agora"
+                    successPopup.querySelector('.btn-primary').addEventListener('click', () => {
+                        alert('Redirecionando para a página de visualização do conteúdo...');
+                        successPopup.remove();
+                    });
+                    
+                    // Fechar automaticamente após 10 segundos
+                    setTimeout(() => {
+                        if (document.body.contains(successPopup)) {
+                            successPopup.classList.add('popup-closing');
+                            setTimeout(() => {
+                                if (document.body.contains(successPopup)) {
+                                    successPopup.remove();
+                                }
+                            }, 300);
+                        }
+                    }, 10000);
+                }, 1500);
+            });
         });
         
         // Botão "Carregar mais"
         const loadMoreBtn = document.querySelector('.load-more-btn');
         
-        loadMoreBtn.addEventListener('click', () => {
-            // Aqui você implementaria a lógica para carregar mais conteúdo
-            // Por enquanto, apenas uma simulação com alerta
-            loadMoreBtn.innerHTML = '<i class="lucide-loader"></i> Carregando...';
-            
-            setTimeout(() => {
-                alert('Esta funcionalidade carregaria mais vídeos em uma implementação real.');
-                loadMoreBtn.innerHTML = 'Carregar mais <i class="lucide-chevron-down"></i>';
-            }, 1500);
-        });
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', () => {
+                // Simular carregamento
+                loadMoreBtn.innerHTML = '<i class="lucide-loader"></i> Carregando...';
+                loadMoreBtn.disabled = true;
+                
+                // Simular atraso de rede
+                setTimeout(() => {
+                    // Clonar itens existentes para demonstração
+                    const container = document.querySelector('.ppv-content');
+                    const items = Array.from(ppvItems).slice(0, 4); // Pegar primeiros 4 itens
+                    
+                    // Adicionar novos itens com pequenas modificações
+                    items.forEach(item => {
+                        const clone = item.cloneNode(true);
+                        const title = clone.querySelector('h3');
+                        title.textContent = 'Novo: ' + title.textContent;
+                        
+                        // Adicionar classe para animação de entrada
+                        clone.classList.add('new-item');
+                        
+                        // Diferente data-id para evitar conflitos
+                        const randomId = Math.floor(Math.random() * 1000) + 100;
+                        clone.querySelector('.buy-btn').dataset.id = randomId;
+                        clone.querySelector('.ppv-preview-btn').dataset.id = randomId;
+                        
+                        // Adicionar ao container
+                        container.appendChild(clone);
+                        
+                        // Atualizar handlers para novos elementos
+                        clone.querySelector('.ppv-preview-btn').addEventListener('click', function() {
+                            const title = this.closest('.ppv-item').querySelector('h3').textContent;
+                            const price = this.closest('.ppv-item').querySelector('.price-tag').textContent;
+                            const thumbnail = this.closest('.ppv-item').querySelector('img').src.replace('400', '640').replace('225', '360');
+                            
+                            previewTitle.textContent = title;
+                            previewPriceTag.textContent = price;
+                            document.querySelector('.preview-placeholder').src = thumbnail;
+                            
+                            previewModal.style.display = 'block';
+                            document.body.style.overflow = 'hidden';
+                            
+                            setTimeout(() => {
+                                document.querySelector('.modal-content').classList.add('modal-active');
+                            }, 10);
+                        });
+                        
+                        clone.querySelector('.buy-btn').addEventListener('click', function() {
+                            this.innerHTML = '<i class="lucide-loader"></i> Processando...';
+                            this.disabled = true;
+                            
+                            setTimeout(() => {
+                                const successPopup = document.createElement('div');
+                                successPopup.className = 'success-popup';
+                                successPopup.innerHTML = `
+                                    <div class="success-content">
+                                        <i class="lucide-check-circle"></i>
+                                        <h3>Compra realizada com sucesso!</h3>
+                                        <p>Você já pode começar a assistir seu conteúdo.</p>
+                                        <div class="success-buttons">
+                                            <button class="btn-primary">Assistir agora</button>
+                                            <button class="btn-secondary close-popup">Continuar navegando</button>
+                                        </div>
+                                    </div>
+                                `;
+                                document.body.appendChild(successPopup);
+                                
+                                this.innerHTML = 'Comprar';
+                                this.disabled = false;
+                                
+                                successPopup.querySelector('.close-popup').addEventListener('click', () => {
+                                    successPopup.classList.add('popup-closing');
+                                    setTimeout(() => {
+                                        successPopup.remove();
+                                    }, 300);
+                                });
+                                
+                                successPopup.querySelector('.btn-primary').addEventListener('click', () => {
+                                    alert('Redirecionando para a página de visualização do conteúdo...');
+                                    successPopup.remove();
+                                });
+                                
+                                setTimeout(() => {
+                                    if (document.body.contains(successPopup)) {
+                                        successPopup.classList.add('popup-closing');
+                                        setTimeout(() => {
+                                            if (document.body.contains(successPopup)) {
+                                                successPopup.remove();
+                                            }
+                                        }, 300);
+                                    }
+                                }, 10000);
+                            }, 1500);
+                        });
+                    });
+                    
+                    // Atualizar estado do botão
+                    loadMoreBtn.innerHTML = 'Carregar mais <i class="lucide-chevron-down"></i>';
+                    loadMoreBtn.disabled = false;
+                    
+                    // Aplicar filtros atuais aos novos itens
+                    applyFilters();
+                }, 1500);
+            });
+        }
     });
 </script>
 @endpush

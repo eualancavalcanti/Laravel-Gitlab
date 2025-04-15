@@ -34,17 +34,7 @@ Route::get('/catalog', function () {
     return view('pages.catalog');
 })->name('catalog');
 
-Route::get('/pay-per-view', function () {
-    return view('pages.pay-per-view');
-})->name('pay-per-view');
-
-Route::get('/creators', function () {
-    return view('pages.creators');
-})->name('creators');
-
-Route::get('/news', function () {
-    return view('pages.news');
-})->name('news');
+Route::get('/pay-per-view', [App\Http\Controllers\PayPerViewController::class, 'index'])->name('pay-per-view');
 
 Route::get('/system-status', function () {
     return view('pages.system-status');
@@ -65,3 +55,29 @@ Route::get('/licenses', function () {
 Route::get('/dmca', function () {
     return view('pages.dmca');
 })->name('dmca');
+
+Route::get('/catalog', function () {
+    return view('pages.catalog');
+})->name('catalog');
+
+Route::get('/creators', function () {
+    return view('pages.creators');
+})->name('creators');
+
+Route::get('/news', function () {
+    return view('pages.news');
+})->name('news');
+
+// Rotas adicionais para funcionalidades de conversão
+Route::get('/plans', function () {
+    return view('pages.plans');
+})->name('plans');
+
+Route::get('/become-creator', function () {
+    return view('pages.become-creator');
+})->name('creators.apply');
+
+Route::get('/creators/{id}', function ($id) {
+    // Lógica para exibir perfil do criador
+    return view('pages.creator-profile', ['id' => $id]);
+})->name('creators.show');

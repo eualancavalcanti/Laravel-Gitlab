@@ -20,6 +20,13 @@
             
             <!-- Informações do Perfil -->
             <div class="profile-info">
+                <!-- Oferta -->
+                 <!--
+                <div class="limited-offer">
+                    <span class="offer-text">Oferta por tempo limitado!</span>
+                    <span class="offer-timer" id="offerTimer">23:59:59</span>
+                </div> -->
+
                 <h1 class="profile-name">{{ $creator->name }}</h1>
                 <h2 class="profile-username">
                     @{{ $creator->username }} 
@@ -76,12 +83,12 @@
             
             <!-- Botão de Assinatura/Login -->
             <div class="profile-actions">
-                <button class="subscribe-btn" data-toggle="modal" data-target="#loginModal">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                    </svg>
-                    Assinar
-                </button>
+            <button class="subscribe-btn pulse-animation" data-toggle="modal" data-target="#loginModal">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+                Assinar agora <span class="discount-badge">-50%</span>
+            </button>
             </div>
         </div>
         
@@ -129,6 +136,13 @@
                                 </div>
                             </div>
                         </div>
+                        <!--
+                        <div class="popularity-badge">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                            </svg>
+                            <span>Popular</span>
+                        </div>-->
                     </div>
                     @empty
                     <div class="empty-content">
@@ -335,36 +349,123 @@
 </div>
 
 <!-- Modal de Login -->
+<!-- Atualizar o modal de login em resources/views/creators/profile.blade.php -->
+
 <div class="modal" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="loginModalLabel">Entre para ter acesso</h5>
+                <h5 class="modal-title" id="loginModalLabel">Acesse este conteúdo exclusivo</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <p class="mb-4">Acesse sua conta para ver o conteúdo exclusivo de {{ $creator->name }}</p>
-                <form action="{{ route('login') }}" method="post">
-                    @csrf
-                    <div class="form-group mb-3">
-                        <label for="email">E-mail</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
+                <div class="login-benefits">
+                    <div class="benefit-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF3333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        <span>Acesso a <strong>{{ $creator->videos_count }} vídeos exclusivos</strong></span>
                     </div>
-                    <div class="form-group mb-4">
-                        <label for="password">Senha</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
+                    <div class="benefit-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF3333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        <span>Qualidade <strong>HD e 4K Ultra</strong></span>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block">Entrar</button>
-                </form>
-                <div class="text-center mt-3">
-                    <a href="{{ route('password.request') }}">Esqueceu sua senha?</a>
+                    <div class="benefit-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF3333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        <span><strong>Novos conteúdos</strong> toda semana</span>
+                    </div>
                 </div>
-                <hr>
-                <div class="text-center">
-                    <p>Ainda não tem uma conta?</p>
-                    <a href="{{ route('register') }}" class="btn btn-outline-primary">Criar conta</a>
+                
+                <div class="login-tabs">
+                    <button class="tab-button active" data-tab="login">Entrar</button>
+                    <button class="tab-button" data-tab="register">Criar Conta</button>
+                </div>
+                
+                <div class="login-tab-content active" id="login-tab">
+                    <form action="{{ route('login') }}" method="post" class="mt-4">
+                        @csrf
+                        <div class="form-group mb-3">
+                            <label for="email">E-mail</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label for="password">Senha</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+                    </form>
+                    <div class="text-center mt-3">
+                        <a href="{{ route('password.request') }}">Esqueceu sua senha?</a>
+                    </div>
+                </div>
+                
+                <div class="login-tab-content" id="register-tab">
+                    <form action="{{ route('register') }}" method="post" class="mt-4">
+                        @csrf
+                        <div class="form-group mb-3">
+                            <label for="register-name">Nome</label>
+                            <input type="text" class="form-control" id="register-name" name="name" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="register-email">E-mail</label>
+                            <input type="email" class="form-control" id="register-email" name="email" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="register-password">Senha</label>
+                            <input type="password" class="form-control" id="register-password" name="password" required>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label for="register-password-confirm">Confirmar Senha</label>
+                            <input type="password" class="form-control" id="register-password-confirm" name="password_confirmation" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Criar Conta</button>
+                    </form>
+                </div>
+                
+                <div class="social-login mt-4">
+                    <p class="text-center">Ou entrar com:</p>
+                    <div class="social-buttons">
+                        <button class="btn-social btn-google">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                            </svg>
+                            Google
+                        </button>
+                        <button class="btn-social btn-facebook">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                            Facebook
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="login-security mt-4">
+                    <div class="security-info">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <span>Pagamento 100% seguro e discreto</span>
+                    </div>
+                    <div class="security-info">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        <span>Privacidade garantida</span>
+                    </div>
                 </div>
             </div>
         </div>

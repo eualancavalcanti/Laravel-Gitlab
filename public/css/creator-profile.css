@@ -1051,3 +1051,350 @@ hr {
         overflow-y: auto;
     }
 }
+
+@media (max-width: 768px) {
+    .content-grid {
+        grid-template-columns: 1fr;  /* Força uma coluna em dispositivos móveis */
+    }
+    
+    .profile-header {
+        padding-bottom: 1rem;
+        margin-top: -50px;  /* Ajuste para evitar sobreposição */
+    }
+    
+    .tab-btn {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.85rem;
+    }
+}
+
+.pulse-animation {
+    animation: pulse 2s infinite;
+}
+
+.discount-badge {
+    background: #FFD700;
+    color: #000;
+    font-size: 0.7rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 10px;
+    margin-left: 0.5rem;
+}
+
+/* Adicionar ao arquivo public/css/creator-profile.css */
+
+.preview-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.preview-modal.show {
+    opacity: 1;
+}
+
+.preview-container {
+    width: 90%;
+    max-width: 800px;
+    background: var(--darker-bg);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.preview-modal.show .preview-container {
+    transform: scale(1);
+}
+
+.preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.preview-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+.close-preview {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.preview-content {
+    padding: 0;
+}
+
+.preview-image {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.preview-blur {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.preview-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    animation: pulse 2s infinite;
+}
+
+.preview-duration {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 0.3rem 0.7rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.preview-info {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.preview-info p {
+    margin-bottom: 1.5rem;
+    color: var(--text-secondary);
+}
+
+.preview-action {
+    display: flex;
+    justify-content: center;
+}
+
+.btn-preview-buy, .btn-preview-vip {
+    background: var(--gradient-hot);
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-preview-vip {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: black;
+}
+
+.btn-preview-buy:hover, .btn-preview-vip:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-neon);
+}
+
+/* Adicionar ao arquivo public/css/creator-profile.css */
+
+.limited-offer {
+    background: linear-gradient(135deg, #FF3333, #FF6B6B);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    animation: pulse 2s infinite;
+}
+
+.offer-text {
+    font-weight: 600;
+}
+
+.offer-timer {
+    font-family: monospace;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.popularity-badge, .scarcity-badge {
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    background: rgba(255, 215, 0, 0.9);
+    color: black;
+    padding: 0.3rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    z-index: 3;
+}
+
+.scarcity-badge {
+    background: rgba(255, 51, 51, 0.9);
+    color: white;
+}
+
+/* Adicionar ao arquivo public/css/creator-profile.css */
+
+.login-benefits {
+    margin-bottom: 1.5rem;
+    background: rgba(255, 51, 51, 0.05);
+    border: 1px solid rgba(255, 51, 51, 0.2);
+    border-radius: 10px;
+    padding: 1rem;
+}
+
+.benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.benefit-item:last-child {
+    margin-bottom: 0;
+}
+
+.login-tabs {
+    display: flex;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 1rem;
+}
+
+.tab-button {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 0.8rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.tab-button.active {
+    color: var(--hot-red);
+}
+
+.tab-button.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--hot-red);
+}
+
+.login-tab-content {
+    display: none;
+}
+
+.login-tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.social-login {
+    text-align: center;
+    position: relative;
+}
+
+.social-login p {
+    position: relative;
+    z-index: 1;
+    background: var(--darker-bg);
+    display: inline-block;
+    padding: 0 1rem;
+    color: var(--text-secondary);
+}
+
+.social-login::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.social-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.btn-social {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.7rem;
+    border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-social:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-google {
+    color: #FFFFFF;
+}
+
+.btn-facebook {
+    color: #1877F2;
+}
+
+.login-security {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+}
+
+.security-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}

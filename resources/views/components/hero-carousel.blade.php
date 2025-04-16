@@ -26,12 +26,13 @@
         <h1>{{ $heroSlides->isNotEmpty() ? $heroSlides[0]->title : 'Conteúdo Premium' }}</h1>
         <p class="hero-description">{{ $heroSlides->isNotEmpty() ? $heroSlides[0]->description : 'Descubra experiências exclusivas em nossa plataforma.' }}</p>
         <div class="hero-buttons">
-            <a href="{{ $heroSlides->isNotEmpty() ? $heroSlides[0]->cta_link : '#' }}" class="btn-primary cta">
+            <button class="btn-primary cta open-hero-modal" data-slide-index="0">
                 <i class="lucide-play" aria-hidden="true"></i> {{ $heroSlides->isNotEmpty() ? $heroSlides[0]->cta_text : 'Assistir Agora' }}
-            </a>
-            <button class="btn-secondary">
+            </button>
+            <button class="btn-secondary open-hero-modal" data-slide-index="0">
                 <i class="lucide-crown" aria-hidden="true"></i> Conteúdo VIP
             </button>
         </div>
     </div>
 </section>
+

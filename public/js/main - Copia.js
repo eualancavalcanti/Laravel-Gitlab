@@ -788,3 +788,71 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// Adicione este código ao seu arquivo main.js ou crie um novo arquivo modal.js
+document.addEventListener('DOMContentLoaded', function() {
+    // Referências dos elementos
+    const contentCards = document.querySelectorAll('.content-card');
+    const contentModal = document.getElementById('contentModal');
+    const modalClose = document.querySelector('.modal-close');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalThumbnail = document.getElementById('modalThumbnail');
+    const modalDuration = document.getElementById('modalDuration');
+    const viewersCount = document.getElementById('viewersCount');
+    const btnWatch = document.querySelector('.btn-watch');
+    const btnAdd = document.querySelector('.btn-add');
+    
+    // Evento de clique nos cards de conteúdo
+    contentCards.forEach(card => {
+        card.addEventListener('click', function() {
+            // Obter dados do card
+            const contentId = this.dataset.contentId;
+            const title = this.dataset.title;
+            const thumbnail = this.dataset.thumbnail;
+            const duration = this.dataset.duration;
+            const viewers = this.dataset.viewers;
+            
+            // Preencher dados na modal
+            modalTitle.textContent = title;
+            modalThumbnail.src = thumbnail;
+            modalDuration.textContent = duration;
+            viewersCount.textContent = viewers;
+            
+            // Exibir a modal
+            contentModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Impedir rolagem da página
+        });
+    });
+    
+    // Fechar a modal
+    modalClose.addEventListener('click', function() {
+        contentModal.classList.remove('active');
+        document.body.style.overflow = ''; // Restaurar rolagem da página
+    });
+    
+    // Fechar a modal clicando fora do conteúdo
+    contentModal.addEventListener('click', function(e) {
+        if (e.target === contentModal) {
+            contentModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+    
+    // Botão de assistir
+    btnWatch.addEventListener('click', function() {
+        alert('Funcionalidade disponível apenas para usuários cadastrados. Faça login ou assine um plano para continuar.');
+    });
+    
+    // Botão de adicionar à lista
+    btnAdd.addEventListener('click', function() {
+        alert('Funcionalidade disponível apenas para usuários cadastrados. Faça login ou assine um plano para continuar.');
+    });
+    
+    // Fechar modal com a tecla ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && contentModal.classList.contains('active')) {
+            contentModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+});

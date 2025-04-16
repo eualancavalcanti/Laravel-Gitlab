@@ -12,6 +12,7 @@
         'items' => $trendingContent
     ])
     
+    
     <!-- Carrossel de Atores -->
     @include('components.actors-carousel', [
         'title' => 'Atores em Destaque', 

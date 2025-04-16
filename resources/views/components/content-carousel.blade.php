@@ -1,3 +1,4 @@
+<!-- resources/views/components/content-carousel.blade.php -->
 <section class="continue-watching">
     <div class="section-container">
         <div class="section-header">
@@ -10,7 +11,12 @@
         <div class="carousel-container">
             <div class="content-grid">
                 @forelse($items as $item)
-                    <div class="content-card">
+                    <div class="content-card" 
+                         data-id="{{ $item->id ?? '0' }}" 
+                         data-title="{{ $item->title }}"
+                         data-duration="{{ $item->remaining_time ?? '1:30:00' }}"
+                         data-viewers="{{ $item->viewers ?? '1.2K' }}"
+                         data-progress="{{ $item->progress ?? 50 }}">
                         <img src="{{ asset($item->thumbnail) }}" alt="{{ $item->title }}">
                         <div class="content-overlay">
                             <h3>{{ $item->title }}</h3>

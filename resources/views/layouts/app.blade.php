@@ -12,7 +12,8 @@
     <link rel="stylesheet" href="{{ asset('css/carousel-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/hero-touch-carousel.css') }}">
     <link rel="stylesheet" href="{{ asset('css/mobile-carousel.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/hero-carousel.css') }}"> 
+    <link rel="stylesheet" href="{{ asset('css/hero-carousel.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/content-modal.css') }}">
     
     <!-- Fontes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,6 +32,9 @@
     <!-- Conteúdo principal -->
     @yield('content')
     
+    <!-- Modal de Conteúdo -->
+    @include('components.content-modal')
+    
     <!-- Rodapé -->
     @include('partials.footer')
     
@@ -39,6 +43,7 @@
     <script src="{{ asset('js/complementary.js') }}"></script>
     <script src="{{ asset('js/hero-touch-carousel.js') }}"></script>
     <script src="{{ asset('js/mobile-carousel.js') }}"></script>
+    <script src="{{ asset('js/content-modal.js') }}"></script>
     
     @stack('scripts')
 </body>

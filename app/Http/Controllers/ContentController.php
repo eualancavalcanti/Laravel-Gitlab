@@ -9,7 +9,7 @@ use App\Models\Creator;
 use App\Models\HeroSlide;
 
 class ContentController extends Controller
-{
+
 {
     public function index()
     {

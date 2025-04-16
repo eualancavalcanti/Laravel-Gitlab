@@ -1449,3 +1449,62 @@ img, .actor-image, .hero-slide {
         padding: 0.8rem 1.5rem;
     }
 }
+
+
+.creator-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--border-radius-card);
+    background: var(--card-bg);
+    padding-top: 100px; /* Aumente este valor para garantir espaço para a imagem de fundo */
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.creator-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(255, 51, 51, 0.2);
+    border-color: rgba(255, 51, 51, 0.3);
+}
+
+.creator-header-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 120px; /* Aumente esta altura se necessário */
+    background-size: cover;
+    background-position: center top;
+    z-index: 1;
+    display: block !important; /* Forçar exibição */
+    opacity: 1 !important; /* Garantir visibilidade */
+}
+
+.creator-header-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, 
+                rgba(18, 18, 18, 0.4) 0%, 
+                var(--card-bg) 100%);
+    z-index: 2;
+}
+
+.creator-image {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin: -50px auto 0;
+    background-size: cover;
+    background-position: center;
+    border: 3px solid var(--hot-red);
+    box-shadow: 0 0 20px rgba(255, 51, 51, 0.3);
+    z-index: 3;
+}

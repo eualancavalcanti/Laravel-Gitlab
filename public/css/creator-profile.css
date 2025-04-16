@@ -1398,3 +1398,55 @@ hr {
     color: var(--text-secondary);
     font-size: 0.8rem;
 }
+
+.creator-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--border-radius-card);
+    background: var(--card-bg);
+    padding-top: 80px; /* Espaço para a imagem de fundo */
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.creator-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(255, 51, 51, 0.2);
+    border-color: rgba(255, 51, 51, 0.3);
+}
+
+.creator-header-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 120px;
+    background-size: cover;
+    background-position: center;
+    z-index: 1;
+}
+
+.creator-header-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, 
+                rgba(18, 18, 18, 0.4) 0%, 
+                var(--card-bg) 100%);
+    z-index: 2;
+}
+
+.creator-image {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin: -50px auto 0;
+    background-size: cover;
+    background-position: center;
+    border: 3px solid var(--hot-red);
+    box-shadow: 0 0 20px rgba(255, 51, 51, 0.3);
+    z-index: 3;
+}

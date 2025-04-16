@@ -4,19 +4,29 @@
         <div class="creators-grid">
             @forelse($creators as $creator)
                 <div class="creator-card">
-                    <div class="creator-header">
-                        <div class="creator-image" style="background-image: url('{{ asset($creator->image) }}')">
-                            @if($creator->verified)
-                                <span class="verified-badge">
+                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 120px; background-image: url('{{ asset($creator->image) }}'); background-size: cover; z-index: 1;">
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(18,18,18,0.4), var(--card-bg))"></div>
+</div>
+                <div class="creator-header-bg" style="background-image: url('{{ asset($creator->image) }}')">
+                    <div class="creator-header-overlay"></div>
+                </div>
+                    <div class="creator-image" style="background-image: url('{{ asset($creator['image']) }}')">
+                        <div class="creator-badges">
+                            @if($creator['verified'])
+                                <span class="badge verified">
                                     <i class="lucide-badge-check"></i>
                                 </span>
                             @endif
-                        </div>
-                        <div class="creator-info">
-                            <h3>{{ $creator->name }}</h3>
-                            <span class="creator-role">{{ $creator->role }}</span>
+                            
+                            @if($creator['trending'])
+                                <span class="badge trending">
+                                    <i class="lucide-trending-up"></i>
+                                </span>
+                            @endif
                         </div>
                     </div>
+                    <h3>{{ $creator['name'] }}</h3>
+                    <p class="creator-role">{{ $creator['role'] }}</p>
                     <div class="creator-stats">
                         <div class="stat">
                             <i class="lucide-users"></i>

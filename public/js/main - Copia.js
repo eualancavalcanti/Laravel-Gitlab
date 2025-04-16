@@ -173,8 +173,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Dados dos conteúdos sendo assistidos - URLs atualizadas
     const watchingContent = [
         {
-            title: "Desafio do Sofá - GG, Jottaeme e Cauãzinho",
-            thumbnail: "https://server2.hotboys.com.br/arquivos/20250313235544_H0TB0Y5_78642_vitrine-desktop.jpg",
+            title: "Noite de Verão",
+            thumbnail: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&h=450&fit=crop",
             progress: 45,
             viewers: 1234,
             duration: "1:45:30",
@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         {
             title: "Encontro Casual",
-            thumbnail: "https://server2.hotboys.com.br/arquivos/20250411021737_H0TB0Y5_35565_vitrine-desktop.jpg",
+            thumbnail: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=800&h=450&fit=crop",
             progress: 30,
             viewers: 856,
             duration: "1:28:45",
@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         {
             title: "Paixão Proibida",
-            thumbnail: "https://server2.hotboys.com.br/arquivos/20250406171234_H0TB0Y5_98205_vitrine-desktop.jpg",
+            thumbnail: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&h=450&fit=crop",
             progress: 75,
             viewers: 2341,
             duration: "2:15:00",
@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         {
             title: "Desejo Ardente",
-            thumbnail: "https://server2.hotboys.com.br/arquivos/20250327235300_H0TB0Y5_31394_vitrine-desktop%20(2).jpg",
+            thumbnail: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&h=450&fit=crop",
             progress: 15,
             viewers: 1567,
             duration: "1:55:20",
@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         {
             title: "Noite Perfeita",
-            thumbnail: "https://server2.hotboys.com.br/arquivos/20250320221236_H0TB0Y5_16536_vitrine-desktop.jpg",
+            thumbnail: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=800&h=450&fit=crop",
             progress: 60,
             viewers: 987,
             duration: "1:35:15",
@@ -222,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         {
             title: "Momento Especial",
-            thumbnail: "https://server2.hotboys.com.br/arquivos/20250406171234_H0TB0Y5_98205_vitrine-desktop.jpg",
+            thumbnail: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=800&h=450&fit=crop",
             progress: 90,
             viewers: 2156,
             duration: "2:00:00",
@@ -262,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
             followers: "150K",
             rating: 4.5,
             tags: ["Exclusivo", "Top 10"],
-            image: "https://server2.hotboys.com.br/arquivos/20210728172810_H0TB0Y5_96228_junior_rodrigues.jpg"
+            image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&h=400&fit=crop"
         },
         {
             name: "Bruno Costa",

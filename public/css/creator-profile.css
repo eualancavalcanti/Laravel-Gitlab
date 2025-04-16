@@ -1,3 +1,4 @@
+
 /* Estilos Principais para Perfil de Criador */
 :root {
     --hot-red: #FF3333;
@@ -131,11 +132,38 @@
     fill: white;
 }
 
+.online-badge {
+    background: #2ecc71;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 8px;
+}
+
+/* Social Badges */
+.social-badges {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.social-badges a {
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.7);
+    transition: color 0.3s ease;
+}
+
+.social-badges a:hover {
+    color: var(--hot-red);
+}
+
 /* Estatísticas do Perfil */
 .profile-stats {
     display: flex;
     gap: 2rem;
     margin: 0.5rem 0;
+    flex-wrap: wrap;
 }
 
 .stat {
@@ -192,6 +220,7 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
     padding-bottom: 0.5rem;
+    -webkit-overflow-scrolling: touch;
 }
 
 .profile-tabs::-webkit-scrollbar {
@@ -255,6 +284,13 @@
     position: relative;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.05);
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.content-card.animated {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .content-card:hover {
@@ -649,6 +685,7 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
     animation: scaleIn 0.3s ease;
+    width: 100%;
 }
 
 @keyframes scaleIn {
@@ -780,10 +817,6 @@ hr {
 }
 
 /* Animações para os Cards */
-.animated {
-    animation: fadeInUp 0.5s ease forwards;
-}
-
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -829,6 +862,10 @@ hr {
     .container {
         padding: 0 1rem;
     }
+    
+    .profile-banner {
+        min-height: 250px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -864,6 +901,47 @@ hr {
     
     .content-grid {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    
+    .tab-btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+    
+    .social-badges {
+        justify-content: center;
+    }
+    
+    .empty-content {
+        padding: 2rem 1rem;
+    }
+    
+    .empty-content h3 {
+        font-size: 1.3rem;
+    }
+    
+    .about-bio, 
+    .subscription-options {
+        padding: 1.5rem;
+    }
+    
+    .about-bio h3,
+    .subscription-options h3 {
+        font-size: 1.3rem;
+    }
+    
+    .modal-dialog {
+        width: 95%;
+    }
+    
+    .modal-content {
+        max-width: 100%;
+    }
+    
+    .profile-tabs {
+        padding-bottom: 0.5rem;
+        margin: 1.5rem 0;
     }
 }
 
@@ -894,9 +972,12 @@ hr {
         font-size: 0.8rem;
     }
     
-    .content-grid {
-        grid-template-columns: 1fr 1fr;
+    .profile-stats {
         gap: 1rem;
+    }
+    
+    .content-grid {
+        grid-template-columns: 1fr;
     }
     
     .content-title {
@@ -909,5 +990,64 @@ hr {
     
     .content-likes {
         font-size: 0.8rem;
+    }
+    
+    .tab-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+    
+    .subscribe-btn {
+        padding: 0.7rem 1.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .card-features li {
+        font-size: 0.85rem;
+    }
+    
+    .modal-header {
+        padding: 0.8rem 1rem;
+    }
+    
+    .modal-body {
+        padding: 1rem;
+    }
+    
+    .modal-title {
+        font-size: 1.3rem;
+    }
+    
+    .form-control {
+        padding: 0.7rem 0.9rem;
+        font-size: 0.9rem;
+    }
+    
+    .btn-primary, 
+    .btn-outline-primary {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.9rem;
+    }
+    
+    .container {
+        padding: 0 1rem;
+    }
+}
+
+/* Fixed modal for mobile */
+@media (max-width: 480px) {
+    .modal.show {
+        align-items: flex-end;
+    }
+    
+    .modal-dialog {
+        width: 100%;
+        margin: 0;
+    }
+    
+    .modal-content {
+        border-radius: 15px 15px 0 0;
+        max-height: 90vh;
+        overflow-y: auto;
     }
 }

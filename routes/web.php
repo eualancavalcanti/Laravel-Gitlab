@@ -81,3 +81,7 @@ Route::get('/creators/{id}', function ($id) {
     // Lógica para exibir perfil do criador
     return view('pages.creator-profile', ['id' => $id]);
 })->name('creators.show');
+
+// Rota de perfil do criador
+Route::get('/@{username}', [App\Http\Controllers\CreatorController::class, 'show'])
+    ->name('creator.profile');

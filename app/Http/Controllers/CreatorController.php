@@ -3,23 +3,60 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Content;
-use App\Models\Actor;
 use App\Models\Creator;
-use App\Models\HeroSlide;
+use App\Models\Content;
+use App\Models\Pack;
 
 class CreatorController extends Controller
 {
-    public function index()
+    /**
+     * Exibe o perfil de um criador
+     *
+     * @param string $username
+     * @return \Illuminate\Http\Response
+     */
+    public function show($username)
     {
-        // Buscar dados para os carrosséis
-        $heroSlides = HeroSlide::where('active', true)->orderBy('order')->get();
-        $trendingContent = Content::where('trending', true)->take(10)->get();
-        $featuredActors = Actor::with('tags')->where('featured', true)->take(5)->get();
-        $trendingCreators = Creator::where('trending', true)->take(4)->get();
+        // Limpa o username do @ se estiver presente
+        $username = ltrim($username, '@');
         
-        return view('home', compact('heroSlides', 'trendingContent', 'featuredActors', 'trendingCreators'));
+        // Busca dados do criador
+        $creator = Creator::where('username', $username)
+            ->where('status', 'Ativo')
+            ->where('exibicao', 'Todos')
+            ->firstOrFail();
+        
+        // Busca conteúdo exclusivo
+        $exclusiveContent = Content::where('creator_id', $creator->id)
+            ->where('type', 'exclusive')
+            ->where('status', 'Ativo')
+            ->orderBy('created_at', 'desc')
+            ->take(8)
+            ->get();
+            
+        // Busca conteúdo VIP
+        $vipContent = Content::where('creator_id', $creator->id)
+            ->where('type', 'vip')
+            ->where('status', 'Ativo')
+            ->orderBy('created_at', 'desc')
+            ->take(8)
+            ->get();
+            
+        // Busca packs
+        $packs = Pack::where('creator_id', $creator->id)
+            ->where('status', 'Ativo')
+            ->orderBy('created_at', 'desc')
+            ->take(8)
+            ->get();
+            
+        // Incrementa contagem de visualizações
+        $creator->increment('visualizacao');
+        
+        return view('creators.profile', compact(
+            'creator',
+            'exclusiveContent',
+            'vipContent',
+            'packs'
+        ));
     }
 }
-
-

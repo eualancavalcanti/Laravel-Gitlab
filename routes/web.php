@@ -85,3 +85,18 @@ Route::get('/creators/{id}', function ($id) {
 // Rota de perfil do criador
 Route::get('/@{username}', [App\Http\Controllers\CreatorController::class, 'show'])
     ->name('creator.profile');
+
+    // Rota de login temporária para testes
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
+
+// Rota para requisição de nova senha
+Route::get('/password/reset', function () {
+    return view('auth.passwords.email');
+})->name('password.request');
+
+// Rota de registro temporária para testes
+Route::get('/register', function () {
+    return view('auth.register');
+})->name('register');

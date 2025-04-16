@@ -270,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
             followers: "158K",
             rating: 4.8,
             tags: ["Tendência", "VIP"],
-            image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=400&fit=crop"
+            image: "https://server2.hotboys.com.br/arquivos/1731464110_2266754.jpeg"
         },
         {
             name: "Thiago Santos",
@@ -278,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
             followers: "220K",
             rating: 4.9,
             tags: ["Premium", "Mais Visto"],
-            image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop"
+            image: "https://server2.hotboys.com.br/arquivos/1723620443_4313043.jpeg"
         },
         {
             name: "Leonardo Silva",
@@ -286,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
             followers: "130K",
             rating: 4.7,
             tags: ["Novidade", "VIP"],
-            image: "https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=300&h=400&fit=crop"
+            image: "https://server2.hotboys.com.br/arquivos/1725870430_3455245.jfif"
         },
         {
             name: "Ricardo Alves",
@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
             role: "Ator Principal",
             followers: "280K",
             likes: "1.2M",
-            image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=300&fit=crop",
+            image: "https://server2.hotboys.com.br/arquivos/1731464110_2266754.jpeg",
             verified: true
         },
         {
@@ -313,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
             role: "Diretor",
             followers: "195K",
             likes: "890K",
-            image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&h=300&fit=crop",
+            image: "https://server2.hotboys.com.br/arquivos/1719699379_1916089.jpeg",
             verified: true
         },
         {
@@ -321,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
             role: "Ator",
             followers: "150K",
             likes: "750K",
-            image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop",
+            image: "https://server2.hotboys.com.br/arquivos/1725889610_3425212.jpeg",
             verified: false
         },
         {
@@ -329,9 +329,26 @@ document.addEventListener('DOMContentLoaded', () => {
             role: "Produtor",
             followers: "220K",
             likes: "950K",
-            image: "https://images.unsplash.com/photo-1492288991661-058aa541ff43?w=300&h=300&fit=crop",
+            image: "https://server2.hotboys.com.br/arquivos/1730746445_7356977.jpeg",
+            verified: true
+        },
+        {
+            name: "Matheus Oliveira",
+            role: "Produtor",
+            followers: "220K",
+            likes: "950K",
+            image: "https://server2.hotboys.com.br/arquivos/20210728172810_H0TB0Y5_96228_junior_rodrigues.jpg",
+            verified: false
+        },
+        {
+            name: "Matheus Oliveira",
+            role: "Produtor",
+            followers: "220K",
+            likes: "950K",
+            image: "https://server2.hotboys.com.br/arquivos/1722551797_1327349.jpeg",
             verified: true
         }
+        
     ];
 
     // Função para formatar números - Melhorada para suportar até milhões
@@ -407,74 +424,87 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Função para renderizar atores - Com tratamento de erro
-    function renderActors() {
-        const carousel = document.querySelector('.actors-carousel');
-        if (!carousel) return;
+    // Em public/js/main.js, no método renderActors()
+function renderActors() {
+    const carousel = document.querySelector('.actors-carousel');
+    if (!carousel) return;
 
-        carousel.innerHTML = '';
+    carousel.innerHTML = '';
 
-        actors.forEach(actor => {
-            const card = document.createElement('div');
-            card.className = 'actor-card';
-            
-            const imageWrapper = document.createElement('div');
-            imageWrapper.className = 'actor-image';
-            
-            // Precarregamento de imagem para verificar disponibilidade
-            const preloadImg = new Image();
-            preloadImg.src = actor.image;
-            preloadImg.onload = () => {
-                imageWrapper.style.backgroundImage = `url(${actor.image})`;
-            };
-            preloadImg.onerror = () => {
-                // Fallback para imagem padrão em caso de erro
-                imageWrapper.style.backgroundImage = 'url(https://images.unsplash.com/photo-1517999144091-3d9dca6d1e43?w=300&h=400&fit=crop)';
-            };
-            
-            const tagsDiv = document.createElement('div');
-            tagsDiv.className = 'actor-tags';
-            
-            actor.tags.forEach(tag => {
-                const span = document.createElement('span');
-                span.className = 'tag';
-                span.textContent = tag;
-                tagsDiv.appendChild(span);
-            });
-            
-            imageWrapper.appendChild(tagsDiv);
-            
-            const name = document.createElement('h3');
-            name.textContent = actor.name;
-            
-            const stats = document.createElement('div');
-            stats.className = 'actor-stats';
-            
-            const videosSpan = document.createElement('span');
-            videosSpan.textContent = `${actor.videos} Vídeos`;
-            
-            const followersSpan = document.createElement('span');
-            followersSpan.textContent = `${actor.followers} Seguidores`;
-            
-            const ratingSpan = document.createElement('span');
-            ratingSpan.textContent = `${actor.rating} ⭐`;
-            
-            stats.appendChild(videosSpan);
-            stats.appendChild(followersSpan);
-            stats.appendChild(ratingSpan);
-            
-            const button = document.createElement('button');
-            button.className = 'btn-primary';
-            button.textContent = 'Ver Conteúdo';
-            
-            card.appendChild(imageWrapper);
-            card.appendChild(name);
-            card.appendChild(stats);
-            card.appendChild(button);
-            
-            carousel.appendChild(card);
+    actors.forEach(actor => {
+        const card = document.createElement('div');
+        card.className = 'actor-card';
+        
+        // Criar o elemento de imagem diretamente em vez de usar background-image
+        const imageWrapper = document.createElement('div');
+        imageWrapper.className = 'actor-image';
+        
+        // Verificar se a imagem existe antes de atribuir
+        const img = document.createElement('img');
+        img.src = actor.image;
+        img.alt = actor.name;
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'cover';
+        
+        // Adicionar tratamento de erro para a imagem
+        img.onerror = function() {
+            // Imagem de fallback em caso de erro
+            this.src = 'https://images.unsplash.com/photo-1517999144091-3d9dca6d1e43?w=300&h=400&fit=crop';
+            console.log('Erro ao carregar imagem do ator:', actor.name);
+        };
+        
+        imageWrapper.appendChild(img);
+        
+        // Resto do código para adicionar tags e outros elementos...
+        const tagsDiv = document.createElement('div');
+        tagsDiv.className = 'actor-tags';
+        
+        actor.tags.forEach(tag => {
+            const span = document.createElement('span');
+            span.className = 'tag';
+            span.textContent = tag;
+            tagsDiv.appendChild(span);
         });
-    }
+        
+        imageWrapper.appendChild(tagsDiv);
+        
+        // Criar o nome do ator
+        const name = document.createElement('h3');
+        name.textContent = actor.name;
+        
+        // Adicionar estatísticas
+        const stats = document.createElement('div');
+        stats.className = 'actor-stats';
+        
+        const videosSpan = document.createElement('span');
+        videosSpan.textContent = `${actor.videos} Vídeos`;
+        
+        const followersSpan = document.createElement('span');
+        followersSpan.textContent = `${actor.followers} Seguidores`;
+        
+        const ratingSpan = document.createElement('span');
+        ratingSpan.textContent = `${actor.rating} ⭐`;
+        
+        stats.appendChild(videosSpan);
+        stats.appendChild(followersSpan);
+        stats.appendChild(ratingSpan);
+        
+        // Adicionar botão
+        const button = document.createElement('button');
+        button.className = 'btn-primary';
+        button.textContent = 'Ver Conteúdo';
+        
+        // Adicionar todos os elementos ao card
+        card.appendChild(imageWrapper);
+        card.appendChild(name);
+        card.appendChild(stats);
+        card.appendChild(button);
+        
+        // Adicionar o card ao carousel
+        carousel.appendChild(card);
+    });
+}
 
     // Função para renderizar criadores do momento - Com tratamento de erro
     function renderTrendingCreators() {

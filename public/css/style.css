@@ -446,9 +446,8 @@ img {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: var(--transition-normal);
+    transition: all 0.3s ease;
     z-index: 10;
-    -webkit-tap-highlight-color: transparent;
 }
 
 .nav-btn:hover {
@@ -496,6 +495,13 @@ img {
     background-size: cover;
     background-position: center;
     position: relative;
+    transition: transform 0.5s ease;
+}
+/* Se você optar por usar <img> em vez de background-image */
+.actor-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     transition: transform 0.5s ease;
 }
 
@@ -717,8 +723,10 @@ img {
 
 /* Trending Creators Section - Aprimorada */
 .trending-creators {
-    padding: 4rem 0;
-    background: var(--darker-bg);
+    padding: 3rem 0;
+    background: var(--dark-bg);
+    position: relative;
+    overflow: hidden;
 }
 
 .creators-grid {
@@ -1009,9 +1017,10 @@ footer {
     }
 
     .section-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
     }
 
     .carousel-nav {
@@ -1118,7 +1127,7 @@ footer {
 
 /* Melhorias de performance */
 .lazy-load {
-    opacity: 0;
+    opacity: 1;
     transition: opacity 0.3s ease;
 }
 
@@ -1171,7 +1180,7 @@ footer {
 
 /* Ajustes para reduzir Cumulative Layout Shift */
 img, .actor-image, .hero-slide {
-    contain: layout paint;
+    contain: none; /* Ou remova esta linha completamente */
 }
 
 /* Estilos para a seção de features */
@@ -1507,4 +1516,268 @@ img, .actor-image, .hero-slide {
     border: 3px solid var(--hot-red);
     box-shadow: 0 0 20px rgba(255, 51, 51, 0.3);
     z-index: 3;
+}
+
+* Carrossel de criadores horizontal */
+.creators-carousel {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.5rem;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-snap-type: x mandatory;
+}
+
+.creators-carousel::-webkit-scrollbar {
+    display: none;
+}
+
+/* Card horizontal de criador */
+.creator-card-horizontal {
+    min-width: 320px;
+    max-width: 420px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    scroll-snap-align: start;
+}
+
+.creator-card-horizontal:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(255, 51, 51, 0.2);
+    border-color: rgba(255, 51, 51, 0.2);
+}
+
+/* Banner do criador */
+.creator-banner {
+    height: 80px;
+    background-size: cover;
+    background-position: center top;
+    position: relative;
+}
+
+.creator-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(18, 18, 18, 0.3), rgba(18, 18, 18, 0.7));
+}
+
+/* Conteúdo do card */
+.creator-content {
+    padding: 0 1.2rem 1.2rem;
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+    margin-top: -30px;
+}
+
+/* Avatar do criador */
+.creator-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 3px solid var(--dark-bg);
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    margin-right: 1rem;
+}
+
+/* Badge de verificação */
+.verified-badge {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 20px;
+    height: 20px;
+    background: var(--hot-red);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: white;
+    border: 2px solid var(--dark-bg);
+}
+
+/* Informações do criador */
+.creator-info {
+    flex-grow: 1;
+    padding-top: 0.5rem;
+}
+
+.creator-name {
+    font-size: 1.1rem;
+    margin: 0 0 0.2rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.creator-role {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin: 0 0 0.8rem;
+}
+
+/* Métricas do criador */
+.creator-metrics {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.metric {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.metric i {
+    font-size: 0.9rem;
+}
+
+.metric.trending {
+    color: var(--hot-red);
+}
+
+/* Botão de seguir */
+.follow-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 51, 51, 0.15);
+    border: none;
+    color: var(--hot-red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+    flex-shrink: 0;
+}
+
+.follow-btn:hover {
+    background: var(--hot-red);
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(255, 51, 51, 0.4);
+}
+
+/* Estilos para a versão skeleton/loading */
+.skeleton {
+    position: relative;
+    overflow: hidden;
+}
+
+.skeleton::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: skeleton-loading 1.5s infinite;
+}
+
+.skeleton-banner {
+    height: 80px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.skeleton-content {
+    padding: 0 1.2rem 1.2rem;
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+    margin-top: -30px;
+}
+
+.skeleton-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.07);
+    margin-right: 1rem;
+}
+
+.skeleton-info {
+    flex-grow: 1;
+    padding-top: 0.5rem;
+}
+
+.skeleton-line {
+    height: 0.9rem;
+    width: 80%;
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 4px;
+    margin-bottom: 0.8rem;
+}
+
+.skeleton-line.short {
+    width: 60%;
+    height: 0.7rem;
+    margin-bottom: 1rem;
+}
+
+.skeleton-metrics {
+    height: 0.7rem;
+    width: 90%;
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 4px;
+}
+
+@keyframes skeleton-loading {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .creator-card-horizontal {
+        min-width: 280px;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .carousel-nav {
+        align-self: flex-end;
+    }
+}
+
+@media (max-width: 480px) {
+    .creator-card-horizontal {
+        min-width: 260px;
+    }
+    
+    .creator-avatar {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .creator-name {
+        font-size: 1rem;
+    }
+    
+    .creator-metrics {
+        gap: 0.8rem;
+        font-size: 0.8rem;
+    }
 }

@@ -40,7 +40,7 @@ class CreatorController extends Controller
             (object)[
                 'id' => 101,
                 'title' => 'Noite Perfeita em SP',
-                'thumbnail' => 'https://images.unsplash.com/photo-1566753323558-f4e0952af115?w=400&h=225&fit=crop',
+                'thumbnail' => 'https://server2.hotboys.com.br/arquivos/20250327235300_H0TB0Y5_17934_CAPA_01.jpg',
                 'duration' => '34:21',
                 'price' => 39.90,
                 'likes_count' => 1245
@@ -48,7 +48,7 @@ class CreatorController extends Controller
             (object)[
                 'id' => 102,
                 'title' => 'Momento Especial na Praia',
-                'thumbnail' => 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?w=400&h=225&fit=crop',
+                'thumbnail' => 'https://server2.hotboys.com.br/arquivos/20250221165801_H0TB0Y5_36703_CAPA.png.00_26_04_20.Still001.jpg',
                 'duration' => '28:15',
                 'price' => 29.90,
                 'likes_count' => 876
@@ -76,21 +76,21 @@ class CreatorController extends Controller
             (object)[
                 'id' => 201,
                 'title' => 'Sessão Privativa',
-                'thumbnail' => 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=225&fit=crop',
+                'thumbnail' => 'https://server2.hotboys.com.br/arquivos/20250411021737_H0TB0Y5_51202_capa.jpg',
                 'duration' => '45:12',
                 'likes_count' => 2134
             ],
             (object)[
                 'id' => 202,
                 'title' => 'Fantasias Exclusivas',
-                'thumbnail' => 'https://images.unsplash.com/photo-1492288991661-058aa541ff43?w=400&h=225&fit=crop',
+                'thumbnail' => 'https://server2.hotboys.com.br/arquivos/20250406171324_H0TB0Y5_3702_2025-03-15%2016.07.01.00_16_53_20.Still002.jpg',
                 'duration' => '38:45',
                 'likes_count' => 1872
             ],
             (object)[
                 'id' => 203,
                 'title' => 'Momentos Quentes',
-                'thumbnail' => 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=225&fit=crop',
+                'thumbnail' => 'https://server2.hotboys.com.br/arquivos/20250228194910_H0TB0Y5_50215_capa_01.jpg',
                 'duration' => '52:20',
                 'likes_count' => 2567
             ],

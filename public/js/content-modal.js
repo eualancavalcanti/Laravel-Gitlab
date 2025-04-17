@@ -359,7 +359,7 @@ document.addEventListener('DOMContentLoaded', function() {
         contentCards.forEach(card => {
             if (!card.hasAttribute('data-teaser-video')) {
                 // Se não tiver o atributo, definir um vídeo padrão
-                card.setAttribute('data-teaser-video', 'https://player.vimeo.com/external/426879954.sd.mp4?s=df4cadb04245941a14c4eb6f33fe8809d55fe5f4&profile_id=164&oauth2_token_id=57447761');
+                card.setAttribute('data-teaser-video', 'https://www.gov.br/pt-br/midias-agorabrasil/video-fundo.mp4');
             }
         });
     }

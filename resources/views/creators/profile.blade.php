@@ -12,85 +12,95 @@
     
     <!-- Seção de Informações do Perfil -->
     <div class="container">
-        <div class="profile-header">
-            <!-- Foto de Perfil -->
-            <div class="profile-photo">
-                <img src="{{ $creator->profile_image }}" alt="{{ $creator->name }}">
-            </div>
-            
-            <!-- Informações do Perfil -->
-            <div class="profile-info">
-                <!-- Oferta -->
-                 <!--
-                <div class="limited-offer">
-                    <span class="offer-text">Oferta por tempo limitado!</span>
-                    <span class="offer-timer" id="offerTimer">23:59:59</span>
-                </div> -->
+    <div class="profile-header">
+    <!-- Foto de Perfil -->
+    <div class="profile-photo">
+        <img src="{{ $creator->profile_image }}" alt="{{ $creator->name }}">
+    </div>
+    
+    <!-- Informações do Perfil -->
+    <div class="profile-info">
+        <!-- Oferta (se existir) -->
+        @if(isset($limited_offer) && $limited_offer)
+        <div class="limited-offer">
+            <span class="offer-text">Oferta por tempo limitado!</span>
+            <span class="offer-timer" id="offerTimer">23:59:59</span>
+        </div>
+        @endif
 
-                <h1 class="profile-name">{{ $creator->name }}</h1>
-                <h2 class="profile-username">
-                    @{{ $creator->username }} 
-                    @if($creator->is_verified)
-                    <span class="verified-badge" title="Conta Verificada">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                        </svg>
-                    </span>
-                    @endif
-                    <span class="online-badge" title="Online Agora"></span>
-                </h2>
-                
-                <div class="profile-stats">
-                    <div class="stat">
-                        <span class="stat-value">{{ number_format($creator->videos_count) }}</span>
-                        <span class="stat-label">Vídeos</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-value">{{ number_format($creator->vip_count) }}</span>
-                        <span class="stat-label">VIP</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-value">{{ number_format($creator->photos_count) }}</span>
-                        <span class="stat-label">Fotos</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-value">{{ number_format($creator->visualizacao) }}</span>
-                        <span class="stat-label">Visualizações</span>
-                    </div>
-                </div>
-                
-                <!-- Social badges without inline styles -->
-                <div class="social-badges">
-                    <a href="#" title="Instagram">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                        </svg>
-                    </a>
-                    <a href="#" title="Twitter">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
-                        </svg>
-                    </a>
-                    <a href="#" title="TikTok">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Botão de Assinatura/Login -->
-            <div class="profile-actions">
-            <button class="subscribe-btn pulse-animation" data-toggle="modal" data-target="#loginModal">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        <h1 class="profile-name">{{ $creator->name }}</h1>
+        <h2 class="profile-username">
+            @{{ $creator->username }} 
+            @if($creator->is_verified)
+            <span class="verified-badge" title="Conta Verificada">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
                 </svg>
-                Assinar agora <span class="discount-badge">-50%</span>
-            </button>
+            </span>
+            @endif
+            <span class="online-badge" title="Online Agora"></span>
+        </h2>
+        
+        <div class="profile-stats">
+            <div class="stat">
+                <span class="stat-value">{{ number_format($creator->videos_count) }}</span>
+                <span class="stat-label">Vídeos</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value">{{ number_format($creator->vip_count) }}</span>
+                <span class="stat-label">VIP</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value">{{ number_format($creator->photos_count) }}</span>
+                <span class="stat-label">Fotos</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value">{{ number_format($creator->visualizacao) }}</span>
+                <span class="stat-label">Visualizações</span>
             </div>
         </div>
+        
+        <!-- Social badges -->
+        <div class="social-badges">
+            @if($creator->instagram)
+            <a href="https://instagram.com/{{ $creator->instagram }}" target="_blank" title="Instagram">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+            </a>
+            @endif
+            @if($creator->twitter)
+            <a href="https://twitter.com/{{ $creator->twitter }}" target="_blank" title="Twitter">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
+                </svg>
+            </a>
+            @endif
+            @if($creator->tiktok)
+            <a href="https://tiktok.com/@{{ $creator->tiktok }}" target="_blank" title="TikTok">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
+                </svg>
+            </a>
+            @endif
+        </div>
+    </div>
+    
+    <!-- Botão de Assinatura/Login -->
+    <div class="profile-actions">
+        <button class="subscribe-btn pulse-animation" data-toggle="modal" data-target="#loginModal">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+            Assinar agora 
+            @if(isset($discount) && $discount)
+            <span class="discount-badge">-{{ $discount }}%</span>
+            @endif
+        </button>
+    </div>
+</div>
         
         <!-- Abas de Conteúdo -->
         <div class="profile-tabs">

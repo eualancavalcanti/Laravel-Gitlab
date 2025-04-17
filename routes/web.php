@@ -6,7 +6,21 @@ use App\Http\Controllers\ContentController;
 use App\Http\Controllers\ActorController;
 use App\Http\Controllers\CreatorController;
 
+// Rota da Home
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// PERFIS DE USUÁRIOS - Tanto com @ quanto sem @
+// Rota para perfil com @ no início
+Route::get('/@{username}', [CreatorController::class, 'show'])->name('creator.profile');
+
+// Rota alternativa sem @ para maior compatibilidade
+Route::get('/profile/{username}', [CreatorController::class, 'show'])->name('profile');
+
+// Rota para listagem de todos os criadores/atores
+Route::get('/creators', function () {
+    return view('pages.creators');
+})->name('creators');
+
 
 // Add to routes/web.php
 Route::get('/terms', function () {

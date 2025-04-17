@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Creator;
+use App\Models\Actor;
 use App\Models\Content;
 use App\Models\Pack;
 
 class CreatorController extends Controller
 {
     /**
-     * Exibe o perfil de um criador
+     * Exibe o perfil de um criador/ator
      *
      * @param string $username
      * @return \Illuminate\Http\Response
@@ -20,23 +21,80 @@ class CreatorController extends Controller
         // Limpa o username do @ se estiver presente
         $username = ltrim($username, '@');
         
-        // Dados de exemplo para testes (remover em produção)
-        $creator = (object)[
-            'id' => 1,
-            'name' => 'Diego Martins',
-            'username' => $username,
-            'profile_image' => 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&h=300&fit=crop',
-            'banner_image' => 'https://images.unsplash.com/photo-1566753323558-f4e0952af115?w=1920&h=600&fit=crop',
-            'description' => 'Olá! Sou Diego, 28 anos, de São Paulo. Criando conteúdo exclusivo que você não encontrará em nenhum outro lugar. Adoro interagir com meus seguidores e estou sempre aberto a sugestões para novos conteúdos. Se você gosta do meu trabalho, considere se tornar um assinante para ter acesso a todo meu conteúdo premium e exclusivo!',
-            'is_verified' => true,
-            'videos_count' => 42,
-            'vip_count' => 18,
-            'photos_count' => 156,
-            'visualizacao' => 25840
-        ];
+        // Busca tanto na tabela Creator quanto Actor
+        $creator = Creator::where('username', $username)->first();
         
-        // Dados de exemplo para conteúdo exclusivo (remover em produção)
-        $exclusiveContent = collect([
+        // Se não encontrou como Creator, busca como Actor
+        if (!$creator) {
+            $actor = Actor::where('username', $username)->first();
+            
+            // Se encontrou como Actor, cria um objeto Creator com os dados do Actor
+            if ($actor) {
+                $creator = (object)[
+                    'id' => $actor->id,
+                    'name' => $actor->name,
+                    'username' => $actor->username,
+                    'profile_image' => $actor->image,
+                    'banner_image' => $actor->banner_image ?? 'https://server2.hotboys.com.br/arquivos/banners/default_banner.jpg',
+                    'description' => $actor->description ?? 'Perfil de ' . $actor->name . '. Conheça o conteúdo exclusivo deste ator!',
+                    'is_verified' => $actor->verified ?? false,
+                    'videos_count' => $actor->videos ?? 0,
+                    'vip_count' => $actor->vip_videos ?? 0,
+                    'photos_count' => $actor->photos ?? 0,
+                    'visualizacao' => $actor->views ?? 0
+                ];
+            } else {
+                // Se não encontrou em nenhuma tabela, cria dados Mock para demonstração
+                // Na produção, isso seria substituído por uma página 404
+                $creator = (object)[
+                    'id' => 1,
+                    'name' => ucfirst($username),
+                    'username' => $username,
+                    'profile_image' => 'https://server2.hotboys.com.br/arquivos/profiles/default_profile.jpg',
+                    'banner_image' => 'https://server2.hotboys.com.br/arquivos/banners/default_banner.jpg',
+                    'description' => 'Perfil de demonstração. Conteúdo exclusivo em breve!',
+                    'is_verified' => false,
+                    'videos_count' => 0,
+                    'vip_count' => 0,
+                    'photos_count' => 0,
+                    'visualizacao' => 0
+                ];
+            }
+        }
+        
+        // Busca conteúdo exclusivo (simulado para perfis que não existem na DB)
+        $exclusiveContent = collect([]);
+        $vipContent = collect([]);
+        $packs = collect([]);
+        
+        // Se for um perfil real, busca o conteúdo 
+        // Em produção, aqui seria feita a busca real no banco de dados
+        if ($creator->id) {
+            // Exemplo de conteúdo simulado
+            $exclusiveContent = $this->getMockExclusiveContent();
+            $vipContent = $this->getMockVIPContent();
+            $packs = $this->getMockPacks();
+            
+            // Incrementar visualização se for um objeto real
+            if (is_object($creator) && method_exists($creator, 'increment')) {
+                $creator->increment('visualizacao');
+            }
+        }
+        
+        return view('creators.profile', compact(
+            'creator',
+            'exclusiveContent',
+            'vipContent',
+            'packs'
+        ));
+    }
+    
+    /**
+     * Métodos auxiliares para gerar conteúdo simulado
+     */
+    private function getMockExclusiveContent()
+    {
+        return collect([
             (object)[
                 'id' => 101,
                 'title' => 'Noite Perfeita em SP',
@@ -56,7 +114,7 @@ class CreatorController extends Controller
             (object)[
                 'id' => 103,
                 'title' => 'Experiência Intensa',
-                'thumbnail' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=225&fit=crop',
+                'thumbnail' => 'https://server2.hotboys.com.br/arquivos/20250406171324_H0TB0Y5_3702_2025-03-15%2016.07.01.00_16_53_20.Still002.jpg',
                 'duration' => '42:50',
                 'price' => 44.90,
                 'likes_count' => 1530
@@ -64,15 +122,17 @@ class CreatorController extends Controller
             (object)[
                 'id' => 104,
                 'title' => 'Encontro Inesquecível',
-                'thumbnail' => 'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=400&h=225&fit=crop',
+                'thumbnail' => 'https://server2.hotboys.com.br/arquivos/20250320221236_H0TB0Y5_16536_vitrine-desktop.jpg',
                 'duration' => '22:30',
                 'price' => 24.90,
                 'likes_count' => 687
             ]
         ]);
-        
-        // Dados de exemplo para conteúdo VIP (remover em produção)
-        $vipContent = collect([
+    }
+    
+    private function getMockVIPContent()
+    {
+        return collect([
             (object)[
                 'id' => 201,
                 'title' => 'Sessão Privativa',
@@ -97,18 +157,20 @@ class CreatorController extends Controller
             (object)[
                 'id' => 204,
                 'title' => 'Experiência Sensual',
-                'thumbnail' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=225&fit=crop',
+                'thumbnail' => 'https://server2.hotboys.com.br/arquivos/20250313235544_H0TB0Y5_78642_vitrine-desktop.jpg',
                 'duration' => '31:15',
                 'likes_count' => 1958
             ]
         ]);
-        
-        // Dados de exemplo para packs (remover em produção)
-        $packs = collect([
+    }
+    
+    private function getMockPacks()
+    {
+        return collect([
             (object)[
                 'id' => 301,
                 'title' => 'Pack de Verão 2025',
-                'thumbnail' => 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=225&fit=crop',
+                'thumbnail' => 'https://server2.hotboys.com.br/arquivos/20250313235544_H0TB0Y5_78642_vitrine-desktop.jpg',
                 'items_count' => 32,
                 'price' => 89.90,
                 'likes_count' => 3245
@@ -116,7 +178,7 @@ class CreatorController extends Controller
             (object)[
                 'id' => 302,
                 'title' => 'Ensaio Especial',
-                'thumbnail' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=225&fit=crop',
+                'thumbnail' => 'https://server2.hotboys.com.br/arquivos/20250327235300_H0TB0Y5_31394_vitrine-desktop%20(2).jpg',
                 'items_count' => 24,
                 'price' => 64.90,
                 'likes_count' => 2130
@@ -124,7 +186,7 @@ class CreatorController extends Controller
             (object)[
                 'id' => 303,
                 'title' => 'Melhores Momentos',
-                'thumbnail' => 'https://images.unsplash.com/photo-1517999144091-3d9dca6d1e43?w=400&h=225&fit=crop',
+                'thumbnail' => 'https://server2.hotboys.com.br/arquivos/20250411021737_H0TB0Y5_35565_vitrine-desktop.jpg',
                 'items_count' => 45,
                 'price' => 119.90,
                 'likes_count' => 3867
@@ -132,53 +194,11 @@ class CreatorController extends Controller
             (object)[
                 'id' => 304,
                 'title' => 'Fotos Exclusivas',
-                'thumbnail' => 'https://images.unsplash.com/photo-1488161628813-04466f872be2?w=400&h=225&fit=crop',
+                'thumbnail' => 'https://server2.hotboys.com.br/arquivos/20250411021737_H0TB0Y5_51202_capa.jpg',
                 'items_count' => 18,
                 'price' => 49.90,
                 'likes_count' => 1756
             ]
         ]);
-        
-        // Comentado para testes - descomentar em produção
-        /*
-        // Busca dados do criador
-        $creator = Creator::where('username', $username)
-            ->where('status', 'Ativo')
-            ->where('exibicao', 'Todos')
-            ->firstOrFail();
-        
-        // Busca conteúdo exclusivo
-        $exclusiveContent = Content::where('creator_id', $creator->id)
-            ->where('type', 'exclusive')
-            ->where('status', 'Ativo')
-            ->orderBy('created_at', 'desc')
-            ->take(8)
-            ->get();
-            
-        // Busca conteúdo VIP
-        $vipContent = Content::where('creator_id', $creator->id)
-            ->where('type', 'vip')
-            ->where('status', 'Ativo')
-            ->orderBy('created_at', 'desc')
-            ->take(8)
-            ->get();
-            
-        // Busca packs
-        $packs = Pack::where('creator_id', $creator->id)
-            ->where('status', 'Ativo')
-            ->orderBy('created_at', 'desc')
-            ->take(8)
-            ->get();
-            
-        // Incrementa contagem de visualizações
-        $creator->increment('visualizacao');
-        */
-        
-        return view('creators.profile', compact(
-            'creator',
-            'exclusiveContent',
-            'vipContent',
-            'packs'
-        ));
     }
 }

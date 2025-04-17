@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="HOTBOYS - Conteúdo premium adulto de alta qualidade. Acesse nossa plataforma com vídeos exclusivos e experiências únicas.">
     <meta name="theme-color" content="#FF3333">
-    <title>@yield('title', 'HOTBOYS - Conteúdo Premium')</title>
+    <title>@yield('title', 'HOTBOYSSS - Conteúdo Premium')</title>
     
     <!-- Estilos -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">

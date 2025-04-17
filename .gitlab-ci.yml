@@ -19,4 +19,4 @@ deploy_prod:
         systemctl reload php7.4-fpm
       "
   only:
-    - principal
+    - main

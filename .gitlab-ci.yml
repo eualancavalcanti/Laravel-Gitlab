@@ -13,10 +13,10 @@ deploy_prod:
   script:
     - ssh root@69.62.89.61 "
         cd /var/www/html/v2 &&
-        git pull origin main &&
+        git pull origin principal &&
         composer install --no-dev --optimize-autoloader &&
         php artisan view:clear cache:clear config:clear route:clear &&
         systemctl reload php7.4-fpm
       "
   only:
-    - main
+    - principal

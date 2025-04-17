@@ -1,10 +1,14 @@
+stages:
+  - deploy
+
 deploy_prod:
   stage: deploy
   image: alpine:latest
+
   before_script:
     - apk add --no-cache openssh-client git
     - mkdir -p ~/.ssh
-    - cp "$SSH_PRIVATE_KEY" ~/.ssh/id_rsa
+    - cp "$SSH_PRIVATE_KEY" ~/.ssh/id_rsa       # copia o arquivo da variável File
     - chmod 600 ~/.ssh/id_rsa
     - ssh-keyscan -H 69.62.89.61 >> ~/.ssh/known_hosts
 

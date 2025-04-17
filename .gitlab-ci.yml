@@ -1,6 +1,3 @@
-stages:
-  - deploy
-
 deploy_prod:
   stage: deploy
   image: alpine:latest
@@ -10,13 +7,15 @@ deploy_prod:
     - cp "$SSH_PRIVATE_KEY" ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - ssh-keyscan -H 69.62.89.61 >> ~/.ssh/known_hosts
+
   script:
-    - ssh root@69.62.89.61 "
-        cd /var/www/html/v2 &&
-        git pull origin principal &&
-        composer install --no-dev --optimize-autoloader &&
-        php artisan view:clear cache:clear config:clear route:clear &&
+    - ssh root@69.62.89.61 << 'EOF'
+        cd /var/www/html/v2
+        git pull origin main
+        composer install --no-dev --optimize-autoloader
+        php artisan view:clear cache:clear config:clear route:clear
         systemctl reload php7.4-fpm
-      "
+      EOF
+
   only:
     - main

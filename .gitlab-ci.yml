@@ -12,6 +12,7 @@ deploy_prod:
   - chmod 600 ~/.ssh/id_rsa
   - ssh-keyscan -H 69.62.89.61 >> ~/.ssh/known_hosts
   - ssh -i ~/.ssh/id_rsa root@69.62.89.61 "echo Conexão OK"
+  
 
   script:
     - ssh root@69.62.89.61 << 'EOF'

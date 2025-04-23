@@ -17,7 +17,7 @@ deploy_prod:
   - ssh-keyscan -H 69.62.89.61 >> ~/.ssh/known_hosts
 
   # Teste de conexão
-  - ssh -i ~/.ssh/id_rsa root@69.62.89.61 "echo Conexão OK"
+  - ssh -i ~/.ssh/id_rsa root@69.62.89.61 "echo Conexão OK" 
   
 
   script:

@@ -1,12 +1,22 @@
+# .gitlab-ci.yml
+stages:
+  - deploy
+
 deploy_to_vps:
   stage: deploy
   tags:
     - vps-hotboys
+  only:
+    - main
   script:
+    # copia tudo do build (clone) para a pasta de produção
     - rsync -av --delete "$CI_PROJECT_DIR/" /var/www/html/v2/
+    # entra na pasta de produção
     - cd /var/www/html/v2
+    # instala as dependências
     - composer install --no-dev --optimize-autoloader
+    # limpa todas as caches do Laravel
     - php artisan optimize:clear
-    # Agora com sudo
+    # recarrega o PHP-FPM como sudo sem senha
     - sudo systemctl reload php7.4-fpm
-  when: manual
+  when: manual   # remove esta linha se quiser deploy automático em cada push

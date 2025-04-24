@@ -5,16 +5,8 @@ deploy_to_vps:
   script:
     - rsync -av --delete "$CI_PROJECT_DIR/" /var/www/html/v2/
     - cd /var/www/html/v2
-
-    # Instala dependências
     - composer install --no-dev --optimize-autoloader
-
-    # Limpa caches individualmente
-    - php artisan view:clear
-    - php artisan cache:clear
-    - php artisan config:clear
-    - php artisan route:clear
-
-    # Recarrega o PHP–FPM
-    - systemctl reload php7.4-fpm
+    - php artisan optimize:clear
+    # Agora com sudo
+    - sudo systemctl reload php7.4-fpm
   when: manual

@@ -19,4 +19,4 @@ deploy_to_vps:
     - php artisan optimize:clear
     # recarrega o PHP-FPM como sudo sem senha
     - sudo systemctl reload php7.4-fpm
-  when: manual   # remove esta linha se quiser deploy automático em cada push
+  #when: manual   # remove esta linha se quiser deploy automático em cada push

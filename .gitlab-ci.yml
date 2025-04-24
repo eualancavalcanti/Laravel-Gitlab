@@ -1,33 +1,14 @@
 stages:
   - deploy
 
-deploy_prod:
+deploy_to_vps:
   stage: deploy
-  image: alpine:latest
-
-  before_script:
-  - apk add --no-cache openssh-client git
-  - mkdir -p ~/.ssh && chmod 700 ~/.ssh
-
-  # Grava a chave privada correta
-  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-  - chmod 600 ~/.ssh/id_rsa
-
-  # Evita prompt de confirm. de host
-  - ssh-keyscan -H 69.62.89.61 >> ~/.ssh/known_hosts
-
-  # Teste de conexão
-  - ssh -i ~/.ssh/id_rsa root@69.62.89.61 "echo Conexão OK" 
-  
-
+  tags:
+    - vps-hotboys
   script:
-    - ssh root@69.62.89.61 << 'EOF'
-        cd /var/www/html/v2
-        git pull origin main
-        composer install --no-dev --optimize-autoloader
-        php artisan view:clear cache:clear config:clear route:clear
-        systemctl reload php7.4-fpm
-      EOF
-
-  only:
-    - main
+    - cd /var/www/html/v2
+    - git pull origin main
+    - composer install --no-dev --optimize-autoloader
+    - php artisan view:clear cache:clear config:clear route:clear
+    - systemctl reload php7.4-fpm   # ou ajuste para sua versão do PHP
+  when: manual     # opcional: só executa quando você disparar

@@ -11,4 +11,4 @@ deploy_to_vps:
     - composer install --no-dev --optimize-autoloader
     - php artisan view:clear cache:clear config:clear route:clear
     - systemctl reload php7.4-fpm   # ou ajuste para sua versão do PHP
-  when: manual     # opcional: só executa quando você disparar
+  # when: manual     # opcional: só executa quando você disparar

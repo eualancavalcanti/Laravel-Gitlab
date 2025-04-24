@@ -1,14 +1,13 @@
-stages:
-  - deploy
-
 deploy_to_vps:
   stage: deploy
   tags:
     - vps-hotboys
   script:
     - cd /var/www/html/v2
+    # marca este diretório como seguro
+    - git config --global --add safe.directory /var/www/html/v2
     - git pull origin main
     - composer install --no-dev --optimize-autoloader
     - php artisan view:clear cache:clear config:clear route:clear
-    - systemctl reload php7.4-fpm   # ou ajuste para sua versão do PHP
-  # when: manual     # opcional: só executa quando você disparar
+    - systemctl reload php7.4-fpm
+  when: manual

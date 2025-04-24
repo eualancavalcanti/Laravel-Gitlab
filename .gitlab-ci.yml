@@ -1,17 +1,20 @@
-stages:
-  - deploy
-
 deploy_to_vps:
   stage: deploy
   tags:
     - vps-hotboys
   script:
-    # Sincroniza todo o código para a pasta de produção
     - rsync -av --delete "$CI_PROJECT_DIR/" /var/www/html/v2/
-    # Vai para lá e instala dependências
     - cd /var/www/html/v2
+
+    # Instala dependências
     - composer install --no-dev --optimize-autoloader
-    - php artisan view:clear cache:clear config:clear route:clear
+
+    # Limpa caches individualmente
+    - php artisan view:clear
+    - php artisan cache:clear
+    - php artisan config:clear
+    - php artisan route:clear
+
     # Recarrega o PHP–FPM
     - systemctl reload php7.4-fpm
-  when: manual    # remove esta linha se quiser rodar automaticamente
+  when: manual

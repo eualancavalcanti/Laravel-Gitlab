@@ -4,18 +4,16 @@ stages:
   - deploy
 
 before_script:
-  - apt-get update && apt-get install -y openssh-client git curl
+  - apt-get update && apt-get install -y openssh-client git
   - mkdir -p ~/.ssh && chmod 700 ~/.ssh
   - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
   - chmod 600 ~/.ssh/id_rsa
   - ssh-keyscan -H "69.62.89.61" >> ~/.ssh/known_hosts
   - chmod 644 ~/.ssh/known_hosts
-  - curl -sS https://getcomposer.org/installer | php
-  - mv composer.phar /tmp/composer.phar
 
 deploy:
   stage: deploy
   only:
-   - main
+    - main
   script:
-    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@69.62.89.61 "cd /var/www/html/v2 && php /tmp/composer.phar install --no-dev --optimize-autoloader && php artisan migrate --force && php artisan config:cache && sudo systemctl reload php7.4-fpm && sudo systemctl reload nginx"
+    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@69.62.89.61 "cd /var/www/html/v2 && composer install --no-dev --optimize-autoloader && php artisan migrate --force && php artisan config:cache && sudo systemctl reload php7.4-fpm && sudo systemctl reload nginx"

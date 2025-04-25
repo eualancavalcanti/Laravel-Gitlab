@@ -17,5 +17,4 @@ deploy:
     - main
   script:
     - cp composer.phar /tmp/composer.phar
-    - |
-      ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@69.62.89.61 "cd /var/www/html/v2 && php /tmp/composer.phar install --no-dev --optimize-autoloader && php artisan migrate --force && php artisan config:cache && sudo systemctl reload php7.4-fpm && sudo systemctl reload nginx"
+    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@69.62.89.61 "cd /var/www/html/v2 && php /tmp/composer.phar install --no-dev --optimize-autoloader && php artisan migrate --force && php artisan config:cache && sudo systemctl reload php7.4-fpm && sudo systemctl reload nginx"

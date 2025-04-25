@@ -17,9 +17,10 @@ deploy:
     - main
   script:
     - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@69.62.89.61 "cd /var/www/html/v2 && 
-      composer install --no-dev --optimize-autoloader && 
-      php artisan config:clear && 
-      php artisan config:cache && 
-      php artisan migrate --force && 
-      sudo systemctl reload php7.4-fpm && 
-      sudo systemctl reload nginx"
+       git pull origin main &&
+       composer install --no-dev --optimize-autoloader &&
+       php artisan config:clear &&
+       php artisan config:cache &&
+       php artisan migrate --force &&
+       sudo systemctl reload php7.4-fpm &&
+       sudo systemctl reload nginx"

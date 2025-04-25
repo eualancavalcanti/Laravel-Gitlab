@@ -1,4 +1,4 @@
-mage: php:7.4
+image: php:7.4
 
 stages:
   - deploy

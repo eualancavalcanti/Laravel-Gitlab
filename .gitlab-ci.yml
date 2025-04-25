@@ -4,7 +4,7 @@ stages:
   - deploy
 
 before_script:
-  - apt-get update && apt-get install -y openssh-client rsync
+  - apt-get update && apt-get install -y openssh-client git ca-certificates
   - mkdir -p ~/.ssh && chmod 700 ~/.ssh
   - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
   - chmod 600 ~/.ssh/id_rsa
@@ -16,13 +16,13 @@ deploy:
   only:
     - main
   script:
-    # 1) sincroniza arquivos do runner para o servidor
-    - rsync -avz --delete -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" ./ root@69.62.89.61:/var/www/html/v2
-    # 2) executa comandos de deploy remotos
-    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@69.62.89.61 "
+    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@69.62.89.61 "\
         cd /var/www/html/v2 && \
+        git remote set-url origin git@gitlab.com:eualancavalcanti/HBLaravel.git && \
+        git fetch origin main && git reset --hard origin/main && \
+        sudo apt-get install -y composer && \
         composer install --no-dev --optimize-autoloader && \
         php artisan migrate --force && \
         php artisan config:cache && \
-        sudo systemctl reload php7.4-fpm && sudo systemctl reload nginx
+        sudo systemctl reload php7.4-fpm && sudo systemctl reload nginx\
       "

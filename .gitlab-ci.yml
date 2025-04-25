@@ -14,10 +14,7 @@ before_script:
 deploy:
   stage: deploy
   only:
-    - mainimage: php:7.4stages:  - deploybefore_script:  - apt-get update && apt-get install -y openssh-client git  - mkdir -p ~/.ssh && chmod 700 ~/.ssh  - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa  - chmod 600 ~/.ssh/id_rsa  - ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts  - chmod 644 ~/.ssh/known_hostsdeploy:  stage: deploy  only:    - main  script:    - >      ssh -i ~/.ssh/id_rsa \          -o StrictHostKeyChecking=no \          root@$DEPLOY_HOST \          "cd $DEPLOY_PATH && git fetch origin main && git reset --hard origin/main && composer install --no-dev --optimize-autoloader && php artisan migrate --force && php artisan config:cache && sudo systemctl reload php7.4-fpm && sudo systemctl reload nginx"```
+    - main
   script:
-    - >
-      ssh -i ~/.ssh/id_rsa \
-          -o StrictHostKeyChecking=no \
-          root@$DEPLOY_HOST \
-          "cd $DEPLOY_PATH && git fetch origin main && git reset --hard origin/main && composer install --no-dev --optimize-autoloader && php artisan migrate --force && php artisan config:cache && sudo systemctl reload php7.4-fpm && sudo systemctl reload nginx"
+    # Comando de deploy em uma linha evita problemas de quebra e escape
+    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@$DEPLOY_HOST "cd $DEPLOY_PATH && git fetch origin main && git reset --hard origin/main && composer install --no-dev --optimize-autoloader && php artisan migrate --force && php artisan config:cache && sudo systemctl reload php7.4-fpm && sudo systemctl reload nginx"

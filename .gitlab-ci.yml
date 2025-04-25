@@ -1,22 +1,33 @@
+image: php:7.4
+
 stages:
   - deploy
 
-deploy:
-  stage: deploy
-  image: alpine:latest
-  only:
-    - main
-  before_script:
-  - ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+variables:
+  GIT_STRATEGY: fetch       # evita clone completo
+  DEPLOY_HOST: "$DEPLOY_HOST"
+  DEPLOY_USER: "$DEPLOY_USER"
+  DEPLOY_PATH: "$DEPLOY_PATH"
 
-script:
-  - rsync -avz --delete "$CI_PROJECT_DIR"/ root@"$DEPLOY_HOST":/var/www/html/v2/
-  - ssh root@"$DEPLOY_HOST" bash -lc "
-      cd /var/www/html/v2 &&
-      composer install --no-dev --optimize-autoloader &&
-      php artisan migrate --force &&
-      php artisan config:cache &&
-      php artisan route:cache &&
-      php artisan view:cache &&
-      systemctl reload php7.4-fpm &&
-      systemctl reload nginx
+before_script:
+  # instala cliente SSH e carrega a chave
+  - apt-get update && apt-get install -y openssh-client git
+  - eval $(ssh-agent -s)
+  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+  - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+  - ssh-keyscan $DEPLOY_HOST >> ~/.ssh/known_hosts
+  - chmod 644 ~/.ssh/known_hosts
+
+deploy_production:
+  stage: deploy
+  only:
+    - main               # só roda quando mergear na main
+  script:
+    # 1. Puxa as alterações
+    - ssh $DEPLOY_USER@$DEPLOY_HOST "cd $DEPLOY_PATH && git fetch origin main && git reset --hard origin/main"
+    # 2. Instala dependências e executa migrations
+    - ssh $DEPLOY_USER@$DEPLOY_HOST "cd $DEPLOY_PATH && composer install --no-dev --optimize-autoloader && php artisan migrate --force"
+    # 3. Cache e limpeza de config
+    - ssh $DEPLOY_USER@$DEPLOY_HOST "cd $DEPLOY_PATH && php artisan config:clear && php artisan route:clear && php artisan view:clear && php artisan config:cache && php artisan route:cache && php artisan view:cache"
+    # 4. Reinicia serviços
+    - ssh $DEPLOY_USER@$DEPLOY_HOST "sudo systemctl reload php7.4-fpm && sudo systemctl reload nginx"

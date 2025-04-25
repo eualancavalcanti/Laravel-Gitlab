@@ -1,52 +1,37 @@
-# .gitlab-ci.yml
 stages:
-  - build
   - deploy
 
-variables:
-  GIT_SUBMODULE_STRATEGY: recursive
-
-# -------------------------------------------------
-# 1. Build: instala dependências e gera vendor/ como artefato
-# -------------------------------------------------
-build:
-  stage: build
-  image: php:7.4
-  before_script:
-    - apt-get update -y && apt-get install -y unzip git libzip-dev
-    - docker-php-ext-install pdo_mysql zip
-  script:
-    - composer install --no-dev --optimize-autoloader
-  artifacts:
-    paths:
-      - vendor/
-
-# -------------------------------------------------
-# 2. Deploy: via SSH na branch principal
-# -------------------------------------------------
-deploy_production:
+deploy_to_vps:
   stage: deploy
   image: alpine:latest
+
+  # 1) configura SSH no runner
   before_script:
-    # instala cliente SSH e adiciona a chave
-    - apk add --no-cache openssh-client
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - apk add --no-cache openssh-client bash rsync
     - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
     - ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+
+  # 2) só dispara na branch main
+  only:
+    - main
+
   script:
-    # puxa novo código, instala, roda migrations e limpa cache
-    - ssh $DEPLOY_USER@$DEPLOY_HOST << 'EOF'
+    # copia todo o projeto para a VPS
+    - rsync -av --delete "$CI_PROJECT_DIR/" "$DEPLOY_USER@$DEPLOY_HOST:/var/www/html/v2/"
+
+    # no servidor, instala deps e limpa cache
+    - ssh $DEPLOY_USER@$DEPLOY_HOST bash << 'EOF'
         cd /var/www/html/v2
-        git pull origin $CI_COMMIT_REF_NAME
+
+        # este composer já existe no seu servidor
         composer install --no-dev --optimize-autoloader
-        php artisan migrate --force
-        php artisan config:cache
-        php artisan route:clear
-        php artisan view:clear
+
+        # limpa tudo no Laravel
+        php artisan optimize:clear
+
+        # recarrega PHP-FPM e Nginx
         sudo systemctl reload php7.4-fpm
         sudo systemctl reload nginx
       EOF
-  only:
-    - main
-  when: on_success

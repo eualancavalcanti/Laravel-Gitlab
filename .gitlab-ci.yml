@@ -10,8 +10,7 @@ deploy_to_vps:
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    - echo ">> DEPLOY_USER=[$DEPLOY_USER]"
-    - ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts || true
+    - ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
 
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'

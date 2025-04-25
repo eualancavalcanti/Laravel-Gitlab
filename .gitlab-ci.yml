@@ -4,36 +4,27 @@ stages:
   - deploy
 
 variables:
-  GIT_STRATEGY: fetch       # evita clone completo
+  GIT_STRATEGY: fetch
   DEPLOY_HOST: "$DEPLOY_HOST"
   DEPLOY_USER: "$DEPLOY_USER"
   DEPLOY_PATH: "$DEPLOY_PATH"
 
 before_script:
-  # instala SSH e Git
   - apt-get update && apt-get install -y openssh-client git
-  # prepara pasta .ssh
   - mkdir -p ~/.ssh && chmod 700 ~/.ssh
-  # grava chave no arquivo, preservando quebras de linha
   - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
   - chmod 600 ~/.ssh/id_rsa
-  # inicia o agente SSH e adiciona a chave
   - eval "$(ssh-agent -s)"
   - ssh-add ~/.ssh/id_rsa
-  # adiciona host à known_hosts para evitar prompt
   - ssh-keyscan $DEPLOY_HOST >> ~/.ssh/known_hosts
   - chmod 644 ~/.ssh/known_hosts
-  
+
 deploy_production:
   stage: deploy
   only:
-    - main               # só roda quando mergear na main
+    - main          # ou: - main, conforme sua branch
   script:
-    # 1. Puxa as alterações
-    - ssh $DEPLOY_USER@$DEPLOY_HOST "cd $DEPLOY_PATH && git fetch origin main && git reset --hard origin/main"
-    # 2. Instala dependências e executa migrations
+    - ssh $DEPLOY_USER@$DEPLOY_HOST "cd $DEPLOY_PATH && git fetch origin principal && git reset --hard origin/principal"
     - ssh $DEPLOY_USER@$DEPLOY_HOST "cd $DEPLOY_PATH && composer install --no-dev --optimize-autoloader && php artisan migrate --force"
-    # 3. Cache e limpeza de config
     - ssh $DEPLOY_USER@$DEPLOY_HOST "cd $DEPLOY_PATH && php artisan config:clear && php artisan route:clear && php artisan view:clear && php artisan config:cache && php artisan route:cache && php artisan view:cache"
-    # 4. Reinicia serviços
     - ssh $DEPLOY_USER@$DEPLOY_HOST "sudo systemctl reload php7.4-fpm && sudo systemctl reload nginx"

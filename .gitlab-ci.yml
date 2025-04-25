@@ -4,27 +4,15 @@ stages:
   - deploy
 
 before_script:
-  # 1) Instala SSH e Git
+  # 1) instala SSH e Git
   - apt-get update && apt-get install -y openssh-client git
 
-  # 2) Cria .ssh antes de gravar a chave
+  # 2) cria ~/.ssh e grava a chave PEM
   - mkdir -p ~/.ssh && chmod 700 ~/.ssh
-
-  # 3) Debug: confirma tamanho da variável
-  - echo ">>> bytes de SSH_KEY_B64:" && echo -n "$SSH_KEY_B64" | wc -c
-
-  # 4) Decodifica e salva a chave
-  - echo "$SSH_KEY_B64" | base64 -d > ~/.ssh/id_rsa
-
-  # 5) Debug: confirma formato do PEM
-  - echo ">>> linhas da chave:" && wc -l ~/.ssh/id_rsa
-  - echo ">>> head:" && head -n1 ~/.ssh/id_rsa
-  - echo ">>> tail:" && tail -n1 ~/.ssh/id_rsa
-
-  # 6) Ajusta permissão
+  - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
   - chmod 600 ~/.ssh/id_rsa
 
-  # 7) Adiciona host para não pedir confirmação
+  # 3) adiciona host sem prompt
   - ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
   - chmod 644 ~/.ssh/known_hosts
 
@@ -33,15 +21,17 @@ deploy_production:
   only:
     - main
   script:
+    # Use root no SSH (ou outro user correto)
     - |
       ssh -i ~/.ssh/id_rsa \
           -o StrictHostKeyChecking=no \
-          $DEPLOY_USER@$DEPLOY_HOST "\
+          root@$DEPLOY_HOST "\
             cd $DEPLOY_PATH && \
             git fetch origin main && git reset --hard origin/main && \
             composer install --no-dev --optimize-autoloader && \
             php artisan migrate --force && \
-            php artisan config:clear && php artisan route:clear && php artisan view:clear && \
-            php artisan config:cache && php artisan route:cache && php artisan view:cache && \
+            php artisan config:clear && php artisan route:clear && \
+            php artisan view:clear && php artisan config:cache && \
+            php artisan route:cache && php artisan view:cache && \
             sudo systemctl reload php7.4-fpm && sudo systemctl reload nginx \
           "

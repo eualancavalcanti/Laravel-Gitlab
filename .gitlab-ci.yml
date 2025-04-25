@@ -10,15 +10,18 @@ deploy_to_vps:
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    - ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
 
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
 
   script:
+    # 1) copia tudo para a VPS
     - rsync -av --delete "$CI_PROJECT_DIR/" "$DEPLOY_USER@$DEPLOY_HOST:/var/www/html/v2/"
+
+    # 2) executa os comandos no servidor via SSH sem checagem de host key
     - |
-      ssh $DEPLOY_USER@$DEPLOY_HOST << 'EOF'
+      ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
+          $DEPLOY_USER@$DEPLOY_HOST << 'EOF'
       cd /var/www/html/v2
       composer install --no-dev --optimize-autoloader
       php artisan optimize:clear

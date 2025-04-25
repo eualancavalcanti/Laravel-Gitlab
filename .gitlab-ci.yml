@@ -15,5 +15,18 @@ deploy:
   stage: deploy
   only:
     - main
-  script:
-    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@69.62.89.61 "cd /var/www/html/v2 && composer install --no-dev --optimize-autoloader && php artisan migrate --force && php artisan config:cache && sudo systemctl reload php7.4-fpm && sudo systemctl reload nginx"
+script:
+- ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@69.62.89.61 "cd /var/www/html/v2 && 
+# Verificar se composer está instalado e usar diretamente
+composer install --no-dev --optimize-autoloader && 
+
+# Verificar o arquivo .env para garantir que as credenciais do banco de dados estejam corretas
+# Substitua DB_USERNAME e DB_PASSWORD com as credenciais corretas se necessário
+# sed -i 's/DB_USERNAME=forge/DB_USERNAME=seu_usuario_correto/' .env && 
+# sed -i 's/DB_PASSWORD=/DB_PASSWORD=sua_senha_correta/' .env && 
+
+# Executar as migrações e limpar caches
+php artisan config:cache && 
+php artisan migrate --force && 
+sudo systemctl reload php7.4-fpm && 
+sudo systemctl reload nginx"

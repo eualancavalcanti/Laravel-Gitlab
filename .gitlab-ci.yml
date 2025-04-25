@@ -10,14 +10,16 @@ variables:
   DEPLOY_PATH: "$DEPLOY_PATH"
 
 before_script:
-  - apt-get update && apt-get install -y openssh-client git
+  - echo ">> id_rsa head:" && head -n1 ~/.ssh/id_rsa
+  - echo ">> id_rsa tail:" && tail -n1 ~/.ssh/id_rsa
+  # … seus comandos de setup SSH …
   - mkdir -p ~/.ssh && chmod 700 ~/.ssh
-  - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+  # grava a chave sem CR (\r) e preserva as quebras originais
+  - printf '%s\n' "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
   - chmod 600 ~/.ssh/id_rsa
   - eval "$(ssh-agent -s)"
   - ssh-add ~/.ssh/id_rsa
-  - ssh-keyscan $DEPLOY_HOST >> ~/.ssh/known_hosts
-  - chmod 644 ~/.ssh/known_hosts
+  # adiciona
 
 deploy_production:
   stage: deploy

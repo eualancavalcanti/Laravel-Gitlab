@@ -10,7 +10,6 @@ variables:
   DEPLOY_PATH: "$DEPLOY_PATH"
 
 before_script:
-  before_script:
   - mkdir -p ~/.ssh && chmod 700 ~/.ssh
   # decodifica a chave
   - echo "$SSH_KEY_B64" | base64 -d > ~/.ssh/id_rsa

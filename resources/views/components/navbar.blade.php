@@ -6,4 +6,4 @@
         </a>
         <button class="login-btn" aria-label="Entrar na conta">Entrar</button>
     </div>
-</nav>
+</nav> 

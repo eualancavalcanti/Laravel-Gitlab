@@ -10,27 +10,19 @@ deploy_to_vps:
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    - ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+    - echo ">> DEPLOY_USER=[$DEPLOY_USER]"
+    - ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts || true
 
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
 
   script:
-    # 1) copia tudo para a VPS
     - rsync -av --delete "$CI_PROJECT_DIR/" "$DEPLOY_USER@$DEPLOY_HOST:/var/www/html/v2/"
-
-    # 2) executa os comandos no servidor via SSH
     - |
       ssh $DEPLOY_USER@$DEPLOY_HOST << 'EOF'
       cd /var/www/html/v2
-
-      # este composer já existe no seu servidor
       composer install --no-dev --optimize-autoloader
-
-      # limpa tudo no Laravel
       php artisan optimize:clear
-
-      # recarrega PHP-FPM e Nginx
       sudo systemctl reload php7.4-fpm
       sudo systemctl reload nginx
       EOF

@@ -1,29 +1,22 @@
-image: php:7.4
+mage: php:7.4
 
-stages:
-  - deploy
+   stages:
+     - deploy
 
-before_script:
-  - apt-get update && apt-get install -y openssh-client rsync
-  - mkdir -p ~/.ssh && chmod 700 ~/.ssh
-  - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-  - chmod 600 ~/.ssh/id_rsa
-  - ssh-keyscan -H "69.62.89.61" >> ~/.ssh/known_hosts
-  - chmod 644 ~/.ssh/known_hosts
+   before_script:
+     - apt-get update && apt-get install -y openssh-client git
+     - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+     - chmod 600 ~/.ssh/id_rsa
+     - ssh-keyscan -H "69.62.89.61" >> ~/.ssh/known_hosts
+     - chmod 644 ~/.ssh/known_hosts
 
-deploy:
-  stage: deploy
-  only:
-    - main
-  script:
-    # 1) sincroniza arquivos do runner para o servidor
-    - rsync -avz --delete -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" ./ root@69.62.89.61:/var/www/html/v2
-    # 2) executa comandos de deploy remotos
-    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@69.62.89.61 "\
-        cd /var/www/html/v2 && \
-        sudo apt-get install -y composer && \
-        composer install --no-dev --optimize-autoloader && \
-        php artisan migrate --force && \
-        php artisan config:cache && \
-        sudo systemctl reload php7.4-fpm && sudo systemctl reload nginx\
-      "
+   deploy:
+     stage: deploy
+     only:
+       - main
+     script:
+       - cp composer.phar /tmp/composer.phar
+       - |
+         ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@69.62.89.61 "cd /var/www/html/v2 && php /tmp/composer.phar install --no-dev --optimize-autoloader && php artisan migrate --force && php artisan config:cache && sudo systemctl reload php7.4-fpm && sudo systemctl reload nginx"
+   

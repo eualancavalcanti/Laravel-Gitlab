@@ -10,25 +10,37 @@ variables:
   DEPLOY_PATH: "$DEPLOY_PATH"
 
 before_script:
+  # instala SSH e Git
+  - apt-get update && apt-get install -y openssh-client git
+  # prepara .ssh
   - mkdir -p ~/.ssh && chmod 700 ~/.ssh
-  # decodifica a chave
+  # decodifica chave Base64
   - echo "$SSH_KEY_B64" | base64 -d > ~/.ssh/id_rsa
   - chmod 600 ~/.ssh/id_rsa
-  - eval "$(ssh-agent -s)"
-  - echo ">> linhas da chave:" && wc -l ~/.ssh/id_rsa
-  - echo ">> head:" && head -n1 ~/.ssh/id_rsa
-  - echo ">> tail:" && tail -n1 ~/.ssh/id_rsa
-  - ssh-add ~/.ssh/id_rsa
-  - ssh-keyscan $DEPLOY_HOST >> ~/.ssh/known_hosts
+  # adiciona host sem prompt
+  - ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
   - chmod 644 ~/.ssh/known_hosts
-
 
 deploy_production:
   stage: deploy
   only:
-    - main    # ou main, conforme sua branch
+    - main     # agora só dispara em main
   script:
-    - ssh $DEPLOY_USER@$DEPLOY_HOST "cd $DEPLOY_PATH && git fetch origin principal && git reset --hard origin/principal"
-    - ssh $DEPLOY_USER@$DEPLOY_HOST "cd $DEPLOY_PATH && composer install --no-dev --optimize-autoloader && php artisan migrate --force"
-    - ssh $DEPLOY_USER@$DEPLOY_HOST "cd $DEPLOY_PATH && php artisan config:clear && php artisan route:clear && php artisan view:clear && php artisan config:cache && php artisan route:cache && php artisan view:cache"
-    - ssh $DEPLOY_USER@$DEPLOY_HOST "sudo systemctl reload php7.4-fpm && sudo systemctl reload nginx"
+    - |
+      ssh -i ~/.ssh/id_rsa \
+          -o StrictHostKeyChecking=no \
+          $DEPLOY_USER@$DEPLOY_HOST "\
+            cd $DEPLOY_PATH && \
+            git fetch origin main && \
+            git reset --hard origin/main && \
+            composer install --no-dev --optimize-autoloader && \
+            php artisan migrate --force && \
+            php artisan config:clear && \
+            php artisan route:clear && \
+            php artisan view:clear && \
+            php artisan config:cache && \
+            php artisan route:cache && \
+            php artisan view:cache && \
+            sudo systemctl reload php7.4-fpm && \
+            sudo systemctl reload nginx \
+          "

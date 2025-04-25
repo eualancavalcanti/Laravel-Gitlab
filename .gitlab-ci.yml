@@ -5,33 +5,32 @@ deploy_to_vps:
   stage: deploy
   image: alpine:latest
 
-  # 1) configura SSH no runner
   before_script:
-    - apk add --no-cache openssh-client bash rsync
+    - apk add --no-cache openssh-client rsync bash
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
 
-  # 2) só dispara na branch main
-  only:
-    - main
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
 
   script:
-    # copia todo o projeto para a VPS
+    # 1) copia tudo para a VPS
     - rsync -av --delete "$CI_PROJECT_DIR/" "$DEPLOY_USER@$DEPLOY_HOST:/var/www/html/v2/"
 
-    # no servidor, instala deps e limpa cache
-    - ssh $DEPLOY_USER@$DEPLOY_HOST bash << 'EOF'
-        cd /var/www/html/v2
+    # 2) executa os comandos no servidor via SSH
+    - |
+      ssh $DEPLOY_USER@$DEPLOY_HOST << 'EOF'
+      cd /var/www/html/v2
 
-        # este composer já existe no seu servidor
-        composer install --no-dev --optimize-autoloader
+      # este composer já existe no seu servidor
+      composer install --no-dev --optimize-autoloader
 
-        # limpa tudo no Laravel
-        php artisan optimize:clear
+      # limpa tudo no Laravel
+      php artisan optimize:clear
 
-        # recarrega PHP-FPM e Nginx
-        sudo systemctl reload php7.4-fpm
-        sudo systemctl reload nginx
+      # recarrega PHP-FPM e Nginx
+      sudo systemctl reload php7.4-fpm
+      sudo systemctl reload nginx
       EOF

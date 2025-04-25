@@ -1,22 +1,52 @@
 # .gitlab-ci.yml
 stages:
+  - build
   - deploy
 
-deploy_to_vps:
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
+# -------------------------------------------------
+# 1. Build: instala dependências e gera vendor/ como artefato
+# -------------------------------------------------
+build:
+  stage: build
+  image: php:7.4
+  before_script:
+    - apt-get update -y && apt-get install -y unzip git libzip-dev
+    - docker-php-ext-install pdo_mysql zip
+  script:
+    - composer install --no-dev --optimize-autoloader
+  artifacts:
+    paths:
+      - vendor/
+
+# -------------------------------------------------
+# 2. Deploy: via SSH na branch principal
+# -------------------------------------------------
+deploy_production:
   stage: deploy
-  tags:
-    - vps-hotboys
+  image: alpine:latest
+  before_script:
+    # instala cliente SSH e adiciona a chave
+    - apk add --no-cache openssh-client
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+  script:
+    # puxa novo código, instala, roda migrations e limpa cache
+    - ssh $DEPLOY_USER@$DEPLOY_HOST << 'EOF'
+        cd /var/www/html/v2
+        git pull origin $CI_COMMIT_REF_NAME
+        composer install --no-dev --optimize-autoloader
+        php artisan migrate --force
+        php artisan config:cache
+        php artisan route:clear
+        php artisan view:clear
+        sudo systemctl reload php7.4-fpm
+        sudo systemctl reload nginx
+      EOF
   only:
     - main
-  script:
-    # copia tudo do build (clone) para a pasta de produção
-    - rsync -av --delete "$CI_PROJECT_DIR/" /var/www/html/v2/
-    # entra na pasta de produção
-    - cd /var/www/html/v2
-    # instala as dependências
-    - composer install --no-dev --optimize-autoloader
-    # limpa todas as caches do Laravel
-    - php artisan optimize:clear
-    # recarrega o PHP-FPM como sudo sem senha
-    - sudo systemctl reload php7.4-fpm
-  #when: manual   # remove esta linha se quiser deploy automático em cada push
+  when: on_success

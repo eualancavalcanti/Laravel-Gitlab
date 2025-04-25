@@ -10,19 +10,19 @@ variables:
   DEPLOY_PATH: "$DEPLOY_PATH"
 
 before_script:
-  # instala SSH e Git
-  - apt-get update && apt-get install -y openssh-client git
-  # prepara pasta .ssh
+  before_script:
   - mkdir -p ~/.ssh && chmod 700 ~/.ssh
-  # decodifica a chave Base64 para id_rsa
+  # decodifica a chave
   - echo "$SSH_KEY_B64" | base64 -d > ~/.ssh/id_rsa
   - chmod 600 ~/.ssh/id_rsa
-  # carrega no ssh-agent
   - eval "$(ssh-agent -s)"
+  - echo ">> linhas da chave:" && wc -l ~/.ssh/id_rsa
+  - echo ">> head:" && head -n1 ~/.ssh/id_rsa
+  - echo ">> tail:" && tail -n1 ~/.ssh/id_rsa
   - ssh-add ~/.ssh/id_rsa
-  # adiciona host à known_hosts
   - ssh-keyscan $DEPLOY_HOST >> ~/.ssh/known_hosts
   - chmod 644 ~/.ssh/known_hosts
+
 
 deploy_production:
   stage: deploy

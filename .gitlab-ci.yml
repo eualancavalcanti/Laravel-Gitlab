@@ -10,21 +10,24 @@ variables:
   DEPLOY_PATH: "$DEPLOY_PATH"
 
 before_script:
-  - echo ">> id_rsa head:" && head -n1 ~/.ssh/id_rsa
-  - echo ">> id_rsa tail:" && tail -n1 ~/.ssh/id_rsa
-  # … seus comandos de setup SSH …
+  # instala SSH e Git
+  - apt-get update && apt-get install -y openssh-client git
+  # prepara pasta .ssh
   - mkdir -p ~/.ssh && chmod 700 ~/.ssh
-  # grava a chave sem CR (\r) e preserva as quebras originais
-  - printf '%s\n' "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+  # decodifica a chave Base64 para id_rsa
+  - echo "$SSH_KEY_B64" | base64 -d > ~/.ssh/id_rsa
   - chmod 600 ~/.ssh/id_rsa
+  # carrega no ssh-agent
   - eval "$(ssh-agent -s)"
   - ssh-add ~/.ssh/id_rsa
-  # adiciona
+  # adiciona host à known_hosts
+  - ssh-keyscan $DEPLOY_HOST >> ~/.ssh/known_hosts
+  - chmod 644 ~/.ssh/known_hosts
 
 deploy_production:
   stage: deploy
   only:
-    - main          # ou: - main, conforme sua branch
+    - main    # ou main, conforme sua branch
   script:
     - ssh $DEPLOY_USER@$DEPLOY_HOST "cd $DEPLOY_PATH && git fetch origin principal && git reset --hard origin/principal"
     - ssh $DEPLOY_USER@$DEPLOY_HOST "cd $DEPLOY_PATH && composer install --no-dev --optimize-autoloader && php artisan migrate --force"

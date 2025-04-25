@@ -4,17 +4,29 @@ stages:
   - deploy
 
 before_script:
-  # 1) debug da chave
-  - echo ">>> bytes de SSH_KEY_B64:" && echo "$SSH_KEY_B64" | wc -c
-  - echo ">>> linhas após decodificar:" && echo "$SSH_KEY_B64" | base64 -d > ~/.ssh/id_rsa && wc -l ~/.ssh/id_rsa
-  - echo ">>> head/tail:" && head -n1 ~/.ssh/id_rsa && tail -n1 ~/.ssh/id_rsa
-  - chmod 600 ~/.ssh/id_rsa
-
-  # 2) instala SSH e Git
+  # 1) Instala SSH e Git
   - apt-get update && apt-get install -y openssh-client git
 
-  # 3) evita prompt de host
-  - mkdir -p ~/.ssh && ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+  # 2) Cria .ssh antes de gravar a chave
+  - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+
+  # 3) Debug: confirma tamanho da variável
+  - echo ">>> bytes de SSH_KEY_B64:" && echo -n "$SSH_KEY_B64" | wc -c
+
+  # 4) Decodifica e salva a chave
+  - echo "$SSH_KEY_B64" | base64 -d > ~/.ssh/id_rsa
+
+  # 5) Debug: confirma formato do PEM
+  - echo ">>> linhas da chave:" && wc -l ~/.ssh/id_rsa
+  - echo ">>> head:" && head -n1 ~/.ssh/id_rsa
+  - echo ">>> tail:" && tail -n1 ~/.ssh/id_rsa
+
+  # 6) Ajusta permissão
+  - chmod 600 ~/.ssh/id_rsa
+
+  # 7) Adiciona host para não pedir confirmação
+  - ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+  - chmod 644 ~/.ssh/known_hosts
 
 deploy_production:
   stage: deploy
@@ -24,7 +36,7 @@ deploy_production:
     - |
       ssh -i ~/.ssh/id_rsa \
           -o StrictHostKeyChecking=no \
-          root@$DEPLOY_HOST "\
+          $DEPLOY_USER@$DEPLOY_HOST "\
             cd $DEPLOY_PATH && \
             git fetch origin main && git reset --hard origin/main && \
             composer install --no-dev --optimize-autoloader && \

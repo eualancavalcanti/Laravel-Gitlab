@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Cenas extends Model
 {
     protected $table = 'cenas';
-    protected $connection = 'c1hotboys_admin'; // Especifica o banco de dados
+    protected $connection = 'c1hotboys_admin';
     
     protected $fillable = [
         'titulo', 'titulo_en', 'descricao', 'descricao_en', 'descricao_assine',

@@ -39,21 +39,67 @@ class HomeController extends Controller
             $heroSlides->push($slide);
         }
         
+         // Buscar dados da tabela visitou_agora (ou sua tabela espelho local)
+    $visitantes = DB::table('visitou_agora')
+    ->where('exibicao', 'Todos')
+    ->groupBy('id_conteudo')
+    ->orderBy('id', 'desc')
+    ->skip(4)
+    ->take(6)
+    ->get();
 
-        // Buscar conteúdo que está sendo assistido no momento usando o Model
-        $watchingNow = VisitouAgora::where('exibicao', 'Todos')
-        ->groupBy('id_conteudo')
-        ->orderBy('id', 'desc')
-        ->skip(4)
-        ->take(6)
-        ->with(['cena' => function($query) {
-            $query->where('status', 'Ativo')
-                ->where('data_liberacao_conteudo', '<=', now());
-        }])
-        ->get()
-        ->pluck('cena')
-        ->filter(); // Remove null values
+        // Buscar as cenas correspondentes aos IDs de conteúdo
+        $watchingItems = new Collection();
+        foreach ($visitantes as $visitante) {
+            $cena = Cenas::where('id', $visitante->id_conteudo)
+                ->where('status', 'Ativo')
+                ->where('data_liberacao_conteudo', '<=', now())
+                ->first();
+            
+            if ($cena) {
+                $item = new \stdClass();
+                $item->title = $cena->titulo;
+                $item->video_id = $cena->id;
+                $item->thumbnail = 'https://server2.hotboys.com.br/arquivos/' . $cena->cena_vitrine;
+                
+                // Você pode calcular ou estimar esses valores com base em dados reais
+                // Por exemplo, contar quantos registros existem para este conteúdo
+                $viewerCount = DB::table('visitou_agora')
+                    ->where('id_conteudo', $cena->id)
+                    ->count();
+                
+                $item->viewers = $viewerCount > 0 ? $viewerCount : rand(800, 2500);
+                
+                // Você poderia ter uma tabela de 'progresso_visualizacao' para armazenar o progresso
+                // Por enquanto, estamos usando valores aleatórios
+                $item->remaining_time = '1:30:00';
+                $item->progress = rand(10, 90);
+                
+                $watchingItems->push($item);
+            }
+        }
 
+       // Se não encontrou nenhum item ou a tabela estiver vazia,
+    // podemos preencher com algumas cenas recentes
+    if ($watchingItems->isEmpty()) {
+        $fallbackCenas = Cenas::where('status', 'Ativo')
+                    ->orderBy('created_at', 'desc')
+                    ->skip(7)  // Pular as que já estão no carrossel hero
+                    ->take(6)
+                    ->get();
+        
+        foreach ($fallbackCenas as $cena) {
+            $item = new \stdClass();
+            $item->title = $cena->titulo;
+            $item->video_id = $cena->id;
+            $item->thumbnail = 'https://server2.hotboys.com.br/arquivos/' . $cena->cena_vitrine;
+            $item->remaining_time = '1:30:00';
+            $item->viewers = rand(800, 2500);
+            $item->progress = rand(10, 90);
+            
+            $watchingItems->push($item);
+        }
+    }
        
        
         $featuredActors = Actor::with('tags')->where('featured', true)->take(5)->get();

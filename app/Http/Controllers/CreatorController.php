@@ -56,8 +56,7 @@ class CreatorController extends Controller
                     'name' => $creator->nome,
                     'username' => $creator->nome_usuario ?? '@' . strtolower(str_replace(' ', '', $creator->nome)),
                     'profile_image' => $imageUrl,
-                    'banner_image' => 'https://server2.hotboys.com.br/arquivos/banners/default_banner.jpg', // Banner padrão
-                    'imagem_background' => $creator->imagem_background, // Campo original 
+                    'banner_image' => $backgroundImageUrl,
                     'description' => $creator->descricao ?? 'Perfil de ' . $creator->nome . '. Conheça o conteúdo exclusivo deste modelo!',
                     'is_verified' => $actor->verified ?? false,
                     'videos_count' => $actor->videos ?? 0,
@@ -72,6 +71,16 @@ class CreatorController extends Controller
         } else {
             // Processar dados do modelo da tabela 'modelos'
             $imageUrl = $this->getModelImageUrl($creator);
+            $backgroundImageUrl = null;
+
+            // Verificar se existe imagem de fundo
+            if (!empty($creator->imagem_background)) {
+                // URL completa da API Creator
+                $backgroundImageUrl = 'https://api.creator.hotboys.com.br/storage/perfis/' . $creator->imagem_background;
+            } else {
+                // URL padrão se não tiver imagem de fundo
+                $backgroundImageUrl = 'https://server2.hotboys.com.br/arquivos/banners/default_banner.jpg';
+            }
             
             // Criar objeto Creator com dados do modelo
             $creator = (object)[
@@ -79,9 +88,7 @@ class CreatorController extends Controller
                 'name' => $creator->nome,
                 'username' => $creator->nome_usuario ?? '@' . strtolower(str_replace(' ', '', $creator->nome)),
                 'profile_image' => $imageUrl,
-                'banner_image' => $creator->imagem_background 
-                    ? 'https://server2.hotboys.com.br/arquivos/' . $creator->imagem_background 
-                    : 'https://server2.hotboys.com.br/arquivos/banners/default_banner.jpg',
+                'banner_image' => $backgroundImageUrl,
                 'description' => $creator->descricao ?? 'Perfil de ' . $creator->nome . '. Conheça o conteúdo exclusivo deste modelo!',
                 'is_verified' => ($creator->preferidos == 'Sim' || $creator->exclusivos == 'Sim'),
                 'videos_count' => $this->getVideoCount($creator->id),
@@ -92,7 +99,10 @@ class CreatorController extends Controller
                 'age' => $creator->idade ?? 'N/A',
                 'height' => $creator->altura ?? 'N/A',
                 'role' => $creator->tipo_modelo ?? 'Modelo',
-                'star_rating' => $this->calculateStarRating($creator->visualizacao)
+                'star_rating' => $this->calculateStarRating($creator->visualizacao),
+                'instagram' => null,
+                'twitter' => null,
+                'tiktok' => null
             ];
             
             // Incrementar visualização

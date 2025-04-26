@@ -39,12 +39,13 @@ class CreatorController extends Controller
             // Se encontrou como Actor, cria um objeto com os dados do actor
             if ($actor) {
                 $creator = (object)[
-                    'id' => $actor->id,
-                    'name' => $actor->name,
-                    'username' => $actor->username,
-                    'profile_image' => $actor->image,
-                    'banner_image' => $actor->banner_image ?? 'https://server2.hotboys.com.br/arquivos/banners/default_banner.jpg',
-                    'description' => $actor->description ?? 'Perfil de ' . $actor->name . '. Conheça o conteúdo exclusivo deste ator!',
+                    'id' => $creator->id,
+                    'name' => $creator->nome,
+                    'username' => $creator->nome_usuario ?? '@' . strtolower(str_replace(' ', '', $creator->nome)),
+                    'profile_image' => $imageUrl,
+                    'banner_image' => 'https://server2.hotboys.com.br/arquivos/banners/default_banner.jpg', // Banner padrão
+                    'imagem_background' => $creator->imagem_background, // Campo original 
+                    'description' => $creator->descricao ?? 'Perfil de ' . $creator->nome . '. Conheça o conteúdo exclusivo deste modelo!',
                     'is_verified' => $actor->verified ?? false,
                     'videos_count' => $actor->videos ?? 0,
                     'vip_count' => $actor->vip_videos ?? 0,

@@ -1,37 +1,37 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Hero carousel data - Substituídos com URLs mais confiáveis
-    const heroSlides = [
-        {
-            image: 'https://images.unsplash.com/photo-1566753323558-f4e0952af115?w=1920&h=1080&fit=crop',
-            title: 'Hot Hot Hot',
-            description: 'Uma história envolvente de paixão e mistério em uma noite quente de verão.',
-            date: '22 Mar 2024'
-        },
-        {
-            image: 'https://images.unsplash.com/photo-1503443207922-dff7d543fd0e?w=1920&h=1080&fit=crop',
-            title: 'Encontro Casual',
-            description: 'Quando o destino conspira para unir dois corações solitários.',
-            date: '23 Mar 2024'
-        },
-        {
-            image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1920&h=1080&fit=crop',
-            title: 'Paixão Proibida',
-            description: 'Um romance intenso que desafia todas as convenções.',
-            date: '24 Mar 2024'
-        },
-        {
-            image: 'https://images.unsplash.com/photo-1492288991661-058aa541ff43?w=1920&h=1080&fit=crop',
-            title: 'Desejo Ardente',
-            description: 'Uma aventura sensual que vai despertar seus sentidos.',
-            date: '25 Mar 2024'
-        }
-    ];
+   // Initialize hero carousel
+function initHeroCarousel() {
+    const slidesContainer = document.querySelector('.hero-slides');
+    if (!slidesContainer) return; // Prevenção de erro se o elemento não existir
+    
+    // Não criar slides novamente - usar os que já existem do backend
+    const slides = slidesContainer.querySelectorAll('.hero-slide');
+    if (slides.length === 0) return; // Se não houver slides, sair
+    
+    const indicatorsContainer = document.createElement('div');
+    indicatorsContainer.className = 'hero-indicators';
 
-    let currentSlideIndex = 0;
-    let isTransitioning = false;
-    let autoplayInterval;
-    let touchStartX = 0;
-    let touchEndX = 0;
+    // Criar apenas indicadores para os slides existentes
+    slides.forEach((slide, index) => {
+        // Criar indicator
+        const indicator = document.createElement('div');
+        indicator.className = `indicator ${index === 0 ? 'active' : ''}`;
+        indicator.addEventListener('click', () => {
+            if (!isTransitioning && currentSlideIndex !== index) {
+                changeSlide(index);
+            }
+        });
+        indicatorsContainer.appendChild(indicator);
+    });
+
+    document.querySelector('.hero').appendChild(indicatorsContainer);
+    
+    // Adicionar eventos de touch para suporte mobile
+    slidesContainer.addEventListener('touchstart', handleTouchStart, false);
+    slidesContainer.addEventListener('touchmove', handleTouchMove, false);
+    slidesContainer.addEventListener('touchend', handleTouchEnd, false);
+}
 
     // Initialize hero carousel
     function initHeroCarousel() {
@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function changeSlide(newIndex) {
         if (isTransitioning) return;
         isTransitioning = true;
-
+    
         const slides = document.querySelectorAll('.hero-slide');
         const indicators = document.querySelectorAll('.indicator');
         
@@ -136,20 +136,27 @@ document.addEventListener('DOMContentLoaded', () => {
             isTransitioning = false;
             return;
         }
-
+    
         // Update slides
         slides[currentSlideIndex].classList.remove('active');
         slides[newIndex].classList.add('active');
-
+    
         // Update indicators
         indicators[currentSlideIndex].classList.remove('active');
         indicators[newIndex].classList.add('active');
-
+    
+        // Get slide data from data attributes
+        const slideData = {
+            title: slides[newIndex].getAttribute('data-title'),
+            description: slides[newIndex].getAttribute('data-description'),
+            date: slides[newIndex].getAttribute('data-date')
+        };
+    
         // Update content
-        updateHeroContent(heroSlides[newIndex]);
-
+        updateHeroContent(slideData);
+    
         currentSlideIndex = newIndex;
-
+    
         // Reset transition lock after animation completes
         setTimeout(() => {
             isTransitioning = false;

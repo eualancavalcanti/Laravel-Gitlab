@@ -38,4 +38,4 @@ public function showCenas()
     
     // Retornar a view com os dados
     return view('cenas', compact('cenas', 'cenasDestaque'));
-}
+} 

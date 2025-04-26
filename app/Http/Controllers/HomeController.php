@@ -122,7 +122,7 @@ $featuredActors = DB::table('modelos')
 $trendingCreators = DB::table('modelos')
 ->where('status', 'Ativo')
 ->orderBy('created_at', 'desc')
-->take(4)
+->take(6)
 ->get();
 
 // Você também já definiu $watchingItems, mas não está usando no compact

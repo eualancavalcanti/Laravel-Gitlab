@@ -17,7 +17,7 @@ class HomeController extends Controller
         // Buscar as últimas cenas postadas (ativas)
         $latestCenas = Cenas::where('status', 'Ativo')
                       ->orderBy('created_at', 'desc')
-                      ->take(5)
+                      ->take(7)
                       ->get();
         
         // Converter as cenas para o formato esperado pelo carrossel

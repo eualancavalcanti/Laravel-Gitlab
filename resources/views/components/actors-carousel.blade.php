@@ -12,22 +12,25 @@
             <div class="actors-carousel">
                 @forelse($actors as $actor)
                     <div class="actor-card">
-                        <a href="{{ route('creator.profile', ['username' => $actor->username ?? strtolower(str_replace(' ', '', $actor->name))]) }}" class="actor-link">
-                            <div class="actor-image" style="background-image: url('{{ $actor->image }}')">
+                        <a href="{{ route('creator.profile', ['username' => $actor->nome_usuario ?? strtolower(str_replace(' ', '', $actor->nome))]) }}" class="actor-link">
+                            <div class="actor-image" style="background-image: url('https://server2.hotboys.com.br/arquivos/{{ $actor->foto_principal }}')">
                                 <div class="actor-tags">
-                                    @foreach($actor->tags as $tag)
-                                        <span class="tag">{{ is_object($tag) ? $tag->name : $tag }}</span>
-                                    @endforeach
+                                    @if(!empty($actor->tag_principal))
+                                        <span class="tag">{{ $actor->tag_principal }}</span>
+                                    @endif
+                                    @if(!empty($actor->tipo_modelo))
+                                        <span class="tag">{{ $actor->tipo_modelo }}</span>
+                                    @endif
                                 </div>
                             </div>
-                            <h3>{{ $actor->name }}</h3>
+                            <h3>{{ $actor->nome }}</h3>
                             <div class="actor-stats">
-                                <span>{{ $actor->videos ?? 0 }} Vídeos</span>
-                                <span>{{ $actor->followers ?? '0' }} Seguidores</span>
-                                <span>{{ $actor->rating ?? '0.0' }} ⭐</span>
+                                <span>{{ $actor->idade ?? 0 }} Anos</span>
+                                <span>{{ $actor->visualizacao ?? '0' }} Visualizações</span>
+                                <span>{{ $actor->penis ?? '0' }} cm</span>
                             </div>
                         </a>
-                        <a href="{{ route('creator.profile', ['username' => $actor->username ?? strtolower(str_replace(' ', '', $actor->name))]) }}" class="btn-primary">
+                        <a href="{{ route('creator.profile', ['username' => $actor->nome_usuario ?? strtolower(str_replace(' ', '', $actor->nome))]) }}" class="btn-primary">
                             Ver Perfil
                         </a>
                     </div>

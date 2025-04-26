@@ -94,6 +94,12 @@ document.addEventListener('DOMContentLoaded', function() {
             existingIframe.remove();
         }
         
+        // Remover qualquer div que contém iframe
+        const iframeWrapper = teaserContainer.querySelector('.iframe-wrapper');
+        if (iframeWrapper) {
+            iframeWrapper.remove();
+        }
+        
         // Remover qualquer vídeo existente
         const existingVideo = teaserContainer.querySelector('video');
         if (existingVideo) {
@@ -230,20 +236,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const teaserCode = contentModal.getAttribute('data-teaser-code');
             
             if (teaserCode && teaserCode.trim() !== '') {
-                // Inserir o HTML do iframe diretamente no container
+                // IMPORTANTE: Inserir o código do iframe exatamente como está no banco de dados
+                // Criar apenas um wrapper div para o iframe
                 const iframeWrapper = document.createElement('div');
                 iframeWrapper.className = 'iframe-wrapper';
-                iframeWrapper.innerHTML = teaserCode;
                 
-                // Garantir que o iframe ocupe 100% do espaço
-                const iframe = iframeWrapper.querySelector('iframe');
-                if (iframe) {
-                    iframe.style.width = '100%';
-                    iframe.style.height = '100%';
-                    iframe.style.border = 'none';
-                    iframe.allow = 'autoplay; fullscreen';
-                    iframe.allowFullscreen = true;
-                }
+                // Inserir o código HTML bruto do iframe sem modificações
+                iframeWrapper.innerHTML = teaserCode;
                 
                 teaserContainer.appendChild(iframeWrapper);
                 console.log('Iframe do teaser adicionado');
@@ -265,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 videoElement.muted = false;
                 videoElement.playsInline = true;
                 
-                // Usar vídeo de stock gratuito do Pexels
+                // Usar vídeo de stock gratuito como fallback
                 videoElement.innerHTML = `
                     <source src="https://www.gov.br/pt-br/midias-agorabrasil/video-fundo.mp4" type="video/mp4">
                     <p>Seu navegador não suporta vídeos HTML5.</p>
@@ -358,43 +357,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }, 15000); // Atualizar a cada 15 segundos
-    
-    // Inicializar atributos data-teaser-code para os cards existentes
-    function initTeaserCodes() {
-        const contentCards = document.querySelectorAll('.content-card');
-        const videoElements = document.querySelectorAll('.hero-slide');
-        
-        // Processando cards de conteúdo
-        contentCards.forEach(card => {
-            if (!card.hasAttribute('data-teaser-code')) {
-                // Se não tiver o atributo, verificar se tem ID de vídeo
-                const videoId = card.getAttribute('data-video-id');
-                
-                if (videoId) {
-                    // Construir um código de iframe usando o video_id
-                    const defaultIframe = `<iframe allow="autoplay; fullscreen;" allowfullscreen class="jmvplayer" frameborder="0" src="https://player.jmvstream.com/qAGjxuwNoNQIj2i9kkVHgLMIxUuMu7/${videoId}" width="100%" height="100%"></iframe>`;
-                    card.setAttribute('data-teaser-code', defaultIframe);
-                } else {
-                    // Caso não tenha nenhuma informação, deixar em branco para usar o vídeo padrão
-                    card.setAttribute('data-teaser-code', '');
-                }
-            }
-        });
-        
-        // Processando slides do hero carousel
-        videoElements.forEach(slide => {
-            if (slide.hasAttribute('data-video-id') && !slide.hasAttribute('data-teaser-code')) {
-                const videoId = slide.getAttribute('data-video-id');
-                if (videoId) {
-                    const defaultIframe = `<iframe allow="autoplay; fullscreen;" allowfullscreen class="jmvplayer" frameborder="0" src="https://player.jmvstream.com/qAGjxuwNoNQIj2i9kkVHgLMIxUuMu7/${videoId}" width="100%" height="100%"></iframe>`;
-                    slide.setAttribute('data-teaser-code', defaultIframe);
-                }
-            }
-        });
-    }
-    
-    // Chamar a inicialização
-    initTeaserCodes();
     
     // Log de inicialização para confirmar que o script foi carregado corretamente
     console.log('Script da modal de conteúdo inicializado com sucesso');

@@ -7,6 +7,7 @@ use App\Models\Creator;
 use App\Models\Actor;
 use App\Models\Content;
 use App\Models\Pack;
+use Illuminate\Support\Facades\DB;
 
 class CreatorController extends Controller
 {
@@ -21,14 +22,18 @@ class CreatorController extends Controller
         // Limpa o username do @ se estiver presente
         $username = ltrim($username, '@');
         
-        // Busca tanto na tabela Creator quanto Actor
-        $creator = Creator::where('username', $username)->first();
+        // Buscar modelo pelo nome de usuário
+        $creator = DB::table('modelos')
+            ->where('nome_usuario', '@' . $username)
+            ->orWhere('nome_usuario', $username)
+            ->where('status', 'Ativo')
+            ->first();
         
-        // Se não encontrou como Creator, busca como Actor
+        // Se não encontrou como modelo, buscar por criadores ou atores em outras tabelas
         if (!$creator) {
             $actor = Actor::where('username', $username)->first();
             
-            // Se encontrou como Actor, cria um objeto Creator com os dados do Actor
+            // Se encontrou como Actor, cria um objeto com os dados do actor
             if ($actor) {
                 $creator = (object)[
                     'id' => $actor->id,
@@ -44,49 +49,255 @@ class CreatorController extends Controller
                     'visualizacao' => $actor->views ?? 0
                 ];
             } else {
-                // Se não encontrou em nenhuma tabela, cria dados Mock para demonstração
-                // Na produção, isso seria substituído por uma página 404
-                $creator = (object)[
-                    'id' => 1,
-                    'name' => ucfirst($username),
-                    'username' => $username,
-                    'profile_image' => 'https://server2.hotboys.com.br/arquivos/profiles/default_profile.jpg',
-                    'banner_image' => 'https://server2.hotboys.com.br/arquivos/banners/default_banner.jpg',
-                    'description' => 'Perfil de demonstração. Conteúdo exclusivo em breve!',
-                    'is_verified' => false,
-                    'videos_count' => 0,
-                    'vip_count' => 0,
-                    'photos_count' => 0,
-                    'visualizacao' => 0
-                ];
+                // Se não encontrou em nenhuma tabela, retornar 404
+                abort(404, 'Perfil não encontrado');
             }
-        }
-        
-        // Busca conteúdo exclusivo (simulado para perfis que não existem na DB)
-        $exclusiveContent = collect([]);
-        $vipContent = collect([]);
-        $packs = collect([]);
-        
-        // Se for um perfil real, busca o conteúdo 
-        // Em produção, aqui seria feita a busca real no banco de dados
-        if ($creator->id) {
-            // Exemplo de conteúdo simulado
-            $exclusiveContent = $this->getMockExclusiveContent();
-            $vipContent = $this->getMockVIPContent();
-            $packs = $this->getMockPacks();
+        } else {
+            // Processar dados do modelo da tabela 'modelos'
+            $imageUrl = $this->getModelImageUrl($creator);
             
-            // Incrementar visualização se for um objeto real
-            if (is_object($creator) && method_exists($creator, 'increment')) {
-                $creator->increment('visualizacao');
-            }
+            // Criar objeto Creator com dados do modelo
+            $creator = (object)[
+                'id' => $creator->id,
+                'name' => $creator->nome,
+                'username' => $creator->nome_usuario ?? '@' . strtolower(str_replace(' ', '', $creator->nome)),
+                'profile_image' => $imageUrl,
+                'banner_image' => $creator->imagem_background 
+                    ? 'https://server2.hotboys.com.br/arquivos/' . $creator->imagem_background 
+                    : 'https://server2.hotboys.com.br/arquivos/banners/default_banner.jpg',
+                'description' => $creator->descricao ?? 'Perfil de ' . $creator->nome . '. Conheça o conteúdo exclusivo deste modelo!',
+                'is_verified' => ($creator->preferidos == 'Sim' || $creator->exclusivos == 'Sim'),
+                'videos_count' => $this->getVideoCount($creator->id),
+                'vip_count' => $this->getVipVideoCount($creator->id),
+                'photos_count' => $this->getPhotoCount($creator->id),
+                'visualizacao' => $creator->visualizacao ?? 0,
+                'tags' => $this->getModelTags($creator),
+                'age' => $creator->idade ?? 'N/A',
+                'height' => $creator->altura ?? 'N/A',
+                'role' => $creator->tipo_modelo ?? 'Modelo',
+                'star_rating' => $this->calculateStarRating($creator->visualizacao)
+            ];
+            
+            // Incrementar visualização
+            DB::table('modelos')->where('id', $creator->id)->increment('visualizacao');
         }
+        
+        // Buscar cenas relacionadas ao modelo
+        $exclusiveContent = $this->getModelContent($creator->id, 'exclusive');
+        $vipContent = $this->getModelContent($creator->id, 'vip');
+        $packs = $this->getModelPacks($creator->id);
+        
+        // Se não houver conteúdo real, usar o conteúdo simulado para demonstração
+        if ($exclusiveContent->isEmpty()) {
+            $exclusiveContent = $this->getMockExclusiveContent();
+        }
+        
+        if ($vipContent->isEmpty()) {
+            $vipContent = $this->getMockVIPContent();
+        }
+        
+        if ($packs->isEmpty()) {
+            $packs = $this->getMockPacks();
+        }
+        
+        // Buscar modelos relacionados/sugeridos
+        $relatedCreators = $this->getRelatedCreators($creator->id);
         
         return view('creators.profile', compact(
             'creator',
             'exclusiveContent',
             'vipContent',
-            'packs'
+            'packs',
+            'relatedCreators'
         ));
+    }
+    
+    /**
+     * Obter URL da imagem do modelo
+     */
+    private function getModelImageUrl($modelo)
+    {
+        $imagePriority = ['foto_principal', 'modelo_perfil', 'modelo_elenco', 'modelo_home'];
+        
+        foreach ($imagePriority as $field) {
+            if (!empty($modelo->$field)) {
+                // Verificar se a imagem já tem uma URL completa
+                if (strpos($modelo->$field, 'http') === 0) {
+                    return $modelo->$field;
+                }
+                
+                // Verificar se é um nome de arquivo da nova convenção
+                if (strpos($modelo->$field, '_H0TB0Y5_') !== false) {
+                    return 'https://server2.hotboys.com.br/arquivos/' . $modelo->$field;
+                }
+                
+                // Caso contrário, usar o nome do arquivo diretamente
+                return 'https://server2.hotboys.com.br/arquivos/' . $modelo->$field;
+            }
+        }
+        
+        // Imagem padrão se nenhuma for encontrada
+        return 'https://server2.hotboys.com.br/arquivos/profiles/default_profile.jpg';
+    }
+    
+    /**
+     * Obter tags/categorias do modelo
+     */
+    private function getModelTags($modelo)
+    {
+        $tags = [];
+        
+        if ($modelo->exclusivos == 'Sim') {
+            $tags[] = 'Exclusivo';
+        }
+        
+        if ($modelo->preferidos == 'Sim') {
+            $tags[] = 'Destaque';
+        }
+        
+        if (!empty($modelo->tag_principal)) {
+            $tags[] = $modelo->tag_principal;
+        }
+        
+        if ($modelo->visualizacao > 50000) {
+            $tags[] = 'Popular';
+        }
+        
+        if ($modelo->status_videochamada == 'Online') {
+            $tags[] = 'Disponível';
+        }
+        
+        // Adicionar tag baseada no tipo de modelo
+        if (!empty($modelo->tipo_modelo)) {
+            $tags[] = $modelo->tipo_modelo;
+        }
+        
+        // Garantir que haja pelo menos uma tag
+        if (empty($tags)) {
+            $tags[] = 'Novo';
+        }
+        
+        return $tags;
+    }
+    
+    /**
+     * Calcular avaliação em estrelas baseada em visualizações
+     */
+    private function calculateStarRating($views)
+    {
+        if ($views < 10000) {
+            return 3.5;
+        } elseif ($views < 50000) {
+            return 4.0;
+        } elseif ($views < 100000) {
+            return 4.5;
+        } else {
+            return 5.0;
+        }
+    }
+    
+    /**
+     * Obter contagem de vídeos do modelo
+     */
+    private function getVideoCount($modelId)
+    {
+        return DB::table('cenas')
+            ->where('modelo_id', $modelId)
+            ->where('status', 'Ativo')
+            ->count();
+    }
+    
+    /**
+     * Obter contagem de vídeos VIP do modelo
+     */
+    private function getVipVideoCount($modelId)
+    {
+        return DB::table('cenas')
+            ->where('modelo_id', $modelId)
+            ->where('status', 'Ativo')
+            ->where('exibicao', 'Vips')
+            ->count();
+    }
+    
+    /**
+     * Obter contagem de fotos do modelo
+     */
+    private function getPhotoCount($modelId)
+    {
+        // Implementação fictícia, substituir com a lógica real
+        return rand(10, 50);
+    }
+    
+    /**
+     * Obter conteúdo do modelo
+     */
+    private function getModelContent($modelId, $type = 'exclusive')
+    {
+        $query = DB::table('cenas')
+            ->where('status', 'Ativo')
+            ->where(function($q) use ($modelId) {
+                $q->where('modelo_id', $modelId)
+                  ->orWhere('atores', 'like', '%' . $modelId . '%');
+            });
+            
+        if ($type == 'vip') {
+            $query->where('exibicao', 'Vips');
+        } else {
+            $query->where('exibicao', 'Todos');
+        }
+        
+        $content = $query->orderBy('created_at', 'desc')
+            ->take(4)
+            ->get();
+            
+        // Formatar os resultados
+        return $content->map(function($item) use ($type) {
+            return (object)[
+                'id' => $item->id,
+                'title' => $item->titulo,
+                'thumbnail' => 'https://server2.hotboys.com.br/arquivos/' . $item->cena_vitrine,
+                'duration' => $item->duracao ?? rand(15, 60) . ':' . rand(10, 59),
+                'price' => $type == 'exclusive' ? rand(20, 50) + 0.9 : null,
+                'likes_count' => rand(500, 3000)
+            ];
+        });
+    }
+    
+    /**
+     * Obter pacotes do modelo
+     */
+    private function getModelPacks($modelId)
+    {
+        // Implementação fictícia, substituir com a lógica real
+        return collect([]);
+    }
+    
+    /**
+     * Obter criadores relacionados
+     */
+    private function getRelatedCreators($currentModelId)
+    {
+        $relatedModels = DB::table('modelos')
+            ->where('id', '!=', $currentModelId)
+            ->where('status', 'Ativo')
+            ->orderBy(DB::raw('RAND()'))
+            ->take(4)
+            ->get();
+            
+        return $relatedModels->map(function($model) {
+            $imageUrl = $this->getModelImageUrl($model);
+            
+            return (object)[
+                'id' => $model->id,
+                'name' => $model->nome,
+                'username' => $model->nome_usuario ?? '@' . strtolower(str_replace(' ', '', $model->nome)),
+                'profile_image' => $imageUrl,
+                'role' => $model->tipo_modelo ?? 'Modelo',
+                'is_verified' => ($model->preferidos == 'Sim' || $model->exclusivos == 'Sim'),
+                'followers' => number_format($model->visualizacao / 10) . 'K',
+                'likes' => number_format($model->visualizacao / 5) . 'K'
+            ];
+        });
     }
     
     /**

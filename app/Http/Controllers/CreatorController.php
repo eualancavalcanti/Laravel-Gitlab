@@ -8,6 +8,7 @@ use App\Models\Actor;
 use App\Models\Content;
 use App\Models\Pack;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class CreatorController extends Controller
 {
@@ -24,8 +25,10 @@ class CreatorController extends Controller
         
         // Buscar modelo pelo nome de usuário
         $creator = DB::table('modelos')
-            ->where('nome_usuario', '@' . $username)
-            ->orWhere('nome_usuario', $username)
+            ->where(function($query) use ($username) {
+                $query->where('nome_usuario', '@' . $username)
+                    ->orWhere('nome_usuario', $username);
+            })
             ->where('status', 'Ativo')
             ->first();
         
@@ -201,10 +204,21 @@ class CreatorController extends Controller
      */
     private function getVideoCount($modelId)
     {
-        return DB::table('cenas')
-            ->where('modelo_id', $modelId)
-            ->where('status', 'Ativo')
-            ->count();
+        // Buscar pelo nome do modelo no título ou descrição
+        $modelName = DB::table('modelos')->where('id', $modelId)->value('nome');
+        
+        if ($modelName) {
+            return DB::table('cenas')
+                ->where('status', 'Ativo')
+                ->where(function($query) use ($modelName) {
+                    $query->where('titulo', 'like', '%' . $modelName . '%')
+                          ->orWhere('descricao', 'like', '%' . $modelName . '%');
+                })
+                ->count();
+        }
+        
+        // Fallback para garantir um retorno
+        return 0;
     }
     
     /**
@@ -212,11 +226,22 @@ class CreatorController extends Controller
      */
     private function getVipVideoCount($modelId)
     {
-        return DB::table('cenas')
-            ->where('modelo_id', $modelId)
-            ->where('status', 'Ativo')
-            ->where('exibicao', 'Vips')
-            ->count();
+        // Buscar pelo nome do modelo no título ou descrição
+        $modelName = DB::table('modelos')->where('id', $modelId)->value('nome');
+        
+        if ($modelName) {
+            return DB::table('cenas')
+                ->where('status', 'Ativo')
+                ->where('exibicao', 'Vips')
+                ->where(function($query) use ($modelName) {
+                    $query->where('titulo', 'like', '%' . $modelName . '%')
+                          ->orWhere('descricao', 'like', '%' . $modelName . '%');
+                })
+                ->count();
+        }
+        
+        // Fallback para garantir um retorno
+        return 0;
     }
     
     /**
@@ -224,7 +249,7 @@ class CreatorController extends Controller
      */
     private function getPhotoCount($modelId)
     {
-        // Implementação fictícia, substituir com a lógica real
+        // Implementação fictícia, substituir com a lógica real quando disponível
         return rand(10, 50);
     }
     
@@ -233,34 +258,43 @@ class CreatorController extends Controller
      */
     private function getModelContent($modelId, $type = 'exclusive')
     {
-        $query = DB::table('cenas')
-            ->where('status', 'Ativo')
-            ->where(function($q) use ($modelId) {
-                $q->where('modelo_id', $modelId)
-                  ->orWhere('atores', 'like', '%' . $modelId . '%');
-            });
+        // Buscar pelo nome do modelo no título ou descrição
+        $modelName = DB::table('modelos')->where('id', $modelId)->value('nome');
+        
+        if ($modelName) {
+            $query = DB::table('cenas')
+                ->where('status', 'Ativo')
+                ->where(function($query) use ($modelName) {
+                    $query->where('titulo', 'like', '%' . $modelName . '%')
+                          ->orWhere('descricao', 'like', '%' . $modelName . '%');
+                });
+                
+            if ($type == 'vip') {
+                $query->where('exibicao', 'Vips');
+            } else {
+                $query->where('exibicao', 'Todos');
+            }
             
-        if ($type == 'vip') {
-            $query->where('exibicao', 'Vips');
-        } else {
-            $query->where('exibicao', 'Todos');
+            $content = $query->orderBy('created_at', 'desc')
+                ->take(4)
+                ->get();
+                
+            // Formatar os resultados
+            return $content->map(function($item) use ($type) {
+                return (object)[
+                    'id' => $item->id,
+                    'title' => $item->titulo,
+                    'thumbnail' => 'https://server2.hotboys.com.br/arquivos/' . $item->cena_vitrine,
+                    'duration' => $item->tempo_de_duracao ?? rand(15, 60) . ':' . rand(10, 59),
+                    'price' => $type == 'exclusive' ? rand(20, 50) + 0.9 : null,
+                    'likes_count' => rand(500, 3000),
+                    'teaser_code' => $item->teaser_code ?? ''
+                ];
+            });
         }
         
-        $content = $query->orderBy('created_at', 'desc')
-            ->take(4)
-            ->get();
-            
-        // Formatar os resultados
-        return $content->map(function($item) use ($type) {
-            return (object)[
-                'id' => $item->id,
-                'title' => $item->titulo,
-                'thumbnail' => 'https://server2.hotboys.com.br/arquivos/' . $item->cena_vitrine,
-                'duration' => $item->duracao ?? rand(15, 60) . ':' . rand(10, 59),
-                'price' => $type == 'exclusive' ? rand(20, 50) + 0.9 : null,
-                'likes_count' => rand(500, 3000)
-            ];
-        });
+        // Retorna uma coleção vazia se não encontrou o modelo
+        return collect([]);
     }
     
     /**

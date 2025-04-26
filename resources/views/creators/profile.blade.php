@@ -5,9 +5,9 @@
 @section('content')
 <div class="profile-container">
     <!-- Área do Banner -->
-<div class="profile-banner" style="background-image: url('{{ isset($creator->imagem_background) ? 'https://server2.hotboys.com.br/arquivos/' . $creator->imagem_background : $creator->banner_image }}')">
-    <div class="banner-overlay"></div>
-</div>
+    <div class="profile-banner" style="background-image: url('{{ $creator->banner_image }}')">
+        <div class="banner-overlay"></div>
+    </div>
     
     <!-- Seção de Informações do Perfil -->
     <div class="container">

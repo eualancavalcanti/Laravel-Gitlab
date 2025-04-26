@@ -29,7 +29,7 @@
 
         <h1 class="profile-name">{{ $creator->name }}</h1>
         <h2 class="profile-username">
-            @{{ $creator->username }} 
+            {{ $creator->username }} 
             @if(isset($creator->is_verified) && $creator->is_verified)
             <span class="verified-badge" title="Conta Verificada">
                 <svg viewBox="0 0 24 24" fill="currentColor">

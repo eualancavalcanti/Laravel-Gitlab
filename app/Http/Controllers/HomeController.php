@@ -102,8 +102,8 @@ class HomeController extends Controller
     }
        
        
-        $featuredActors = DB::table('modelos')->where('featured', true)->take(5)->get();
-        $trendingCreators = Creator::where('trending', true)->take(4)->get();
+        $featuredActors = DB::table('modelos')->where('status', 'Ativo')->take(5)->get();
+        $trendingCreators = DB::table('modelos')->where('status', 'Ativo')->take(5)->get();
         
         return view('home', compact('heroSlides', 'trendingContent', 'featuredActors', 'trendingCreators'));
     }

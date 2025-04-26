@@ -7,7 +7,7 @@
                  data-date="{{ $slide->date }}"
                  data-cta-text="{{ $slide->cta_text }}"
                  data-cta-link="{{ $slide->cta_link }}"
-                 style="background-image: url('{{ asset($slide->image) }}')">
+                 style="background-image: url('https://server2.hotboys.com.br/arquivos/{{ $slide->image }}')">
                 <!-- Imagem inserida como background-image via CSS -->
             </div>
         @empty

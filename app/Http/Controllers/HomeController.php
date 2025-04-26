@@ -28,7 +28,7 @@ class HomeController extends Controller
             $slide->title = $cena->titulo;
             $slide->description = $cena->descricao;
             $slide->date = $cena->data;
-            $slide->image = $cena->cena_vitrine;
+            $slide->image = $cena->cena_vitrine; 
             $slide->cta_text = 'Assistir Agora';
             $slide->cta_link = '/cenas/' . $cena->id;
             $slide->active = true;

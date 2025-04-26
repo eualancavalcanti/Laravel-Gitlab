@@ -9,9 +9,9 @@
             @forelse($creators as $creator)
                 <div class="creator-card">
                     <div class="creator-header">
-                        <a href="{{ route('creator.profile', ['username' => $creator->username ?? strtolower(str_replace(' ', '', $creator->name))]) }}" class="creator-image-link">
-                            <div class="creator-image" style="background-image: url('{{ $creator->image }}')">
-                                @if($creator->verified)
+                        <a href="{{ route('creator.profile', ['username' => $creator->nome_usuario ?? strtolower(str_replace(' ', '', $creator->nome))]) }}" class="creator-image-link">
+                            <div class="creator-image" style="background-image: url('https://server2.hotboys.com.br/arquivos/{{ $creator->foto_principal }}')">
+                                @if($creator->exclusivos == 'Sim')
                                     <span class="verified-badge">
                                         <i class="lucide-badge-check"></i>
                                     </span>
@@ -20,11 +20,11 @@
                         </a>
                         <div class="creator-info">
                             <h3>
-                                <a href="{{ route('creator.profile', ['username' => $creator->username ?? strtolower(str_replace(' ', '', $creator->name))]) }}">
-                                    {{ $creator->name }}
+                                <a href="{{ route('creator.profile', ['username' => $creator->nome_usuario ?? strtolower(str_replace(' ', '', $creator->nome))]) }}">
+                                    {{ $creator->nome }}
                                 </a>
                             </h3>
-                            <span class="creator-role">{{ $creator->role }}</span>
+                            <span class="creator-role">{{ $creator->tipo_modelo ?? 'Modelo' }}</span>
                         </div>
                     </div>
                     
@@ -32,21 +32,21 @@
                         <div class="stat">
                             <i class="lucide-users"></i>
                             <div class="stat-info">
-                                <span class="stat-value">{{ $creator->followers }}</span>
-                                <span class="stat-label">Seguidores</span>
+                                <span class="stat-value">{{ number_format($creator->visualizacao, 0, ',', '.') }}</span>
+                                <span class="stat-label">Visualizações</span>
                             </div>
                         </div>
                         
                         <div class="stat">
                             <i class="lucide-heart"></i>
                             <div class="stat-info">
-                                <span class="stat-value">{{ $creator->likes }}</span>
-                                <span class="stat-label">Likes</span>
+                                <span class="stat-value">{{ $creator->idade ?? '18' }}</span>
+                                <span class="stat-label">Anos</span>
                             </div>
                         </div>
                     </div>
                     
-                    <a href="{{ route('creator.profile', ['username' => $creator->username ?? strtolower(str_replace(' ', '', $creator->name))]) }}" class="btn-primary">
+                    <a href="{{ route('creator.profile', ['username' => $creator->nome_usuario ?? strtolower(str_replace(' ', '', $creator->nome))]) }}" class="btn-primary">
                         <i class="lucide-plus"></i> Seguir
                     </a>
                 </div>

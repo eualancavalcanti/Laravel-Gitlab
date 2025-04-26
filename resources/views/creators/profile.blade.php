@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('title', $creator->name . ' - HotBoys')
@@ -31,7 +30,7 @@
         <h1 class="profile-name">{{ $creator->name }}</h1>
         <h2 class="profile-username">
             @{{ $creator->username }} 
-            @if($creator->is_verified)
+            @if(isset($creator->is_verified) && $creator->is_verified)
             <span class="verified-badge" title="Conta Verificada">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
@@ -62,7 +61,7 @@
         
         <!-- Social badges -->
         <div class="social-badges">
-            @if($creator->instagram)
+            @if(isset($creator->instagram) && $creator->instagram)
             <a href="https://instagram.com/{{ $creator->instagram }}" target="_blank" title="Instagram">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
@@ -71,14 +70,14 @@
                 </svg>
             </a>
             @endif
-            @if($creator->twitter)
+            @if(isset($creator->twitter) && $creator->twitter)
             <a href="https://twitter.com/{{ $creator->twitter }}" target="_blank" title="Twitter">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
                 </svg>
             </a>
             @endif
-            @if($creator->tiktok)
+            @if(isset($creator->tiktok) && $creator->tiktok)
             <a href="https://tiktok.com/@{{ $creator->tiktok }}" target="_blank" title="TikTok">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
@@ -116,7 +115,9 @@
             <div class="tab-content active" id="exclusive">
                 <div class="content-grid">
                     @forelse($exclusiveContent as $content)
-                    <div class="content-card">
+                    <div class="content-card" 
+                         data-video-id="{{ $content->id ?? '' }}"
+                         data-teaser-code="{{ $content->teaser_code ?? '' }}">
                         <div class="thumbnail">
                             <img src="{{ $content->thumbnail }}" alt="{{ $content->title }}">
                             <div class="thumbnail-overlay"></div>
@@ -146,13 +147,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!--
-                        <div class="popularity-badge">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
-                            </svg>
-                            <span>Popular</span>
-                        </div>-->
                     </div>
                     @empty
                     <div class="empty-content">
@@ -175,7 +169,9 @@
             <div class="tab-content" id="vip">
                 <div class="content-grid">
                     @forelse($vipContent as $content)
-                    <div class="content-card">
+                    <div class="content-card"
+                         data-video-id="{{ $content->id ?? '' }}"
+                         data-teaser-code="{{ $content->teaser_code ?? '' }}">
                         <div class="thumbnail">
                             <img src="{{ $content->thumbnail }}" alt="{{ $content->title }}">
                             <div class="thumbnail-overlay"></div>
@@ -359,8 +355,6 @@
 </div>
 
 <!-- Modal de Login -->
-<!-- Atualizar o modal de login em resources/views/creators/profile.blade.php -->
-
 <div class="modal" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -429,64 +423,4 @@
                             <label for="register-email">E-mail</label>
                             <input type="email" class="form-control" id="register-email" name="email" required>
                         </div>
-                        <div class="form-group mb-3">
-                            <label for="register-password">Senha</label>
-                            <input type="password" class="form-control" id="register-password" name="password" required>
-                        </div>
-                        <div class="form-group mb-4">
-                            <label for="register-password-confirm">Confirmar Senha</label>
-                            <input type="password" class="form-control" id="register-password-confirm" name="password_confirmation" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block">Criar Conta</button>
-                    </form>
-                </div>
-                
-                <div class="social-login mt-4">
-                    <p class="text-center">Ou entrar com:</p>
-                    <div class="social-buttons">
-                        <button class="btn-social btn-google">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                            </svg>
-                            Google
-                        </button>
-                        <button class="btn-social btn-facebook">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                            </svg>
-                            Facebook
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="login-security mt-4">
-                    <div class="security-info">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                        </svg>
-                        <span>Pagamento 100% seguro e discreto</span>
-                    </div>
-                    <div class="security-info">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                        </svg>
-                        <span>Privacidade garantida</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@endsection
-
-@push('styles')
-<link href="{{ asset('css/creator-profile.css') }}" rel="stylesheet">
-@endpush
-
-@push('scripts')
-<script src="{{ asset('js/creator-profile.js') }}" defer></script>
-@endpush
+                        <div class="form-group mb-3

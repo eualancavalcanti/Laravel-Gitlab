@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Cenas extends Model
 {
     protected $table = 'cenas';
+    protected $connection = 'c1hotboys_admin'; // Especifica o banco de dados
     
-    // Se necessário, definir os campos que podem ser preenchidos em massa
     protected $fillable = [
         'titulo', 'titulo_en', 'descricao', 'descricao_en', 'descricao_assine',
-        // outros campos conforme necessário
+        'descricao_assine_en', 'descricao_content', 'video_code', 'video_code_en',
+        // Outros campos conforme necessário
     ];
 }

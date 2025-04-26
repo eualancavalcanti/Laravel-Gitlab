@@ -1,4 +1,7 @@
+<?php
+
 // Em app/Models/VisitouAgora.php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;

@@ -91,6 +91,20 @@ return [
             'prefix_indexes' => true,
         ],
 
+        'c1hotboys_admin' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => 'c1hotboys_admin',
+            'username' => env('DB_USERNAME', 'alan'),
+            'password' => env('DB_PASSWORD', 'senha123'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
+
     ],
 
     /*

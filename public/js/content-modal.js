@@ -1,6 +1,6 @@
 /**
  * public/js/content-modal.js
- * Versão corrigida com melhorias de posicionamento e proporção
+ * Versão atualizada para integrar com teaser_code dos vídeos
  */
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -27,9 +27,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnSubscribe = contentModal.querySelector('.btn-subscribe');
     const playButton = contentModal.querySelector('.play-button');
     const loadingIndicator = contentModal.querySelector('.loading-indicator');
+    const teaserContainer = contentModal.querySelector('.teaser-container');
     
     // Verificar se todos os elementos necessários existem
-    const requiredElements = [modalClose, modalTitle, modalThumbnail, modalDuration, viewersCount, btnWatch, btnSubscribe, playButton];
+    const requiredElements = [modalClose, modalTitle, modalThumbnail, modalDuration, viewersCount, btnWatch, btnSubscribe, playButton, teaserContainer];
     const missingElements = requiredElements.filter(element => !element);
     
     if (missingElements.length > 0) {
@@ -49,18 +50,14 @@ document.addEventListener('DOMContentLoaded', function() {
             // Extrair dados do card
             const title = card.querySelector('.content-overlay h3')?.textContent || 'Conteúdo Exclusivo';
             const thumbnail = card.querySelector('img')?.src || '';
-            const teaserVideo = card.getAttribute('data-teaser-video') || 'https://player.vimeo.com/external/426879954.sd.mp4?s=df4cadb04245941a14c4eb6f33fe8809d55fe5f4&profile_id=164&oauth2_token_id=57447761';
+            const teaserCode = card.getAttribute('data-teaser-code') || '';
             
             // Obter elementos que podem não existir e definir valores padrão
             const duration = card.querySelector('.duration')?.textContent || '1:30:00';
             const viewersText = card.querySelector('.watching-info')?.textContent.trim() || '1.2K assistindo';
             
-            // Remover qualquer vídeo anterior
-            const existingVideo = contentModal.querySelector('video');
-            if (existingVideo) {
-                existingVideo.pause();
-                existingVideo.remove();
-            }
+            // Remover qualquer vídeo anterior ou iframe
+            cleanTeaserContainer();
             
             // Garantir que a imagem seja visível novamente
             if (modalThumbnail) {
@@ -73,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (previewBadge) previewBadge.style.display = '';
             
             // Log para debug
-            console.log('Dados do card:', { title, thumbnail, duration, viewersText, teaserVideo });
+            console.log('Dados do card:', { title, thumbnail, duration, viewersText, teaserCode });
             
             // Preencher dados na modal
             modalTitle.textContent = title;
@@ -81,10 +78,29 @@ document.addEventListener('DOMContentLoaded', function() {
             modalDuration.textContent = duration.replace(' restantes', '');
             viewersCount.textContent = viewersText;
             
+            // Armazenar o código do teaser para uso posterior
+            contentModal.setAttribute('data-teaser-code', teaserCode);
+            
             // Exibir a modal
             openModal();
         }
     });
+    
+    // Função para limpar o conteúdo do teaser container
+    function cleanTeaserContainer() {
+        // Remover qualquer iframe existente
+        const existingIframe = teaserContainer.querySelector('iframe');
+        if (existingIframe) {
+            existingIframe.remove();
+        }
+        
+        // Remover qualquer vídeo existente
+        const existingVideo = teaserContainer.querySelector('video');
+        if (existingVideo) {
+            existingVideo.pause();
+            existingVideo.remove();
+        }
+    }
     
     // Função para abrir a modal com verificações de segurança
     function openModal() {
@@ -115,12 +131,8 @@ document.addEventListener('DOMContentLoaded', function() {
             contentModal.classList.remove('active');
             document.body.style.overflow = ''; // Restaurar rolagem da página
             
-            // Limpar vídeo ou áudio se estiver sendo reproduzido
-            const videoElement = contentModal.querySelector('video');
-            if (videoElement) {
-                videoElement.pause();
-                videoElement.remove(); // Remover completamente o vídeo
-            }
+            // Limpar conteúdo do teaser
+            cleanTeaserContainer();
             
             // Garantir que a imagem esteja visível para a próxima abertura
             if (modalThumbnail) {
@@ -194,81 +206,88 @@ document.addEventListener('DOMContentLoaded', function() {
         playButton.addEventListener('click', function() {
             console.log('Botão de play clicado');
             
-            // Encontrar o container do teaser
-            const teaserContainer = contentModal.querySelector('.teaser-container');
-            if (!teaserContainer) {
-                console.error('Container do teaser não encontrado');
+            // Verificar se já existe um iframe ou vídeo
+            if (teaserContainer.querySelector('iframe') || teaserContainer.querySelector('video')) {
+                console.log('Iframe ou vídeo já existe');
                 return;
             }
             
-            // Verificar se já existe um elemento de vídeo
-            let videoElement = teaserContainer.querySelector('video');
+            // Mostrar indicador de carregamento
+            if (loadingIndicator) {
+                loadingIndicator.style.display = 'block';
+            }
             
-            if (!videoElement) {
-                console.log('Criando novo elemento de vídeo');
+            // Esconder imagem de thumbnail, botão de play e badge de prévia
+            if (modalThumbnail) modalThumbnail.style.display = 'none';
+            
+            const playButtonWrapper = teaserContainer.querySelector('.play-button-wrapper');
+            if (playButtonWrapper) playButtonWrapper.style.display = 'none';
+            
+            const previewBadge = teaserContainer.querySelector('.preview-badge');
+            if (previewBadge) previewBadge.style.display = 'none';
+            
+            // Obter o código do teaser da modal
+            const teaserCode = contentModal.getAttribute('data-teaser-code');
+            
+            if (teaserCode && teaserCode.trim() !== '') {
+                // Inserir o HTML do iframe diretamente no container
+                const iframeWrapper = document.createElement('div');
+                iframeWrapper.className = 'iframe-wrapper';
+                iframeWrapper.innerHTML = teaserCode;
                 
-                // Mostrar indicador de carregamento
-                if (loadingIndicator) {
-                    loadingIndicator.style.display = 'block';
+                // Garantir que o iframe ocupe 100% do espaço
+                const iframe = iframeWrapper.querySelector('iframe');
+                if (iframe) {
+                    iframe.style.width = '100%';
+                    iframe.style.height = '100%';
+                    iframe.style.border = 'none';
+                    iframe.allow = 'autoplay; fullscreen';
+                    iframe.allowFullscreen = true;
                 }
                 
-                // Esconder imagem de thumbnail
-                const thumbnailImg = teaserContainer.querySelector('img.teaser-image');
-                if (thumbnailImg) {
-                    thumbnailImg.style.display = 'none';
-                    console.log('Thumbnail escondido');
-                } else {
-                    console.warn('Imagem de thumbnail não encontrada');
-                }
+                teaserContainer.appendChild(iframeWrapper);
+                console.log('Iframe do teaser adicionado');
                 
-                // Esconder o botão de play e o badge de prévia
-                const playButtonWrapper = teaserContainer.querySelector('.play-button-wrapper');
-                if (playButtonWrapper) playButtonWrapper.style.display = 'none';
-                const previewBadge = teaserContainer.querySelector('.preview-badge');
-                if (previewBadge) previewBadge.style.display = 'none';
+                // Esconder o indicador de carregamento após um pequeno delay
+                setTimeout(() => {
+                    if (loadingIndicator) {
+                        loadingIndicator.style.display = 'none';
+                    }
+                }, 1500);
+            } else {
+                console.log('Código de teaser não encontrado, usando vídeo padrão');
                 
-                // Obter a URL do vídeo teaser
-                const card = document.querySelector('.content-card');
-                const teaserVideo = card?.getAttribute('data-teaser-video') || 'https://player.vimeo.com/external/426879954.sd.mp4?s=df4cadb04245941a14c4eb6f33fe8809d55fe5f4&profile_id=164&oauth2_token_id=57447761';
-                
-                // Criar e adicionar vídeo
-                videoElement = document.createElement('video');
+                // Criar e adicionar vídeo padrão se não houver teaser_code
+                const videoElement = document.createElement('video');
                 videoElement.className = 'teaser-video';
                 videoElement.controls = true;
                 videoElement.autoplay = true;
                 videoElement.muted = false;
                 videoElement.playsInline = true;
                 
-                // Usar vídeo de stock gratuito do Pexels ou o teaser específico do conteúdo
+                // Usar vídeo de stock gratuito do Pexels
                 videoElement.innerHTML = `
-                    <source src="${teaserVideo}" type="video/mp4">
+                    <source src="https://www.gov.br/pt-br/midias-agorabrasil/video-fundo.mp4" type="video/mp4">
                     <p>Seu navegador não suporta vídeos HTML5.</p>
                 `;
                 
                 // Adicionar o vídeo ao container
                 teaserContainer.appendChild(videoElement);
-                console.log('Vídeo adicionado ao container');
                 
-                // Evento para quando o vídeo estiver pronto para reprodução
+                // Esconder o indicador de carregamento quando o vídeo estiver pronto
                 videoElement.addEventListener('canplay', function() {
-                    // Esconder o indicador de carregamento
                     if (loadingIndicator) {
                         loadingIndicator.style.display = 'none';
                     }
-                    console.log('Vídeo pronto para reprodução');
                 });
                 
                 // Adicionar evento para quando o vídeo terminar
                 videoElement.addEventListener('ended', function() {
-                    console.log('Vídeo terminou, voltando para o thumbnail');
-                    
                     // Remover o vídeo
                     this.remove();
                     
-                    // Mostrar o thumbnail novamente
-                    if (thumbnailImg) thumbnailImg.style.display = '';
-                    
-                    // Mostrar o botão de play novamente quando o vídeo terminar
+                    // Mostrar o thumbnail e controles novamente
+                    if (modalThumbnail) modalThumbnail.style.display = '';
                     if (playButtonWrapper) playButtonWrapper.style.display = '';
                     if (previewBadge) previewBadge.style.display = '';
                 });
@@ -285,27 +304,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Mostrar mensagem de erro
                     alert('Não foi possível carregar o vídeo. Por favor, tente novamente mais tarde.');
                     
-                    // Mostrar o botão de play novamente
+                    // Mostrar o thumbnail e controles novamente
+                    if (modalThumbnail) modalThumbnail.style.display = '';
                     if (playButtonWrapper) playButtonWrapper.style.display = '';
-                    
-                    // Mostrar o thumbnail novamente
-                    if (thumbnailImg) thumbnailImg.style.display = '';
-                    
-                    // Mostrar o badge de prévia novamente
                     if (previewBadge) previewBadge.style.display = '';
                     
                     // Remover o vídeo com erro
                     this.remove();
                 });
-            } else {
-                // Se o vídeo já existe, apenas fazer play/pause
-                if (videoElement.paused) {
-                    videoElement.play();
-                    if (playButton) playButton.style.display = 'none';
-                } else {
-                    videoElement.pause();
-                    if (playButton) playButton.style.display = '';
-                }
             }
         });
     }
@@ -319,7 +325,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Mostrar número dinâmico de usuários assistindo para criar urgência
     setInterval(() => {
-        if (viewersCount) {
+        if (viewersCount && contentModal.classList.contains('active')) {
             // Extrair o número atual
             const currentText = viewersCount.textContent;
             const currentNumber = parseInt(currentText.replace(/[^0-9]/g, ''));
@@ -353,19 +359,42 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 15000); // Atualizar a cada 15 segundos
     
-    // Inicializar atributos data-teaser-video para os cards existentes
-    function initTeaserVideos() {
+    // Inicializar atributos data-teaser-code para os cards existentes
+    function initTeaserCodes() {
         const contentCards = document.querySelectorAll('.content-card');
+        const videoElements = document.querySelectorAll('.hero-slide');
+        
+        // Processando cards de conteúdo
         contentCards.forEach(card => {
-            if (!card.hasAttribute('data-teaser-video')) {
-                // Se não tiver o atributo, definir um vídeo padrão
-                card.setAttribute('data-teaser-video', 'https://www.gov.br/pt-br/midias-agorabrasil/video-fundo.mp4');
+            if (!card.hasAttribute('data-teaser-code')) {
+                // Se não tiver o atributo, verificar se tem ID de vídeo
+                const videoId = card.getAttribute('data-video-id');
+                
+                if (videoId) {
+                    // Construir um código de iframe usando o video_id
+                    const defaultIframe = `<iframe allow="autoplay; fullscreen;" allowfullscreen class="jmvplayer" frameborder="0" src="https://player.jmvstream.com/qAGjxuwNoNQIj2i9kkVHgLMIxUuMu7/${videoId}" width="100%" height="100%"></iframe>`;
+                    card.setAttribute('data-teaser-code', defaultIframe);
+                } else {
+                    // Caso não tenha nenhuma informação, deixar em branco para usar o vídeo padrão
+                    card.setAttribute('data-teaser-code', '');
+                }
+            }
+        });
+        
+        // Processando slides do hero carousel
+        videoElements.forEach(slide => {
+            if (slide.hasAttribute('data-video-id') && !slide.hasAttribute('data-teaser-code')) {
+                const videoId = slide.getAttribute('data-video-id');
+                if (videoId) {
+                    const defaultIframe = `<iframe allow="autoplay; fullscreen;" allowfullscreen class="jmvplayer" frameborder="0" src="https://player.jmvstream.com/qAGjxuwNoNQIj2i9kkVHgLMIxUuMu7/${videoId}" width="100%" height="100%"></iframe>`;
+                    slide.setAttribute('data-teaser-code', defaultIframe);
+                }
             }
         });
     }
     
     // Chamar a inicialização
-    initTeaserVideos();
+    initTeaserCodes();
     
     // Log de inicialização para confirmar que o script foi carregado corretamente
     console.log('Script da modal de conteúdo inicializado com sucesso');

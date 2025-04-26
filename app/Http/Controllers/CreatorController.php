@@ -36,20 +36,18 @@ class CreatorController extends Controller
         if (!$creator) {
             $actor = Actor::where('username', $username)->first();
 
-        // Verificar se o campo imagem_background contém uma URL completa ou apenas um nome de arquivo
-        if (!empty($creator->imagem_background)) {
-            // Se já começa com http, é uma URL completa
-            if (strpos($creator->imagem_background, 'http') === 0) {
-                $backgroundImageUrl = $creator->imagem_background;
+            $imageUrl = $this->getModelImageUrl($creator);
+            $backgroundImageUrl = null;
+            
+            // Verificar se existe imagem de fundo
+            if (!empty($creator->imagem_background)) {
+                // URL completa da API Creator
+                $backgroundImageUrl = 'https://api.creator.hotboys.com.br/storage/perfis/' . $creator->imagem_background;
             } else {
-                // Senão, é apenas um nome de arquivo
-                $backgroundImageUrl = 'https://server2.hotboys.com.br/arquivos/' . $creator->imagem_background;
-            }
-            } else {
-                // URL padrão se não tiver imagem de fundo definida
+                // URL padrão se não tiver imagem de fundo
                 $backgroundImageUrl = 'https://server2.hotboys.com.br/arquivos/banners/default_banner.jpg';
             }
-
+            
             
             // Se encontrou como Actor, cria um objeto com os dados do actor
             if ($actor) {

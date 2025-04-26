@@ -105,6 +105,13 @@ class HomeController extends Controller
         $featuredActors = DB::table('modelos')->where('status', 'Ativo')->take(5)->get();
         $trendingCreators = DB::table('modelos')->where('status', 'Ativo')->take(5)->get();
         
-        return view('home', compact('heroSlides', 'trendingContent', 'featuredActors', 'trendingCreators'));
+       // Definindo trendingContent (conteúdo em tendência)
+$trendingContent = DB::table('cenas')->where('status', 'Ativo')
+->orderBy('created_at', 'desc')
+->take(10)
+->get();
+
+// Você também já definiu $watchingItems, mas não está usando no compact
+return view('home', compact('heroSlides', 'trendingContent', 'featuredActors', 'trendingCreators', 'watchingItems'));
     }
 }

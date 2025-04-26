@@ -105,10 +105,24 @@ class HomeController extends Controller
         $featuredActors = DB::table('modelos')->where('status', 'Ativo')->take(5)->get();
         $trendingCreators = DB::table('modelos')->where('status', 'Ativo')->take(5)->get();
         
-       // Definindo trendingContent (conteúdo em tendência)
+ // Definir trendingContent para exibir cenas
 $trendingContent = DB::table('cenas')->where('status', 'Ativo')
 ->orderBy('created_at', 'desc')
 ->take(10)
+->get();
+
+// Buscar modelos ativos para featuredActors
+$featuredActors = DB::table('modelos')
+->where('status', 'Ativo')
+->orderBy('visualizacao', 'desc')
+->take(5)
+->get();
+
+// Buscar modelos para trendingCreators
+$trendingCreators = DB::table('modelos')
+->where('status', 'Ativo')
+->orderBy('created_at', 'desc')
+->take(4)
 ->get();
 
 // Você também já definiu $watchingItems, mas não está usando no compact

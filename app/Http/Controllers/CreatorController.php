@@ -35,6 +35,21 @@ class CreatorController extends Controller
         // Se não encontrou como modelo, buscar por criadores ou atores em outras tabelas
         if (!$creator) {
             $actor = Actor::where('username', $username)->first();
+
+        // Verificar se o campo imagem_background contém uma URL completa ou apenas um nome de arquivo
+        if (!empty($creator->imagem_background)) {
+            // Se já começa com http, é uma URL completa
+            if (strpos($creator->imagem_background, 'http') === 0) {
+                $backgroundImageUrl = $creator->imagem_background;
+            } else {
+                // Senão, é apenas um nome de arquivo
+                $backgroundImageUrl = 'https://server2.hotboys.com.br/arquivos/' . $creator->imagem_background;
+            }
+            } else {
+                // URL padrão se não tiver imagem de fundo definida
+                $backgroundImageUrl = 'https://server2.hotboys.com.br/arquivos/banners/default_banner.jpg';
+            }
+
             
             // Se encontrou como Actor, cria um objeto com os dados do actor
             if ($actor) {

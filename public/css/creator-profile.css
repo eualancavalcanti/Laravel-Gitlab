@@ -331,45 +331,53 @@
     opacity: 0.9;
 }
 
-/* Ajuste para o background dos cards exclusivos - VERSÃO MELHORADA */
+/* Ajuste para o background dos cards exclusivos - VERSÃO COM FUNDO PADRÃO */
 #exclusive .content-card .thumbnail {
     position: relative;
     overflow: hidden;
-    background-color: #000000; /* Fundo completamente preto */
+    background-color: #000000; /* Backup caso a imagem não carregue */
+    background-image: url('/images/placeholder.jpg'); /* Usa a imagem placeholder como fundo */
+    background-size: cover;
+    background-position: center;
 }
 
-/* Esconde completamente a imagem original */
+/* Adiciona overlay escuro para melhorar contraste com o ícone */
+#exclusive .content-card .thumbnail::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Overlay escuro semitransparente */
+    z-index: 1;
+}
+
+/* Esconde a imagem original */
 #exclusive .content-card .thumbnail img {
     opacity: 0; /* Torna a imagem invisível */
     width: 100%;
     height: 100%;
 }
 
-/* Adiciona apenas o ícone de cadeado em chamas no centro - SEM BORDA */
+/* Adiciona o ícone de cadeado em chamas no centro */
 #exclusive .content-card .thumbnail::after {
     content: '';
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 60px; /* Tamanho reduzido para evitar o quadrado vermelho */
+    width: 60px;
     height: 60px;
     transform: translate(-50%, -50%);
     background-image: url('/images/backgrounds/lock-fire.jpg');
-    background-size: contain; /* Mantém a proporção da imagem */
+    background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     z-index: 2;
-    filter: drop-shadow(0 0 10px rgba(255, 51, 51, 0.5)); /* Sombra mais suave */
-    border-radius: 50%; /* Garante que qualquer borda será arredondada */
-    border: none; /* Remove qualquer borda */
+    filter: drop-shadow(0 0 10px rgba(255, 51, 51, 0.5));
 }
 
-/* Remove qualquer borda adicional que possa estar causando o quadrado */
-#exclusive .content-card .thumbnail::before {
-    display: none;
-}
-
-/* Garante que os elementos dentro do thumbnail ficam acima da imagem de fundo */
+/* Garante que os elementos dentro do thumbnail ficam acima das imagens de fundo */
 #exclusive .content-card .thumbnail .content-badge,
 #exclusive .content-card .thumbnail .content-duration,
 #exclusive .content-card .thumbnail .play-icon {

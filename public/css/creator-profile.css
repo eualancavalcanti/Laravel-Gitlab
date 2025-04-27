@@ -115,6 +115,7 @@
 
 /* Badge de verificado - ajustado para posição correta */
 .verified-badge {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;

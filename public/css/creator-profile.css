@@ -117,11 +117,11 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     background: var(--hot-red);
     border-radius: 50%;
-    margin-left: 0.5rem;
+    margin-left: 8px;
     color: white;
     font-size: 12px;
 }
@@ -139,6 +139,20 @@
     border-radius: 50%;
     display: inline-block;
     margin-left: 8px;
+    position: relative;
+    top: 0; /* Ajuste para alinhar verticalmente */
+}
+
+/* Indicador de offline - variação do badge online */
+.offline-badge {
+    background: #95a5a6;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 8px;
+    position: relative;
+    top: 0;
 }
 
 /* Social Badges */
@@ -1299,6 +1313,61 @@ hr {
     font-weight: 700;
     letter-spacing: 1px;
 }
+
+/* Animação de pulse para o indicador online */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 6px rgba(46, 204, 113, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(46, 204, 113, 0);
+    }
+}
+
+.online-badge {
+    animation: pulse 2s infinite;
+}
+
+@media (max-width: 768px) {
+    .profile-username {
+        justify-content: center;
+    }
+    
+    .verified-badge, .online-badge, .offline-badge {
+        margin-left: 6px;
+    }
+    
+    .verified-badge {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .online-badge, .offline-badge {
+        width: 8px;
+        height: 8px;
+    }
+}
+
+/* Para telas muito pequenas */
+@media (max-width: 480px) {
+    .profile-username {
+        font-size: 1rem;
+    }
+    
+    .verified-badge {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .verified-badge svg {
+        width: 10px;
+        height: 10px;
+    }
+}
+
 
 .popularity-badge, .scarcity-badge {
     position: absolute;

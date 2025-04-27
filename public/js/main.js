@@ -368,12 +368,19 @@ function initHeroCarousel() {
         return num.toString();
     }
 
-    // Função auxiliar para lidar com imagens quebradas
-    function handleImageError(img, fallbackUrl) {
-        img.onerror = null; // Evitar loop infinito
-        img.src = fallbackUrl || 'https://images.unsplash.com/photo-1517999144091-3d9dca6d1e43?w=800&h=450&fit=crop';
+   // Função auxiliar para lidar com imagens quebradas
+function handleImageError(img, fallbackUrl) {
+    img.onerror = null; // Evitar loop infinito
+    
+    // Verifica se a imagem está dentro de um card exclusivo
+    if (img.closest('#exclusive .content-card')) {
+        // Para conteúdo exclusivo, apenas esconde a imagem para manter o fundo preto
+        img.style.display = 'none';
+    } else {
+        // Para outros conteúdos, usa fallback ou imagem genérica
+        img.src = fallbackUrl || '/images/placeholder.jpg';
     }
-
+}
     // Função para renderizar conteúdos sendo assistidos - Otimizada
     function renderWatchingContent() {
         const grid = document.querySelector('.content-grid');
@@ -454,12 +461,19 @@ function renderActors() {
         img.style.height = '100%';
         img.style.objectFit = 'cover';
         
-        // Adicionar tratamento de erro para a imagem
-        img.onerror = function() {
-            // Imagem de fallback em caso de erro
-            this.src = 'https://images.unsplash.com/photo-1517999144091-3d9dca6d1e43?w=300&h=400&fit=crop';
-            console.log('Erro ao carregar imagem do ator:', actor.name);
-        };
+       // Adicionar tratamento de erro para a imagem
+img.onerror = function() {
+    // Verifica se a imagem está em um conteúdo exclusivo
+    if (this.closest('#exclusive .content-card')) {
+        // Para conteúdo exclusivo, apenas esconde a imagem
+        this.style.display = 'none';
+        console.log('Erro ao carregar imagem exclusiva - mantendo fundo preto');
+    } else {
+        // Imagem de fallback em caso de erro para conteúdo não exclusivo
+        this.src = '/images/placeholder.jpg'; // Use uma imagem local em vez da do Unsplash
+        console.log('Erro ao carregar imagem do ator:', actor?.name || 'desconhecido');
+    }
+};
         
         imageWrapper.appendChild(img);
         

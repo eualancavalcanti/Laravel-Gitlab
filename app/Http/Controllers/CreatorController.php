@@ -110,8 +110,8 @@ class CreatorController extends Controller
         }
         
         // Buscar cenas relacionadas ao modelo
-        $exclusiveContent = $this->getModelContent($creator->id, 'exclusive');
-        $vipContent = $this->getModelContent($creator->id, 'vip');
+        $exclusiveContent = $this->getModelContent($creator->id, 'vip');
+        $vipContent = $this->getModelContent($creator->id, 'exclusive');
         $packs = $this->getModelPacks($creator->id);
         
         // Se não houver conteúdo real, usar o conteúdo simulado para demonstração
@@ -277,11 +277,11 @@ class CreatorController extends Controller
             ->join('conteudos_individuais', 'conteudos_individuais_atores.id_conteudo', '=', 'conteudos_individuais.id')
             ->where('conteudos_individuais.status', 'Ativo');
         
-        // Filtrar por tipo (VIP ou normal)
+        // Filtrar por tipo (VIP ou normal) - CORRIGIDO
         if ($type == 'vip') {
-            $query->where('conteudos_individuais.destaque', 'Sim');
+            $query->where('conteudos_individuais.destaque', 'Nao'); // Invertido de 'Sim' para 'Nao'
         } else {
-            $query->where('conteudos_individuais.destaque', 'Nao');
+            $query->where('conteudos_individuais.destaque', 'Sim'); // Invertido de 'Nao' para 'Sim'
         }
         
         $content = $query->orderBy('conteudos_individuais.data_liberacao_conteudo', 'desc')

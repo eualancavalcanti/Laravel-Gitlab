@@ -5,6 +5,12 @@
 @php
 // Função para garantir que nomes de arquivos sejam codificados corretamente
 function safeImageUrl($url) {
+    // Verificar se a URL é de API Creator (para imagens de background)
+    if (strpos($url, 'api.creator.hotboys.com.br') !== false) {
+        // Retornar URL direta sem proxy para imagens da API Creator
+        return $url;
+    }
+
     // Extrair apenas o nome do arquivo da URL
     $fileName = basename(parse_url($url, PHP_URL_PATH));
     
@@ -17,12 +23,34 @@ function safeImageUrl($url) {
 
 // Configurar URL padrão para fallback
 $fallbackImageUrl = url("images/placeholder.jpg");
+
+// Tratar corretamente a imagem de banner
+if (strpos($creator->banner_image, 'api.creator.hotboys.com.br') !== false) {
+    $bannerUrl = $creator->banner_image;
+} else if (!empty($creator->imagem_background)) {
+    // Se tiver background específico, usar direto da API
+    $bannerUrl = 'https://api.creator.hotboys.com.br/storage/perfis/' . $creator->imagem_background;
+} else {
+    // Caso contrário, usar a URL existente através do proxy
+    $bannerUrl = safeImageUrl($creator->banner_image);
+}
+
+// Tratar corretamente a imagem de perfil
+// Priorizar modelo_perfil, depois foto_principal
+if (!empty($creator->modelo_perfil)) {
+    $profileUrl = safeImageUrl('https://server2.hotboys.com.br/arquivos/' . $creator->modelo_perfil);
+} else if (!empty($creator->foto_principal)) {
+    $profileUrl = safeImageUrl('https://server2.hotboys.com.br/arquivos/' . $creator->foto_principal);
+} else {
+    // Se profile_image já estiver definido, usar
+    $profileUrl = safeImageUrl($creator->profile_image);
+}
 @endphp
 
 @section('content')
 <div class="profile-container">
     <!-- Área do Banner via proxy -->
-    <div class="profile-banner" style="background-image: url('{{ safeImageUrl($creator->banner_image) }}')">
+    <div class="profile-banner" style="background-image: url('{{ $bannerUrl }}')">
         <div class="banner-overlay"></div>
     </div>
     
@@ -33,9 +61,9 @@ $fallbackImageUrl = url("images/placeholder.jpg");
     <div class="profile-photo">
         <picture>
             <!-- WebP para navegadores que suportam -->
-            <source srcset="{{ safeImageUrl($creator->profile_image) }}" type="image/webp">
+            <source srcset="{{ $profileUrl }}" type="image/webp">
             <!-- Fallback para outros formatos -->
-            <img src="{{ safeImageUrl($creator->profile_image) }}" alt="{{ $creator->name }}" loading="lazy" width="150" height="150">
+            <img src="{{ $profileUrl }}" alt="{{ $creator->name }}" loading="lazy" width="150" height="150">
         </picture>
     </div>
     

@@ -246,9 +246,10 @@
 }
 
 .tab-btn.active {
-    background: var(--hot-red);
-    border-color: var(--hot-red);
+   /* background: var(--hot-red);
+    border-color: var(--hot-red); */
     color: white;
+    box-shadow: 0 4px 12px rgba(255,45,85,0.3);
 }
 
 /* Conteúdo das Abas */
@@ -331,26 +332,11 @@
     opacity: 0.9;
 }
 
-/* Ajuste para o background dos cards exclusivos - VERSÃO COM FUNDO PADRÃO */
+/* Ajuste para o background dos cards exclusivos - VERSÃO OTIMIZADA */
 #exclusive .content-card .thumbnail {
     position: relative;
     overflow: hidden;
-    background-color: #000000; /* Backup caso a imagem não carregue */
-    background-image: url('/images/placeholder.jpg'); /* Usa a imagem placeholder como fundo */
-    background-size: cover;
-    background-position: center;
-}
-
-/* Adiciona overlay escuro para melhorar contraste com o ícone */
-#exclusive .content-card .thumbnail::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7); /* Overlay escuro semitransparente */
-    z-index: 1;
+    background-color: #000000; /* Fundo preto como base */
 }
 
 /* Esconde a imagem original */
@@ -360,21 +346,36 @@
     height: 100%;
 }
 
+/* Adiciona uma imagem de fundo convidativa (semelhante a um preview borrado) */
+#exclusive .content-card .thumbnail::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/images/placeholder.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(10px) brightness(0.3); /* Efeito borrado e escurecido */
+    z-index: 1;
+}
+
 /* Adiciona o ícone de cadeado em chamas no centro */
 #exclusive .content-card .thumbnail::after {
     content: '';
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     transform: translate(-50%, -50%);
     background-image: url('/images/backgrounds/lock-fire.jpg');
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     z-index: 2;
-    filter: drop-shadow(0 0 10px rgba(255, 51, 51, 0.5));
+    filter: drop-shadow(0 0 15px rgba(255, 51, 51, 0.6));
 }
 
 /* Garante que os elementos dentro do thumbnail ficam acima das imagens de fundo */

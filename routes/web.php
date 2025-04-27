@@ -118,3 +118,6 @@ Route::get('/register', function () {
 
 Route::get('img/{filename}', [RemoteImageController::class, 'show'])
      ->where('filename', '.*\.(jpe?g|png|gif)$');
+
+// Rota para o proxy de imagens
+Route::get('img/{filename}', 'App\Http\Controllers\RemoteImageController@show')->name('image.proxy');     

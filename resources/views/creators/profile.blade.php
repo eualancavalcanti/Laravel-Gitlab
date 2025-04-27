@@ -2,14 +2,27 @@
 
 @section('title', $creator->name . ' - HotBoys')
 
+@php
+// Função para garantir que nomes de arquivos sejam codificados corretamente
+function safeImageUrl($url) {
+    // Extrair apenas o nome do arquivo da URL
+    $fileName = basename(parse_url($url, PHP_URL_PATH));
+    
+    // Codificar o nome do arquivo para URL (urlencode)
+    $encodedFileName = urlencode($fileName);
+    
+    // Retornar a URL do proxy com o nome do arquivo codificado
+    return url("img/{$encodedFileName}");
+}
+
+// Configurar URL padrão para fallback
+$fallbackImageUrl = url("images/placeholder.jpg");
+@endphp
+
 @section('content')
 <div class="profile-container">
     <!-- Área do Banner via proxy -->
-    @php 
-        $bannerFile = basename(parse_url($creator->banner_image, PHP_URL_PATH)); 
-        $bannerUrl = url("img/{$bannerFile}");
-    @endphp
-    <div class="profile-banner" style="background-image: url('{{ $bannerUrl }}')">
+    <div class="profile-banner" style="background-image: url('{{ safeImageUrl($creator->banner_image) }}')">
         <div class="banner-overlay"></div>
     </div>
     
@@ -17,16 +30,12 @@
     <div class="container">
     <div class="profile-header">
     <!-- Foto de Perfil otimizada -->
-    @php 
-        $photoFile = basename(parse_url($creator->profile_image, PHP_URL_PATH)); 
-        $photoUrl = url("img/{$photoFile}");
-    @endphp
     <div class="profile-photo">
         <picture>
             <!-- WebP para navegadores que suportam -->
-            <source srcset="{{ $photoUrl }}" type="image/webp">
+            <source srcset="{{ safeImageUrl($creator->profile_image) }}" type="image/webp">
             <!-- Fallback para outros formatos -->
-            <img src="{{ $photoUrl }}" alt="{{ $creator->name }}" loading="lazy" width="150" height="150">
+            <img src="{{ safeImageUrl($creator->profile_image) }}" alt="{{ $creator->name }}" loading="lazy" width="150" height="150">
         </picture>
     </div>
     
@@ -147,18 +156,14 @@
             <div class="tab-content {{ $activeTab == 'exclusive' ? 'active' : '' }}" id="exclusive">
                 <div class="content-grid">
                     @forelse($exclusiveContent as $content)
-                    @php
-                        $thumbnailFile = basename(parse_url($content->thumbnail, PHP_URL_PATH));
-                        $thumbnailUrl = url("img/{$thumbnailFile}");
-                    @endphp
                     <div class="content-card" 
                          data-video-id="{{ $content->id ?? '' }}"
                          data-teaser-code="{{ $content->teaser_code ?? '' }}">
                         <div class="thumbnail">
                             <picture>
-                                <source srcset="{{ $thumbnailUrl }}" type="image/webp">
-                                <img src="{{ $thumbnailUrl }}" alt="{{ $content->title }}" loading="lazy" width="320" height="180" 
-                                     onerror="this.onerror=null; this.closest('.content-card.exclusive') ? this.style.display='none' : this.src='/images/placeholder.jpg';">
+                                <source srcset="{{ safeImageUrl($content->thumbnail) }}" type="image/webp">
+                                <img src="{{ safeImageUrl($content->thumbnail) }}" alt="{{ $content->title }}" loading="lazy" width="320" height="180" 
+                                     onerror="this.onerror=null; this.closest('.content-card.exclusive') ? this.style.display='none' : this.src='{{ $fallbackImageUrl }}';">
                             </picture>
                             <div class="thumbnail-overlay"></div>
                             <div class="content-badge exclusive">Exclusivo</div>
@@ -211,18 +216,14 @@
             <div class="tab-content {{ $activeTab == 'vip' ? 'active' : '' }}" id="vip">
                 <div class="content-grid">
                     @forelse($vipContent as $content)
-                    @php
-                        $thumbnailFile = basename(parse_url($content->thumbnail, PHP_URL_PATH));
-                        $thumbnailUrl = url("img/{$thumbnailFile}");
-                    @endphp
                     <div class="content-card"
                          data-video-id="{{ $content->id ?? '' }}"
                          data-teaser-code="{{ $content->teaser_code ?? '' }}">
                         <div class="thumbnail">
                             <picture>
-                                <source srcset="{{ $thumbnailUrl }}" type="image/webp">
-                                <img src="{{ $thumbnailUrl }}" alt="{{ $content->title }}" loading="lazy" width="320" height="180"
-                                     onerror="this.onerror=null; this.src='/images/placeholder.jpg';">
+                                <source srcset="{{ safeImageUrl($content->thumbnail) }}" type="image/webp">
+                                <img src="{{ safeImageUrl($content->thumbnail) }}" alt="{{ $content->title }}" loading="lazy" width="320" height="180"
+                                     onerror="this.onerror=null; this.src='{{ $fallbackImageUrl }}';">
                             </picture>
                             <div class="thumbnail-overlay"></div>
                             <div class="content-badge vip">VIP</div>
@@ -275,16 +276,12 @@
             <div class="tab-content {{ $activeTab == 'packs' ? 'active' : '' }}" id="packs">
                 <div class="content-grid">
                     @forelse($packs as $pack)
-                    @php
-                        $thumbnailFile = basename(parse_url($pack->thumbnail, PHP_URL_PATH));
-                        $thumbnailUrl = url("img/{$thumbnailFile}");
-                    @endphp
                     <div class="content-card pack-card">
                         <div class="thumbnail">
                             <picture>
-                                <source srcset="{{ $thumbnailUrl }}" type="image/webp">
-                                <img src="{{ $thumbnailUrl }}" alt="{{ $pack->title }}" loading="lazy" width="320" height="180"
-                                     onerror="this.onerror=null; this.src='/images/placeholder.jpg';">
+                                <source srcset="{{ safeImageUrl($pack->thumbnail) }}" type="image/webp">
+                                <img src="{{ safeImageUrl($pack->thumbnail) }}" alt="{{ $pack->title }}" loading="lazy" width="320" height="180"
+                                     onerror="this.onerror=null; this.src='{{ $fallbackImageUrl }}';">
                             </picture>
                             <div class="thumbnail-overlay"></div>
                             <div class="content-badge pack">PACK</div>
@@ -578,9 +575,6 @@
         
         // Adicionar o código teaser aos cards de conteúdo quando a página carregar
         const contentCards = document.querySelectorAll('.content-card');
-        
-        // Log para debug
-        console.log('Inicializando cards de conteúdo: ' + contentCards.length);
         
         // Certificar-se de que todos os cards tenham o atributo data-teaser-code
         contentCards.forEach(function(card) {

@@ -4,17 +4,30 @@
 
 @section('content')
 <div class="profile-container">
-    <!-- Área do Banner -->
-    <div class="profile-banner" style="background-image: url('{{ $creator->banner_image }}')">
+    <!-- Área do Banner via proxy -->
+    @php 
+        $bannerFile = basename(parse_url($creator->banner_image, PHP_URL_PATH)); 
+        $bannerUrl = url("img/{$bannerFile}");
+    @endphp
+    <div class="profile-banner" style="background-image: url('{{ $bannerUrl }}')">
         <div class="banner-overlay"></div>
     </div>
     
     <!-- Seção de Informações do Perfil -->
     <div class="container">
     <div class="profile-header">
-    <!-- Foto de Perfil -->
+    <!-- Foto de Perfil otimizada -->
+    @php 
+        $photoFile = basename(parse_url($creator->profile_image, PHP_URL_PATH)); 
+        $photoUrl = url("img/{$photoFile}");
+    @endphp
     <div class="profile-photo">
-        <img src="{{ $creator->profile_image }}" alt="{{ $creator->name }}">
+        <picture>
+            <!-- WebP para navegadores que suportam -->
+            <source srcset="{{ $photoUrl }}" type="image/webp">
+            <!-- Fallback para outros formatos -->
+            <img src="{{ $photoUrl }}" alt="{{ $creator->name }}" loading="lazy" width="150" height="150">
+        </picture>
     </div>
     
     <!-- Informações do Perfil -->
@@ -134,11 +147,19 @@
             <div class="tab-content {{ $activeTab == 'exclusive' ? 'active' : '' }}" id="exclusive">
                 <div class="content-grid">
                     @forelse($exclusiveContent as $content)
+                    @php
+                        $thumbnailFile = basename(parse_url($content->thumbnail, PHP_URL_PATH));
+                        $thumbnailUrl = url("img/{$thumbnailFile}");
+                    @endphp
                     <div class="content-card" 
                          data-video-id="{{ $content->id ?? '' }}"
                          data-teaser-code="{{ $content->teaser_code ?? '' }}">
                         <div class="thumbnail">
-                            <img src="{{ $content->thumbnail }}" alt="{{ $content->title }}">
+                            <picture>
+                                <source srcset="{{ $thumbnailUrl }}" type="image/webp">
+                                <img src="{{ $thumbnailUrl }}" alt="{{ $content->title }}" loading="lazy" width="320" height="180" 
+                                     onerror="this.onerror=null; this.closest('.content-card.exclusive') ? this.style.display='none' : this.src='/images/placeholder.jpg';">
+                            </picture>
                             <div class="thumbnail-overlay"></div>
                             <div class="content-badge exclusive">Exclusivo</div>
                             <div class="content-duration">{{ $content->duration }}</div>
@@ -190,11 +211,19 @@
             <div class="tab-content {{ $activeTab == 'vip' ? 'active' : '' }}" id="vip">
                 <div class="content-grid">
                     @forelse($vipContent as $content)
+                    @php
+                        $thumbnailFile = basename(parse_url($content->thumbnail, PHP_URL_PATH));
+                        $thumbnailUrl = url("img/{$thumbnailFile}");
+                    @endphp
                     <div class="content-card"
                          data-video-id="{{ $content->id ?? '' }}"
                          data-teaser-code="{{ $content->teaser_code ?? '' }}">
                         <div class="thumbnail">
-                            <img src="{{ $content->thumbnail }}" alt="{{ $content->title }}">
+                            <picture>
+                                <source srcset="{{ $thumbnailUrl }}" type="image/webp">
+                                <img src="{{ $thumbnailUrl }}" alt="{{ $content->title }}" loading="lazy" width="320" height="180"
+                                     onerror="this.onerror=null; this.src='/images/placeholder.jpg';">
+                            </picture>
                             <div class="thumbnail-overlay"></div>
                             <div class="content-badge vip">VIP</div>
                             <div class="content-duration">{{ $content->duration }}</div>
@@ -246,9 +275,17 @@
             <div class="tab-content {{ $activeTab == 'packs' ? 'active' : '' }}" id="packs">
                 <div class="content-grid">
                     @forelse($packs as $pack)
+                    @php
+                        $thumbnailFile = basename(parse_url($pack->thumbnail, PHP_URL_PATH));
+                        $thumbnailUrl = url("img/{$thumbnailFile}");
+                    @endphp
                     <div class="content-card pack-card">
                         <div class="thumbnail">
-                            <img src="{{ $pack->thumbnail }}" alt="{{ $pack->title }}">
+                            <picture>
+                                <source srcset="{{ $thumbnailUrl }}" type="image/webp">
+                                <img src="{{ $thumbnailUrl }}" alt="{{ $pack->title }}" loading="lazy" width="320" height="180"
+                                     onerror="this.onerror=null; this.src='/images/placeholder.jpg';">
+                            </picture>
                             <div class="thumbnail-overlay"></div>
                             <div class="content-badge pack">PACK</div>
                             <div class="content-items">{{ $pack->items_count }} itens</div>
@@ -516,9 +553,30 @@
 @push('scripts')
 <script src="{{ asset('js/creator-profile.js') }}" defer></script>
 <script>
-    // Adicionar o código teaser aos cards de conteúdo quando a página carregar
+    // Tratamento de erro de imagens
     document.addEventListener('DOMContentLoaded', function() {
-        // Garantir que os dados do teaser sejam incluídos nos cards de conteúdo
+        // Função para lidar com erros de carregamento de imagens
+        function handleImageError(img, fallbackUrl = '/images/placeholder.jpg') {
+            // Verificar se é um conteúdo exclusivo
+            const isExclusive = img.closest('.content-card.exclusive') !== null;
+            
+            if (isExclusive) {
+                // Para conteúdo exclusivo, esconder a imagem para manter o fundo preto
+                img.style.display = 'none';
+            } else {
+                // Para outros casos, usar a imagem de fallback
+                img.src = fallbackUrl;
+            }
+        }
+        
+        // Adicionar evento onerror em todas as imagens
+        document.querySelectorAll('img').forEach(img => {
+            img.addEventListener('error', function() {
+                handleImageError(this);
+            });
+        });
+        
+        // Adicionar o código teaser aos cards de conteúdo quando a página carregar
         const contentCards = document.querySelectorAll('.content-card');
         
         // Log para debug

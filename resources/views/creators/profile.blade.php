@@ -575,6 +575,36 @@ if (!empty($creator->modelo_perfil)) {
         </div>
     </div>
 </div>
+
+<!-- Modal para conteúdo VIP (preview) -->
+<div class="modal" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="previewModalLabel">Prévia do conteúdo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="preview-container">
+                    <div class="preview-player">
+                        <!-- Aqui será inserido o iframe do teaser -->
+                    </div>
+                    <div class="preview-info mt-4">
+                        <h4 class="preview-title"></h4>
+                        <p class="preview-description">Assista a este conteúdo e muito mais assinando nosso plano VIP.</p>
+                        <div class="preview-cta mt-3">
+                            <button class="btn-primary btn-subscribe" data-toggle="modal" data-target="#loginModal">
+                                Assinar para assistir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('styles')

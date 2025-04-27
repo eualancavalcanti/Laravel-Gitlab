@@ -268,7 +268,7 @@ class CreatorController extends Controller
                 'conteudos_individuais.arquivo_publico_iframe'
             );
             
-        $content = $query->take(4)->get();
+        $content = $query->get();
             
         // Se não encontrou conteúdo, retorna uma coleção vazia
         if ($content->isEmpty()) {
@@ -314,7 +314,7 @@ class CreatorController extends Controller
                 'cenas.teaser_code'
             );
             
-        $content = $query->take(4)->get();
+        $content = $query->get();
         
         // Se não encontrou conteúdo, retorna uma coleção vazia
         if ($content->isEmpty()) {

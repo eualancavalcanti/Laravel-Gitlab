@@ -1,4 +1,3 @@
-
 /* Estilos Principais para Perfil de Criador */
 :root {
     --hot-red: #FF3333;
@@ -104,6 +103,7 @@
     display: inline-block;
 }
 
+/* Username e Indicadores - Layout corrigido */
 .profile-username {
     display: flex;
     align-items: center;
@@ -113,6 +113,7 @@
     font-weight: normal;
 }
 
+/* Badge de verificado - ajustado para posição correta */
 .verified-badge {
     display: inline-flex;
     align-items: center;
@@ -132,6 +133,7 @@
     fill: white;
 }
 
+/* Indicador de online - posicionado corretamente */
 .online-badge {
     background: #2ecc71;
     width: 10px;
@@ -140,7 +142,8 @@
     display: inline-block;
     margin-left: 8px;
     position: relative;
-    top: 0; /* Ajuste para alinhar verticalmente */
+    top: 0;
+    animation: pulse 2s infinite;
 }
 
 /* Indicador de offline - variação do badge online */
@@ -153,6 +156,19 @@
     margin-left: 8px;
     position: relative;
     top: 0;
+}
+
+/* Animação de pulse para indicador online */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 6px rgba(46, 204, 113, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(46, 204, 113, 0);
+    }
 }
 
 /* Social Badges */
@@ -260,8 +276,8 @@
 }
 
 .tab-btn.active {
-   /* background: var(--hot-red);
-    border-color: var(--hot-red); */
+   background: var(--hot-red);
+    border-color: var(--hot-red);
     color: white;
     box-shadow: 0 4px 12px rgba(255,45,85,0.3);
 }
@@ -902,261 +918,7 @@ hr {
     }
 }
 
-/* Responsividade */
-@media (max-width: 992px) {
-    .profile-header {
-        margin-top: -60px;
-    }
-    
-    .profile-photo {
-        width: 120px;
-        height: 120px;
-    }
-    
-    .profile-name {
-        font-size: 1.8rem;
-    }
-    
-    .about-section {
-        grid-template-columns: 1fr;
-    }
-    
-    .subscription-cards {
-        grid-template-columns: 1fr;
-    }
-    
-    .subscription-card.premium {
-        transform: none;
-    }
-    
-    .subscription-card.premium:hover {
-        transform: translateY(-5px);
-    }
-    
-    .container {
-        padding: 0 1rem;
-    }
-    
-    .profile-banner {
-        min-height: 250px;
-    }
-}
-
-@media (max-width: 768px) {
-    .profile-header {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        margin-top: -70px;
-    }
-    
-    .profile-photo {
-        margin-right: 0;
-        margin-bottom: 1rem;
-    }
-    
-    .profile-info {
-        width: 100%;
-        text-align: center;
-    }
-    
-    .profile-username {
-        justify-content: center;
-    }
-    
-    .profile-stats {
-        justify-content: center;
-    }
-    
-    .profile-actions {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .content-grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 1rem;
-    }
-    
-    .tab-btn {
-        padding: 0.6rem 1.2rem;
-        font-size: 0.9rem;
-    }
-    
-    .social-badges {
-        justify-content: center;
-    }
-    
-    .empty-content {
-        padding: 2rem 1rem;
-    }
-    
-    .empty-content h3 {
-        font-size: 1.3rem;
-    }
-    
-    .about-bio, 
-    .subscription-options {
-        padding: 1.5rem;
-    }
-    
-    .about-bio h3,
-    .subscription-options h3 {
-        font-size: 1.3rem;
-    }
-    
-    .modal-dialog {
-        width: 95%;
-    }
-    
-    .modal-content {
-        max-width: 100%;
-    }
-    
-    .profile-tabs {
-        padding-bottom: 0.5rem;
-        margin: 1.5rem 0;
-    }
-}
-
-@media (max-width: 576px) {
-    .profile-banner {
-        min-height: 200px;
-    }
-    
-    .profile-photo {
-        width: 100px;
-        height: 100px;
-        border-width: 3px;
-    }
-    
-    .profile-name {
-        font-size: 1.5rem;
-    }
-    
-    .profile-username {
-        font-size: 1rem;
-    }
-    
-    .stat-value {
-        font-size: 1.2rem;
-    }
-    
-    .stat-label {
-        font-size: 0.8rem;
-    }
-    
-    .profile-stats {
-        gap: 1rem;
-    }
-    
-    .content-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .content-title {
-        font-size: 0.9rem;
-    }
-    
-    .content-price {
-        font-size: 0.9rem;
-    }
-    
-    .content-likes {
-        font-size: 0.8rem;
-    }
-    
-    .tab-btn {
-        padding: 0.5rem 1rem;
-        font-size: 0.85rem;
-    }
-    
-    .subscribe-btn {
-        padding: 0.7rem 1.5rem;
-        font-size: 0.9rem;
-    }
-    
-    .card-features li {
-        font-size: 0.85rem;
-    }
-    
-    .modal-header {
-        padding: 0.8rem 1rem;
-    }
-    
-    .modal-body {
-        padding: 1rem;
-    }
-    
-    .modal-title {
-        font-size: 1.3rem;
-    }
-    
-    .form-control {
-        padding: 0.7rem 0.9rem;
-        font-size: 0.9rem;
-    }
-    
-    .btn-primary, 
-    .btn-outline-primary {
-        padding: 0.7rem 1.2rem;
-        font-size: 0.9rem;
-    }
-    
-    .container {
-        padding: 0 1rem;
-    }
-}
-
-/* Fixed modal for mobile */
-@media (max-width: 480px) {
-    .modal.show {
-        align-items: flex-end;
-    }
-    
-    .modal-dialog {
-        width: 100%;
-        margin: 0;
-    }
-    
-    .modal-content {
-        border-radius: 15px 15px 0 0;
-        max-height: 90vh;
-        overflow-y: auto;
-    }
-}
-
-@media (max-width: 768px) {
-    .content-grid {
-        grid-template-columns: 1fr;  /* Força uma coluna em dispositivos móveis */
-    }
-    
-    .profile-header {
-        padding-bottom: 1rem;
-        margin-top: -50px;  /* Ajuste para evitar sobreposição */
-    }
-    
-    .tab-btn {
-        padding: 0.5rem 0.8rem;
-        font-size: 0.85rem;
-    }
-}
-
-.pulse-animation {
-    animation: pulse 2s infinite;
-}
-
-.discount-badge {
-    background: #FFD700;
-    color: #000;
-    font-size: 0.7rem;
-    padding: 0.1rem 0.4rem;
-    border-radius: 10px;
-    margin-left: 0.5rem;
-}
-
-/* Adicionar ao arquivo public/css/creator-profile.css */
-
+/* Estilos para modal de prévia */
 .preview-modal {
     position: fixed;
     top: 0;
@@ -1290,108 +1052,7 @@ hr {
     box-shadow: var(--shadow-neon);
 }
 
-/* Adicionar ao arquivo public/css/creator-profile.css */
-
-.limited-offer {
-    background: linear-gradient(135deg, #FF3333, #FF6B6B);
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.8rem;
-    margin-bottom: 1rem;
-    animation: pulse 2s infinite;
-}
-
-.offer-text {
-    font-weight: 600;
-}
-
-.offer-timer {
-    font-family: monospace;
-    font-weight: 700;
-    letter-spacing: 1px;
-}
-
-/* Animação de pulse para o indicador online */
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.4);
-    }
-    70% {
-        box-shadow: 0 0 0 6px rgba(46, 204, 113, 0);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(46, 204, 113, 0);
-    }
-}
-
-.online-badge {
-    animation: pulse 2s infinite;
-}
-
-@media (max-width: 768px) {
-    .profile-username {
-        justify-content: center;
-    }
-    
-    .verified-badge, .online-badge, .offline-badge {
-        margin-left: 6px;
-    }
-    
-    .verified-badge {
-        width: 16px;
-        height: 16px;
-    }
-    
-    .online-badge, .offline-badge {
-        width: 8px;
-        height: 8px;
-    }
-}
-
-/* Para telas muito pequenas */
-@media (max-width: 480px) {
-    .profile-username {
-        font-size: 1rem;
-    }
-    
-    .verified-badge {
-        width: 14px;
-        height: 14px;
-    }
-    
-    .verified-badge svg {
-        width: 10px;
-        height: 10px;
-    }
-}
-
-
-.popularity-badge, .scarcity-badge {
-    position: absolute;
-    top: 40px;
-    left: 10px;
-    background: rgba(255, 215, 0, 0.9);
-    color: black;
-    padding: 0.3rem 0.7rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    z-index: 3;
-}
-
-.scarcity-badge {
-    background: rgba(255, 51, 51, 0.9);
-    color: white;
-}
-
-/* Adicionar ao arquivo public/css/creator-profile.css */
-
+/* Abas do Modal de Login */
 .login-benefits {
     margin-bottom: 1.5rem;
     background: rgba(255, 51, 51, 0.05);
@@ -1528,54 +1189,266 @@ hr {
     font-size: 0.8rem;
 }
 
-.creator-card {
-    position: relative;
-    overflow: hidden;
-    border-radius: var(--border-radius-card);
-    background: var(--card-bg);
-    padding-top: 80px; /* Espaço para a imagem de fundo */
-    transition: all 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+/* Responsividade */
+@media (max-width: 992px) {
+    .profile-header {
+        margin-top: -60px;
+    }
+    
+    .profile-photo {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .profile-name {
+        font-size: 1.8rem;
+    }
+    
+    .about-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .subscription-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .subscription-card.premium {
+        transform: none;
+    }
+    
+    .subscription-card.premium:hover {
+        transform: translateY(-5px);
+    }
+    
+    .container {
+        padding: 0 1rem;
+    }
+    
+    .profile-banner {
+        min-height: 250px;
+    }
 }
 
-.creator-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(255, 51, 51, 0.2);
-    border-color: rgba(255, 51, 51, 0.3);
+@media (max-width: 768px) {
+    .profile-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin-top: -70px;
+    }
+    
+    .profile-photo {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+    
+    .profile-info {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .profile-username {
+        justify-content: center;
+    }
+    
+    .profile-stats {
+        justify-content: center;
+    }
+    
+    .profile-actions {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .content-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    
+    .tab-btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+    
+    .social-badges {
+        justify-content: center;
+    }
+    
+    .empty-content {
+        padding: 2rem 1rem;
+    }
+    
+    .empty-content h3 {
+        font-size: 1.3rem;
+    }
+    
+    .about-bio, 
+    .subscription-options {
+        padding: 1.5rem;
+    }
+    
+    .about-bio h3,
+    .subscription-options h3 {
+        font-size: 1.3rem;
+    }
+    
+    .modal-dialog {
+        width: 95%;
+    }
+    
+    .modal-content {
+        max-width: 100%;
+    }
+    
+    .profile-tabs {
+        padding-bottom: 0.5rem;
+        margin: 1.5rem 0;
+    }
+    
+    /* Ajustes para indicadores em tela média */
+    .verified-badge, .online-badge, .offline-badge {
+        margin-left: 6px;
+    }
+    
+    .verified-badge {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .online-badge, .offline-badge {
+        width: 8px;
+        height: 8px;
+    }
 }
 
-.creator-header-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 120px;
-    background-size: cover;
-    background-position: center;
-    z-index: 1;
+@media (max-width: 576px) {
+    .profile-banner {
+        min-height: 200px;
+    }
+    
+    .profile-photo {
+        width: 100px;
+        height: 100px;
+        border-width: 3px;
+    }
+    
+    .profile-name {
+        font-size: 1.5rem;
+    }
+    
+    .profile-username {
+        font-size: 1rem;
+    }
+    
+    .stat-value {
+        font-size: 1.2rem;
+    }
+    
+    .stat-label {
+        font-size: 0.8rem;
+    }
+    
+    .profile-stats {
+        gap: 1rem;
+    }
+    
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .content-title {
+        font-size: 0.9rem;
+    }
+    
+    .content-price {
+        font-size: 0.9rem;
+    }
+    
+    .content-likes {
+        font-size: 0.8rem;
+    }
+    
+    .tab-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+    
+    .subscribe-btn {
+        padding: 0.7rem 1.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .card-features li {
+        font-size: 0.85rem;
+    }
+    
+    .modal-header {
+        padding: 0.8rem 1rem;
+    }
+    
+    .modal-body {
+        padding: 1rem;
+    }
+    
+    .modal-title {
+        font-size: 1.3rem;
+    }
+    
+    .form-control {
+        padding: 0.7rem 0.9rem;
+        font-size: 0.9rem;
+    }
+    
+    .btn-primary, 
+    .btn-outline-primary {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.9rem;
+    }
+    
+    .container {
+        padding: 0 1rem;
+    }
+    
+    /* Ajustes para indicadores em tela pequena */
+    .profile-username {
+        font-size: 0.9rem;
+    }
+    
+    .verified-badge {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .verified-badge svg {
+        width: 10px;
+        height: 10px;
+    }
+    
+    .online-badge, .offline-badge {
+        width: 7px;
+        height: 7px;
+    }
 }
 
-.creator-header-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to bottom, 
-                rgba(18, 18, 18, 0.4) 0%, 
-                var(--card-bg) 100%);
-    z-index: 2;
+/* Fixed modal for mobile */
+@media (max-width: 480px) {
+    .modal.show {
+        align-items: flex-end;
+    }
+    
+    .modal-dialog {
+        width: 100%;
+        margin: 0;
+    }
+    
+    .modal-content {
+        border-radius: 15px 15px 0 0;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
 }
 
-.creator-image {
-    position: relative;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    margin: -50px auto 0;
-    background-size: cover;
-    background-position: center;
-    border: 3px solid var(--hot-red);
-    box-shadow: 0 0 20px rgba(255, 51, 51, 0.3);
-    z-index: 3;
+/* Animação de pulse para elementos com essa classe */
+.pulse-animation {
+    animation: pulse 2s infinite;
 }

@@ -331,13 +331,21 @@
     opacity: 0.9;
 }
 
-/* Ajuste para o background dos cards exclusivos - NOVA VERSÃO */
+/* Ajuste para o background dos cards exclusivos - VERSÃO MINIMALISTA */
 #exclusive .content-card .thumbnail {
     position: relative;
     overflow: hidden;
+    background-color: #000000; /* Fundo completamente preto */
 }
 
-/* Aplica a imagem de fundo do cadeado apenas no centro */
+/* Esconde completamente a imagem original */
+#exclusive .content-card .thumbnail img {
+    opacity: 0; /* Torna a imagem invisível */
+    width: 100%;
+    height: 100%;
+}
+
+/* Adiciona apenas o ícone de cadeado em chamas no centro */
 #exclusive .content-card .thumbnail::after {
     content: '';
     position: absolute;
@@ -347,28 +355,11 @@
     height: 80px;
     transform: translate(-50%, -50%);
     background-image: url('/images/backgrounds/lock-fire.jpg');
-    background-size: cover;
+    background-size: contain;
     background-position: center;
+    background-repeat: no-repeat;
     z-index: 2;
-    border-radius: 50%;
-    box-shadow: 0 0 20px rgba(255, 51, 51, 0.5);
-}
-
-/* Escurece a imagem de thumbnail para destacar o ícone */
-#exclusive .content-card .thumbnail img {
-    filter: brightness(0.6);
-}
-
-/* Ajuste da camada de overlay para contraste */
-#exclusive .content-card .thumbnail::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1;
+    filter: drop-shadow(0 0 10px rgba(255, 51, 51, 0.7));
 }
 
 /* Garante que os elementos dentro do thumbnail ficam acima da imagem de fundo */

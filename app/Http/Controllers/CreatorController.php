@@ -46,7 +46,7 @@ class CreatorController extends Controller
                     'banner_image' => $actor->banner_image ?? 'https://server2.hotboys.com.br/arquivos/banners/default_banner.jpg',
                     'description' => $actor->description ?? 'Perfil de ' . $actor->name . '. Conheça o conteúdo exclusivo deste ator!',
                     'is_verified' => $actor->verified ?? false,
-                    'videos_count' => $actor->videos ?? 0,
+                    'exclusive_count' => $actor->videos ?? 0,
                     'vip_count' => $actor->vip_videos ?? 0,
                     'photos_count' => $actor->photos ?? 0,
                     'visualizacao' => $actor->views ?? 0
@@ -78,8 +78,8 @@ class CreatorController extends Controller
                 'banner_image' => $backgroundImageUrl,
                 'description' => $creator->descricao ?? 'Perfil de ' . $creator->nome . '. Conheça o conteúdo exclusivo deste modelo!',
                 'is_verified' => ($creator->preferidos == 'Sim' || $creator->exclusivos == 'Sim'),
-                'videos_count' => $this->getVideoCount($creator->id),
-                'vip_count' => $this->getVipVideoCount($creator->id),
+                'exclusive_count' => 0, // Será atualizado mais tarde
+                'vip_count' => 0, // Será atualizado mais tarde
                 'photos_count' => $this->getPhotoCount($creator->id),
                 'visualizacao' => $creator->visualizacao ?? 0,
                 'tags' => $this->getModelTags($creator),
@@ -97,9 +97,32 @@ class CreatorController extends Controller
         }
         
         // Buscar cenas relacionadas ao modelo
-        $exclusiveContent = $this->getModelContent($creator->id, 'exclusive');
-        $vipContent = $this->getModelContent($creator->id, 'vip');
+        $exclusiveContent = $this->getExclusiveContent($creator->id);
+        $vipContent = $this->getVipContent($creator->id);
         $packs = $this->getModelPacks($creator->id);
+        
+        // Atualizar contadores com os valores reais baseados no conteúdo
+        $creator->exclusive_count = $exclusiveContent->count();
+        $creator->vip_count = $vipContent->count();
+        
+        // Determinar quais abas mostrar
+        $showTabs = [
+            'exclusive' => $exclusiveContent->count() > 0,
+            'vip' => $vipContent->count() > 0,
+            'packs' => $packs->count() > 0,
+            'sobre' => true // A aba "Sobre" sempre é exibida
+        ];
+        
+        // Definir aba ativa padrão (primeira aba disponível)
+        $activeTab = 'sobre'; // Padrão para "Sobre" caso nenhuma outra esteja disponível
+        
+        if ($showTabs['exclusive']) {
+            $activeTab = 'exclusive';
+        } elseif ($showTabs['vip']) {
+            $activeTab = 'vip';
+        } elseif ($showTabs['packs']) {
+            $activeTab = 'packs';
+        }
         
         // Buscar modelos relacionados/sugeridos
         $relatedCreators = $this->getRelatedCreators($creator->id);
@@ -109,7 +132,9 @@ class CreatorController extends Controller
             'exclusiveContent',
             'vipContent',
             'packs',
-            'relatedCreators'
+            'relatedCreators',
+            'showTabs',
+            'activeTab'
         ));
     }
     
@@ -198,54 +223,12 @@ class CreatorController extends Controller
     }
     
     /**
-     * Obter contagem de vídeos do modelo (para VIP)
-     */
-    private function getVideoCount($modelId)
-    {
-        // Contar quantos vídeos estão associados a este modelo
-        // através da tabela de relacionamento associador_cenas
-        return DB::table('associador_cenas')
-            ->where('id_modelo', $modelId)
-            ->join('cenas', 'associador_cenas.id_cena', '=', 'cenas.id')
-            ->where('cenas.status', 'Ativo')
-            ->count();
-    }
-    
-    /**
-     * Obter contagem de vídeos VIP do modelo (para Exclusivos)
-     */
-    private function getVipVideoCount($modelId)
-    {
-        // Contar vídeos exclusivos onde o modelo está vinculado
-        // através da tabela de relacionamento conteudos_individuais_atores
-        return DB::table('conteudos_individuais_atores')
-            ->where('id_ator', $modelId)
-            ->join('conteudos_individuais', 'conteudos_individuais_atores.id_conteudo', '=', 'conteudos_individuais.id')
-            ->where('conteudos_individuais.status', 'Ativo')
-            ->count();
-    }
-    
-    /**
      * Obter contagem de fotos do modelo
      */
     private function getPhotoCount($modelId)
     {
         // Implementação fictícia, substituir com a lógica real quando disponível
         return rand(10, 50);
-    }
-    
-    /**
-     * Obter conteúdo do modelo
-     */
-    private function getModelContent($modelId, $type = 'exclusive')
-    {
-        if ($type == 'exclusive') {
-            // Conteúdo exclusivo - usa tabela conteudos_individuais
-            return $this->getExclusiveContent($modelId);
-        } else {
-            // Conteúdo VIP - usa tabela cenas
-            return $this->getVipContent($modelId);
-        }
     }
 
     /**
@@ -257,7 +240,7 @@ class CreatorController extends Controller
             ->where('id_ator', $modelId)
             ->join('conteudos_individuais', 'conteudos_individuais_atores.id_conteudo', '=', 'conteudos_individuais.id')
             ->where('conteudos_individuais.status', 'Ativo')
-            ->orderBy('conteudos_individuais.id', 'desc')
+            ->orderBy('conteudos_individuais.id', 'desc') // Ordenado por ID decrescente
             ->select(
                 'conteudos_individuais.id',
                 'conteudos_individuais.titulo',
@@ -296,7 +279,7 @@ class CreatorController extends Controller
     }
 
     /**
-     * Obter conteúdo VIP do modelo
+     * Obter conteúdo VIP do modelo (cenas da plataforma)
      */
     private function getVipContent($modelId)
     {
@@ -304,7 +287,7 @@ class CreatorController extends Controller
             ->where('id_modelo', $modelId)
             ->join('cenas', 'associador_cenas.id_cena', '=', 'cenas.id')
             ->where('cenas.status', 'Ativo')
-            ->orderBy('cenas.id', 'desc')
+            ->orderBy('cenas.id', 'desc') // Ordenado por ID decrescente
             ->select(
                 'cenas.id',
                 'cenas.titulo',

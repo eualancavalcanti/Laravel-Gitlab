@@ -228,45 +228,34 @@ class CreatorController extends Controller
      */
     private function getVideoCount($modelId)
     {
-        // Buscar pelo nome do modelo no título ou descrição
-        $modelName = DB::table('modelos')->where('id', $modelId)->value('nome');
-        
-        if ($modelName) {
-            return DB::table('cenas')
-                ->where('status', 'Ativo')
-                ->where(function($query) use ($modelName) {
-                    $query->where('titulo', 'like', '%' . $modelName . '%')
-                          ->orWhere('descricao', 'like', '%' . $modelName . '%');
-                })
-                ->count();
-        }
-        
-        // Fallback para garantir um retorno
-        return 0;
+        // Contar quantos vídeos estão associados a este modelo
+        // através da tabela de relacionamento conteudos_individuais_atores
+        return DB::table('conteudos_individuais_atores')
+            ->where('id_ator', $modelId)
+            ->join('conteudos_individuais', 'conteudos_individuais_atores.id_conteudo', '=', 'conteudos_individuais.id')
+            ->where('conteudos_individuais.status', 'Ativo')
+            ->count();
     }
+        
+      
     
     /**
      * Obter contagem de vídeos VIP do modelo
      */
     private function getVipVideoCount($modelId)
     {
-        // Buscar pelo nome do modelo no título ou descrição
-        $modelName = DB::table('modelos')->where('id', $modelId)->value('nome');
-        
-        if ($modelName) {
-            return DB::table('cenas')
-                ->where('status', 'Ativo')
-                ->where('exibicao', 'Vips')
-                ->where(function($query) use ($modelName) {
-                    $query->where('titulo', 'like', '%' . $modelName . '%')
-                          ->orWhere('descricao', 'like', '%' . $modelName . '%');
-                })
-                ->count();
-        }
-        
-        // Fallback para garantir um retorno
-        return 0;
+        // Contar vídeos onde o modelo está vinculado
+        // através da tabela de relacionamento conteudos_individuais_atores
+        // e com destaque = 'Sim'
+        return DB::table('conteudos_individuais_atores')
+            ->where('id_ator', $modelId)
+            ->join('conteudos_individuais', 'conteudos_individuais_atores.id_conteudo', '=', 'conteudos_individuais.id')
+            ->where('conteudos_individuais.status', 'Ativo')
+            ->where('conteudos_individuais.destaque', 'Sim')
+            ->count();
     }
+        
+     
     
     /**
      * Obter contagem de fotos do modelo
@@ -282,45 +271,53 @@ class CreatorController extends Controller
      */
     private function getModelContent($modelId, $type = 'exclusive')
     {
-        // Buscar pelo nome do modelo no título ou descrição
-        $modelName = DB::table('modelos')->where('id', $modelId)->value('nome');
+        // Consulta base: buscar conteúdos associados ao modelo
+        $query = DB::table('conteudos_individuais_atores')
+            ->where('id_ator', $modelId)
+            ->join('conteudos_individuais', 'conteudos_individuais_atores.id_conteudo', '=', 'conteudos_individuais.id')
+            ->where('conteudos_individuais.status', 'Ativo');
         
-        if ($modelName) {
-            $query = DB::table('cenas')
-                ->where('status', 'Ativo')
-                ->where(function($query) use ($modelName) {
-                    $query->where('titulo', 'like', '%' . $modelName . '%')
-                          ->orWhere('descricao', 'like', '%' . $modelName . '%');
-                });
-                
-            if ($type == 'vip') {
-                $query->where('exibicao', 'Vips');
-            } else {
-                $query->where('exibicao', 'Todos');
-            }
-            
-            $content = $query->orderBy('created_at', 'desc')
-                ->take(4)
-                ->get();
-                
-            // Formatar os resultados
-            return $content->map(function($item) use ($type) {
-                return (object)[
-                    'id' => $item->id,
-                    'title' => $item->titulo,
-                    'thumbnail' => 'https://server2.hotboys.com.br/arquivos/' . $item->cena_vitrine,
-                    'duration' => $item->tempo_de_duracao ?? rand(15, 60) . ':' . rand(10, 59),
-                    'price' => $type == 'exclusive' ? rand(20, 50) + 0.9 : null,
-                    'likes_count' => rand(500, 3000),
-                    'teaser_code' => $item->teaser_code ?? ''
-                ];
-            });
+        // Filtrar por tipo (VIP ou normal)
+        if ($type == 'vip') {
+            $query->where('conteudos_individuais.destaque', 'Sim');
+        } else {
+            $query->where('conteudos_individuais.destaque', 'Nao');
         }
         
-        // Retorna uma coleção vazia se não encontrou o modelo
-        return collect([]);
+        $content = $query->orderBy('conteudos_individuais.data_liberacao_conteudo', 'desc')
+            ->select(
+                'conteudos_individuais.id',
+                'conteudos_individuais.titulo',
+                'conteudos_individuais.descricao',
+                'conteudos_individuais.tempo_duracao_videos',
+                'conteudos_individuais.valor_cartao_credito',
+                'conteudos_individuais.arquivo_publico',
+                'conteudos_individuais.arquivo_publico_iframe'
+            )
+            ->take(4)
+            ->get();
+        
+        // Formatar os resultados
+        return $content->map(function($item) use ($type) {
+            // Gerar o URL da thumbnail (precisará ser ajustado conforme sua estrutura)
+            $thumbnail = 'https://server2.hotboys.com.br/arquivos/thumbnails/conteudo_' . $item->id . '.jpg';
+            
+            // Converter o tempo de duração para formato legível
+            $duration = $item->tempo_duracao_videos ? $item->tempo_duracao_videos : '30:00';
+            
+            return (object)[
+                'id' => $item->id,
+                'title' => $item->titulo,
+                'thumbnail' => $thumbnail,
+                'duration' => $duration,
+                'price' => $type == 'exclusive' ? floatval($item->valor_cartao_credito) : null,
+                'likes_count' => rand(500, 3000),
+                'teaser_code' => $item->arquivo_publico_iframe
+            ];
+        });
     }
-    
+        
+        
     /**
      * Obter pacotes do modelo
      */

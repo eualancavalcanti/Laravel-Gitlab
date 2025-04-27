@@ -257,7 +257,7 @@ class CreatorController extends Controller
             ->where('id_ator', $modelId)
             ->join('conteudos_individuais', 'conteudos_individuais_atores.id_conteudo', '=', 'conteudos_individuais.id')
             ->where('conteudos_individuais.status', 'Ativo')
-            ->orderBy('conteudos_individuais.data_liberacao_conteudo', 'desc')
+            ->orderBy('conteudos_individuais.id', 'desc')
             ->select(
                 'conteudos_individuais.id',
                 'conteudos_individuais.titulo',
@@ -304,7 +304,7 @@ class CreatorController extends Controller
             ->where('id_modelo', $modelId)
             ->join('cenas', 'associador_cenas.id_cena', '=', 'cenas.id')
             ->where('cenas.status', 'Ativo')
-            ->orderBy('cenas.created_at', 'desc')
+            ->orderBy('cenas.id', 'desc')
             ->select(
                 'cenas.id',
                 'cenas.titulo',

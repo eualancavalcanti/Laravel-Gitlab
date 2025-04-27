@@ -41,18 +41,27 @@
         </h2>
         
         <div class="profile-stats">
+            @if($creator->exclusive_count > 0)
             <div class="stat">
-                <span class="stat-value">{{ number_format($creator->videos_count) }}</span>
-                <span class="stat-label">Vídeos</span>
+                <span class="stat-value">{{ number_format($creator->exclusive_count) }}</span>
+                <span class="stat-label">Exclusivos</span>
             </div>
+            @endif
+            
+            @if($creator->vip_count > 0)
             <div class="stat">
                 <span class="stat-value">{{ number_format($creator->vip_count) }}</span>
                 <span class="stat-label">VIP</span>
             </div>
+            @endif
+            
+            @if($creator->photos_count > 0)
             <div class="stat">
                 <span class="stat-value">{{ number_format($creator->photos_count) }}</span>
                 <span class="stat-label">Fotos</span>
             </div>
+            @endif
+            
             <div class="stat">
                 <span class="stat-value">{{ number_format($creator->visualizacao) }}</span>
                 <span class="stat-label">Visualizações</span>
@@ -103,16 +112,26 @@
         
         <!-- Abas de Conteúdo -->
         <div class="profile-tabs">
-            <button class="tab-btn active" data-tab="exclusive">Exclusivos</button>
-            <button class="tab-btn" data-tab="vip">VIP</button>
-            <button class="tab-btn" data-tab="packs">Packs</button>
-            <button class="tab-btn" data-tab="about">Sobre</button>
+            @if($showTabs['exclusive'])
+            <button class="tab-btn {{ $activeTab == 'exclusive' ? 'active' : '' }}" data-tab="exclusive">Exclusivos</button>
+            @endif
+            
+            @if($showTabs['vip'])
+            <button class="tab-btn {{ $activeTab == 'vip' ? 'active' : '' }}" data-tab="vip">VIP</button>
+            @endif
+            
+            @if($showTabs['packs'])
+            <button class="tab-btn {{ $activeTab == 'packs' ? 'active' : '' }}" data-tab="packs">Packs</button>
+            @endif
+            
+            <button class="tab-btn {{ $activeTab == 'about' ? 'active' : '' }}" data-tab="about">Sobre</button>
         </div>
         
         <!-- Conteúdo das Abas -->
         <div class="tab-contents">
             <!-- Aba de Conteúdo Exclusivo -->
-            <div class="tab-content active" id="exclusive">
+            @if($showTabs['exclusive'])
+            <div class="tab-content {{ $activeTab == 'exclusive' ? 'active' : '' }}" id="exclusive">
                 <div class="content-grid">
                     @forelse($exclusiveContent as $content)
                     <div class="content-card" 
@@ -164,9 +183,11 @@
                     @endforelse
                 </div>
             </div>
+            @endif
 
             <!-- Aba de Conteúdo VIP -->
-            <div class="tab-content" id="vip">
+            @if($showTabs['vip'])
+            <div class="tab-content {{ $activeTab == 'vip' ? 'active' : '' }}" id="vip">
                 <div class="content-grid">
                     @forelse($vipContent as $content)
                     <div class="content-card"
@@ -218,9 +239,11 @@
                     @endforelse
                 </div>
             </div>
+            @endif
 
             <!-- Aba de Packs -->
-            <div class="tab-content" id="packs">
+            @if($showTabs['packs'])
+            <div class="tab-content {{ $activeTab == 'packs' ? 'active' : '' }}" id="packs">
                 <div class="content-grid">
                     @forelse($packs as $pack)
                     <div class="content-card pack-card">
@@ -272,9 +295,10 @@
                     @endforelse
                 </div>
             </div>
+            @endif
 
             <!-- Aba Sobre -->
-            <div class="tab-content" id="about">
+            <div class="tab-content {{ $activeTab == 'about' ? 'active' : '' }}" id="about">
                 <div class="about-section">
                     <div class="about-bio">
                         <h3>Sobre {{ $creator->name }}</h3>
@@ -371,7 +395,15 @@
                             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                             <polyline points="22 4 12 14.01 9 11.01"></polyline>
                         </svg>
-                        <span>Acesso a <strong>{{ $creator->videos_count }} vídeos exclusivos</strong></span>
+                        <span>Acesso a <strong>
+                            @if($creator->exclusive_count > 0)
+                            {{ $creator->exclusive_count }} vídeos exclusivos
+                            @elseif($creator->vip_count > 0)
+                            {{ $creator->vip_count }} vídeos VIP
+                            @else
+                            todo o conteúdo
+                            @endif
+                        </strong></span>
                     </div>
                     <div class="benefit-item">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF3333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

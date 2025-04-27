@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\ActorController;
 use App\Http\Controllers\CreatorController;
+use App\Http\Controllers\RemoteImageController;
 
 // Rota da Home
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -114,3 +115,6 @@ Route::get('/password/reset', function () {
 Route::get('/register', function () {
     return view('auth.register');
 })->name('register');
+
+Route::get('img/{filename}', [RemoteImageController::class, 'show'])
+     ->where('filename', '.*\.(jpe?g|png|gif)$');

@@ -270,18 +270,40 @@
                     @endphp
                     
                     <div class="new-creator-card">
-                        <div class="new-creator-image">
-                            <img src="{{ $imageUrl }}" alt="{{ $model->nome }}">
-                            <div class="new-badge">NOVO</div>
-                        </div>
-                        <div class="new-creator-info">
-                            <h3>{{ $model->nome }}</h3>
-                            <p class="creator-role">{{ $role }}</p>
-                            <a href="{{ url('/modelo/' . strtolower(str_replace(' ', '-', $model->nome))) }}" class="btn-outline">
-                                Ver Perfil
-                            </a>
-                        </div>
-                    </div>
+    <div class="new-creator-image">
+        @php
+            // Extrai só o nome do arquivo remoto
+            $fileName = basename(parse_url($imageUrl, PHP_URL_PATH));
+        @endphp
+
+        <picture>
+            {{-- 1. WebP se suportado --}}
+            <source
+                srcset="{{ url("img/{$fileName}") }}"
+                type="image/webp">
+
+            {{-- 2. Fallback para JPG/PNG --}}
+            <img
+                src="{{ url("img/{$fileName}") }}"
+                alt="{{ $model->nome }}"
+                loading="lazy"
+                width="300"      {{-- ajuste para suas dimensões reais --}}
+                height="300"     {{-- ajuste para suas dimensões reais --}}
+                class="rounded-lg shadow-sm"/>
+        </picture>
+
+        <div class="new-badge">NOVO</div>
+    </div>
+    <div class="new-creator-info">
+        <h3>{{ $model->nome }}</h3>
+        <p class="creator-role">{{ $role }}</p>
+        <a
+            href="{{ url('/modelo/' . Str::slug($model->nome)) }}"
+            class="btn-outline">
+            Ver Perfil
+        </a>
+    </div>
+</div>
                 @endforeach
             </div>
         </div>

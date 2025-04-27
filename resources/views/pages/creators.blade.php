@@ -271,26 +271,22 @@
                     
                     <div class="new-creator-card">
     <div class="new-creator-image">
-        @php
-            // Extrai só o nome do arquivo remoto
-            $fileName = basename(parse_url($imageUrl, PHP_URL_PATH));
-        @endphp
+    @php
+  $fileName = basename(parse_url($imageUrl, PHP_URL_PATH));
+@endphp
 
-        <picture>
-            {{-- 1. WebP se suportado --}}
-            <source
-                srcset="{{ url("img/{$fileName}") }}"
-                type="image/webp">
+<picture>
+  <source
+    srcset="{{ url('img/'.$fileName) }}"
+    type="image/webp">
+  <img
+    src="{{ url('img/'.$fileName) }}"
+    loading="lazy"
+    alt="{{ $model->nome }}"
+    width="300"
+    height="300"/>
+</picture>
 
-            {{-- 2. Fallback para JPG/PNG --}}
-            <img
-                src="{{ url("img/{$fileName}") }}"
-                alt="{{ $model->nome }}"
-                loading="lazy"
-                width="300"      {{-- ajuste para suas dimensões reais --}}
-                height="300"     {{-- ajuste para suas dimensões reais --}}
-                class="rounded-lg shadow-sm"/>
-        </picture>
 
         <div class="new-badge">NOVO</div>
     </div>

@@ -331,16 +331,35 @@
     opacity: 0.9;
 }
 
-/* Estilo para os cards de conteúdo exclusivo com imagem de fundo */
-.content-card .thumbnail .content-badge.exclusive ~ .content-lock,
+/* Ajuste para o background dos cards exclusivos - NOVA VERSÃO */
 #exclusive .content-card .thumbnail {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Aplica a imagem de fundo do cadeado apenas no centro */
+#exclusive .content-card .thumbnail::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80px;
+    height: 80px;
+    transform: translate(-50%, -50%);
     background-image: url('/images/backgrounds/lock-fire.jpg');
     background-size: cover;
     background-position: center;
-    position: relative;
+    z-index: 2;
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(255, 51, 51, 0.5);
 }
 
-/* Overlay escuro para melhorar contraste */
+/* Escurece a imagem de thumbnail para destacar o ícone */
+#exclusive .content-card .thumbnail img {
+    filter: brightness(0.6);
+}
+
+/* Ajuste da camada de overlay para contraste */
 #exclusive .content-card .thumbnail::before {
     content: '';
     position: absolute;
@@ -348,18 +367,21 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.5);
     z-index: 1;
 }
 
 /* Garante que os elementos dentro do thumbnail ficam acima da imagem de fundo */
-#exclusive .content-card .thumbnail img,
 #exclusive .content-card .thumbnail .content-badge,
 #exclusive .content-card .thumbnail .content-duration,
-#exclusive .content-card .thumbnail .play-icon,
-#exclusive .content-card .thumbnail .content-lock {
+#exclusive .content-card .thumbnail .play-icon {
     position: relative;
-    z-index: 2;
+    z-index: 3;
+}
+
+/* Oculta o ícone de cadeado original para evitar duplicação */
+#exclusive .content-card .thumbnail .content-lock {
+    display: none;
 }
 
 .content-badge {

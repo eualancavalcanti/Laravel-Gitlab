@@ -366,3 +366,65 @@ function setupImageErrorHandling() {
         });
     });
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Elementos dos modais
+    const loginModal = document.getElementById('loginModal');
+    const previewModal = document.getElementById('previewModal');
+    
+    // Seletor para todos os cards de conteúdo
+    const contentCards = document.querySelectorAll('.content-card');
+    
+    // Manipular cliques nos cards de conteúdo
+    contentCards.forEach(card => {
+        card.addEventListener('click', function() {
+            // Identificar tipo de conteúdo
+            const isExclusive = this.closest('#exclusive') !== null;
+            const isVip = this.closest('#vip') !== null;
+            
+            if (isVip) {
+                // Conteúdo VIP - Mostrar preview com teaser
+                handleVipContent(this);
+            } else {
+                // Conteúdo exclusivo - Mostrar modal de login diretamente
+                $('#loginModal').modal('show');
+            }
+        });
+    });
+    
+    // Função para gerenciar conteúdo VIP
+    function handleVipContent(card) {
+        // Obter dados do card
+        const title = card.querySelector('.content-title').textContent;
+        const teaserCode = card.getAttribute('data-teaser-code');
+        
+        // Preencher o modal de preview
+        const previewTitle = document.querySelector('#previewModal .preview-title');
+        const previewPlayer = document.querySelector('#previewModal .preview-player');
+        
+        if (previewTitle) previewTitle.textContent = title;
+        
+        // Inserir o teaser, se disponível
+        if (previewPlayer && teaserCode) {
+            previewPlayer.innerHTML = teaserCode;
+        } else {
+            previewPlayer.innerHTML = '<div class="no-preview">Prévia não disponível</div>';
+        }
+        
+        // Mostrar o modal de preview
+        $('#previewModal').modal('show');
+    }
+    
+    // Lidar com a transição de um modal para outro
+    document.querySelectorAll('[data-toggle="modal"][data-target="#loginModal"]').forEach(button => {
+        button.addEventListener('click', function() {
+            // Fechar o modal de preview antes de abrir o login
+            $('#previewModal').modal('hide');
+            
+            // Pequeno delay para garantir que o primeiro esteja fechado
+            setTimeout(() => {
+                $('#loginModal').modal('show');
+            }, 300);
+        });
+    });
+});

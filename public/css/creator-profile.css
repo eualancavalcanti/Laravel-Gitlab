@@ -331,6 +331,15 @@
     opacity: 0.9;
 }
 
+/* Aplica a imagem de fundo apenas para os cards exclusivos */
+.content-card .thumbnail .content-badge.exclusive ~ .content-lock,
+#exclusive .content-card .thumbnail {
+    background-image: url('/images/backgrounds/lock-fire.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
 .content-badge {
     position: absolute;
     top: 10px;

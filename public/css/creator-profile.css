@@ -1615,3 +1615,260 @@ body.modal-open {
 .modal.show * {
     pointer-events: auto;
 }
+
+/* Corrigir backdrop que fica preso */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1040;
+    transition: opacity 0.15s linear;
+}
+
+.modal-backdrop.fade {
+    opacity: 0;
+}
+
+.modal-backdrop.show {
+    opacity: 0.8;
+}
+
+/* Corrigir z-index para evitar conflitos */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    outline: 0;
+    z-index: 1050;
+    display: none;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* Garantir maior z-index para modal de vídeo */
+#videoModal {
+    z-index: 1060;
+}
+
+/* Garantir que modais de login tenham z-index ainda maior */
+#loginModal {
+    z-index: 1070;
+}
+
+/* Corrigir exibição de modal */
+.modal.show {
+    display: block;
+}
+
+/* Prevenir scrollbar jumps quando modal é aberto */
+body.modal-open {
+    overflow: hidden;
+    padding-right: var(--scrollbar-width, 0);
+}
+
+/* Melhorar animação de entrada de modal */
+.modal-dialog {
+    transform: translateY(-50px);
+    transition: transform 0.3s ease-out;
+}
+
+.modal.show .modal-dialog {
+    transform: translateY(0);
+}
+
+/* Melhorar a aparência e resposta do botão de fechar */
+.modal .close, 
+.modal .modal-close,
+[data-dismiss="modal"] {
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.modal .close:hover, 
+.modal .modal-close:hover,
+[data-dismiss="modal"]:hover {
+    opacity: 1;
+}
+
+/* Transição suave para overlay de vídeo */
+.teaser-overlay {
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+.teaser-overlay:hover {
+    opacity: 1;
+}
+
+/* Evitar clique em elementos sobrepostos quando modal está aberto */
+.modal.show * {
+    pointer-events: auto;
+}
+
+/* Corrigir bug de background do corpo borrando quando modal é fechado */
+body:not(.modal-open) {
+    filter: none !important;
+    backdrop-filter: none !important;
+}
+
+/* Evitar que conteúdo do modal fique visível durante transições */
+.modal:not(.show) .modal-content {
+    visibility: hidden;
+}
+
+/* Melhorar transição ao abrir e fechar modais */
+.modal {
+    transition: opacity 0.15s linear;
+    opacity: 0;
+}
+
+.modal.show {
+    opacity: 1;
+}
+
+/* Evitar que modal perca foco quando backdrop for clicado */
+.modal-backdrop {
+    pointer-events: all;
+}
+
+/* Garantir que fechar modal funcione em modo mobile */
+@media (max-width: 768px) {
+    .modal-dialog {
+        margin: 0.5rem auto;
+        max-width: calc(100% - 1rem);
+    }
+    
+    .modal .close, 
+    .modal .modal-close {
+        padding: 1rem;
+        margin: -1rem -1rem -1rem auto;
+    }
+}
+
+/* Corrigir posicionamento bottom sheet em mobile */
+@media (max-width: 480px) {
+    .modal.show .modal-dialog {
+        margin-bottom: 0;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        transform: translateY(0);
+    }
+    
+    .modal-content {
+        border-radius: 1rem 1rem 0 0;
+    }
+}
+
+/* Garantir que backdrop não seja clicável quando houver múltiplos modais */
+body.multiple-modals .modal-backdrop:not(:last-child) {
+    pointer-events: none;
+}
+
+/* Melhorar aparência do loading no modal de vídeo */
+#videoLoading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+}
+
+#videoLoading:after {
+    content: '';
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255,255,255,0.2);
+    border-top-color: var(--hot-red);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Garantir que o modal não apareça quebrado durante a inicialização */
+.modal {
+    opacity: 0;
+    transition: opacity 0.15s linear;
+    visibility: hidden;
+}
+
+.modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Impedir que a interface fique inutilizável quando houver erro nos modais */
+html.modal-error {
+    overflow: auto !important;
+}
+
+html.modal-error body {
+    overflow: auto !important;
+    padding-right: 0 !important;
+}
+
+/* Reset de emergência - adicione esta classe via JS quando detectar erro */
+.modal-reset {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+/* Certifique-se de que botões não fiquem desabilitados após clique */
+.modal button {
+    pointer-events: auto !important;
+}
+
+/* Corrigir problemas com vídeos em modais */
+.teaser-player,
+.teaser-player iframe {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 2;
+}
+
+/* Garantir que a interface fique utilizável em caso de erros com modais */
+.modal-failsafe {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background: var(--hot-red);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    display: none;
+    cursor: pointer;
+    z-index: 9999;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+}
+
+.modal-failsafe.show {
+    display: block;
+}
+
+/* Garantir que botões em modais funcionem em dispositivos touch */
+@media (hover: none) {
+    .btn-subscribe,
+    .btn-primary,
+    .close,
+    .modal-close,
+    [data-dismiss="modal"] {
+        padding: 12px !important; /* Área maior para toque */
+    }
+}

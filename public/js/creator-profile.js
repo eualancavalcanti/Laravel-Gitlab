@@ -1,31 +1,45 @@
 /**
- * HotBoys - Gerenciador de modais unificado
- * Versão otimizada para conteúdo exclusivo e VIP
+ * HotBoys - Sistema Unificado de Modais
+ * 
+ * Este arquivo contém funções otimizadas para gerenciamento de modais
+ * na nova versão do HotBoys. Resolve problemas com:
+ * - Backdrop persistente após fechar modais
+ * - Conflitos entre múltiplos modais
+ * - Bloqueio da interface após fechar modais
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Configuração inicial
+    // Inicializar todos os sistemas
     setupTabs();
     setupLoginTabs();
     setupModalSystem();
     setupContentCards();
-    setupOnlineIndicators();
     setupImageErrorHandling();
     setupAnimations();
 });
 
 /**
- * Sistema unificado de modais
+ * Sistema unificado de modais - CORRIGIDO
+ * Resolve problemas de backdrop persistente e modais congelados
  */
 function setupModalSystem() {
-    // Limpar quaisquer modais temporários que possam ter ficado de sessões anteriores
-    const oldExclusiveModals = document.querySelectorAll('#exclusiveModal');
-    oldExclusiveModals.forEach(modal => modal.remove());
+    // Limpar quaisquer elementos de backdrop que possam ter ficado de sessões anteriores
+    const oldBackdrops = document.querySelectorAll('.modal-backdrop');
+    oldBackdrops.forEach(backdrop => backdrop.remove());
     
-    // Configurar botões de fechar para modais existentes
+    // Remover classes de modal aberto do body
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+    
+    // Configurar botões de fechar para todos os modais
     const closeButtons = document.querySelectorAll('.modal .close, .modal .modal-close, [data-dismiss="modal"]');
     closeButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
+        // Limpar listeners antigos para evitar duplicação
+        const newButton = button.cloneNode(true);
+        button.parentNode.replaceChild(newButton, button);
+        
+        newButton.addEventListener('click', function(e) {
             e.preventDefault();
             const modal = this.closest('.modal');
             if (modal) {
@@ -36,7 +50,8 @@ function setupModalSystem() {
     
     // Fechar ao clicar fora do modal
     document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('modal') || e.target.classList.contains('modal-backdrop')) {
+        if ((e.target.classList.contains('modal') && !e.target.querySelector('.modal-dialog:hover')) || 
+            e.target.classList.contains('modal-backdrop')) {
             const openModals = document.querySelectorAll('.modal.show, .modal[style*="display: block"]');
             openModals.forEach(modal => closeModal(modal));
         }
@@ -52,10 +67,14 @@ function setupModalSystem() {
         }
     });
     
-    // Configurar gatilhos de modal padrão
+    // Configurar gatilhos de modal
     const modalTriggers = document.querySelectorAll('[data-toggle="modal"]');
     modalTriggers.forEach(trigger => {
-        trigger.addEventListener('click', function(e) {
+        // Limpar listeners antigos para evitar duplicação
+        const newTrigger = trigger.cloneNode(true);
+        trigger.parentNode.replaceChild(newTrigger, trigger);
+        
+        newTrigger.addEventListener('click', function(e) {
             e.preventDefault();
             const targetSelector = this.getAttribute('data-target');
             const targetModal = document.querySelector(targetSelector);
@@ -68,9 +87,12 @@ function setupModalSystem() {
 }
 
 /**
- * Abre um modal de forma consistente
+ * Abre um modal de forma consistente - CORRIGIDO
+ * Garante que apenas um modal esteja aberto por vez
  */
 function openModal(modal) {
+    if (!modal) return;
+    
     // Fechar qualquer modal existente primeiro
     const openModals = document.querySelectorAll('.modal.show, .modal[style*="display: block"]');
     openModals.forEach(m => {
@@ -82,6 +104,15 @@ function openModal(modal) {
     modal.style.display = 'block';
     document.body.classList.add('modal-open');
     
+    // Calcular a largura da barra de rolagem
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    if (scrollbarWidth > 0) {
+        document.body.style.paddingRight = scrollbarWidth + 'px';
+    }
+    
+    // Bloquear rolagem
+    document.body.style.overflow = 'hidden';
+    
     // Adicionar backdrop se não existir
     if (!document.querySelector('.modal-backdrop')) {
         const backdrop = document.createElement('div');
@@ -91,67 +122,87 @@ function openModal(modal) {
 }
 
 /**
- * Fecha um modal de forma consistente
+ * Fecha um modal de forma consistente - CORRIGIDO
+ * Garante a limpeza completa de todos os elementos e estilos
  */
 function closeModal(modal) {
     if (!modal) return;
     
     // Remover iframe players para evitar reprodução em segundo plano
     const iframes = modal.querySelectorAll('iframe');
-    iframes.forEach(iframe => iframe.remove());
+    iframes.forEach(iframe => {
+        // Clonar e substituir para parar reprodução
+        const parent = iframe.parentNode;
+        if (parent) {
+            parent.innerHTML = '';
+        }
+    });
     
     // Esconder o modal
     modal.classList.remove('show');
     modal.style.display = 'none';
-    document.body.classList.remove('modal-open');
     
-    // Remover backdrop
-    const backdrop = document.querySelector('.modal-backdrop');
-    if (backdrop) backdrop.remove();
+    // Verificar se ainda há modais abertos
+    const anyModalOpen = document.querySelector('.modal.show, .modal[style*="display: block"]');
+    if (!anyModalOpen) {
+        // Restaurar rolagem apenas se não houver outros modais abertos
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+        
+        // Remover backdrop
+        const backdrops = document.querySelectorAll('.modal-backdrop');
+        backdrops.forEach(backdrop => backdrop.remove());
+    }
 }
 
 /**
- * Configuração de cards de conteúdo
+ * Configuração de cards de conteúdo - CORRIGIDO
+ * Evita problemas de propagação de eventos
  */
 function setupContentCards() {
     const contentCards = document.querySelectorAll('.content-card');
     
     contentCards.forEach(card => {
-        card.addEventListener('click', function(e) {
+        // Limpar listeners antigos para evitar duplicação
+        const newCard = card.cloneNode(true);
+        card.parentNode.replaceChild(newCard, card);
+        
+        newCard.addEventListener('click', function(e) {
             e.preventDefault();
+            e.stopPropagation(); // Evitar propagação
             
             // Determinar tipo de conteúdo
             const isExclusive = this.closest('#exclusive') !== null || 
                               this.querySelector('.content-badge.exclusive') !== null;
+            
+            // Usar variável para teaser_code
+            const teaserCode = this.getAttribute('data-teaser-code') || '';
+            const videoId = this.getAttribute('data-video-id') || '';
             
             if (isExclusive) {
                 // Mostrar modal do criador para conteúdo exclusivo
                 handleExclusiveContent(this);
             } else {
                 // Usar modal de vídeo para outros conteúdos (VIP)
-                handleVipContent(this);
+                handleVipContent(this, teaserCode, videoId);
             }
         });
     });
 }
 
 /**
- * Manipulador de conteúdo exclusivo
+ * Manipulador de conteúdo exclusivo - CORRIGIDO
  */
 function handleExclusiveContent(card) {
-    // Obter dados do perfil do criador
-    const creatorName = document.querySelector('.profile-name')?.textContent || 'Modelo';
-    const creatorImage = document.querySelector('.profile-photo img')?.src || '';
-    const contentTitle = card.querySelector('.content-title')?.textContent || 'Conteúdo Exclusivo';
-
-    // Abrir modal de login diretamente - abordagem simplificada
+    const title = card.querySelector('.content-title')?.textContent || 'Conteúdo Exclusivo';
     const loginModal = document.getElementById('loginModal');
     
     if (loginModal) {
         // Configurar o título do modal para informar qual conteúdo está sendo acessado
         const loginTitle = loginModal.querySelector('.modal-title');
         if (loginTitle) {
-            loginTitle.textContent = `Acesse o conteúdo exclusivo: ${contentTitle}`;
+            loginTitle.textContent = `Acesse o conteúdo exclusivo: ${title}`;
         }
         
         // Abrir o modal de login
@@ -160,16 +211,15 @@ function handleExclusiveContent(card) {
 }
 
 /**
- * Manipulador de conteúdo VIP
+ * Manipulador de conteúdo VIP - CORRIGIDO
  */
-function handleVipContent(card) {
+function handleVipContent(card, teaserCode, videoId) {
     const videoModal = document.getElementById('videoModal');
     if (!videoModal) return;
     
     // Obter informações do card
     const title = card.querySelector('.content-title')?.textContent || 'Vídeo';
     const thumbnail = card.querySelector('img')?.src || '';
-    const teaserCode = card.getAttribute('data-teaser-code') || '';
     
     // Obter elementos do modal
     const modalTitle = videoModal.querySelector('#videoModalTitle');
@@ -186,8 +236,9 @@ function handleVipContent(card) {
     }
     
     // Limpar qualquer player existente
-    const existingPlayers = teaserContainer.querySelectorAll('.teaser-player, iframe');
-    existingPlayers.forEach(player => player.remove());
+    if (teaserContainer) {
+        teaserContainer.innerHTML = '';
+    }
     
     // Iniciar carregamento do teaser
     if (loadingIndicator) loadingIndicator.style.display = 'block';
@@ -199,7 +250,10 @@ function handleVipContent(card) {
         const playerContainer = document.createElement('div');
         playerContainer.className = 'teaser-player';
         playerContainer.innerHTML = teaserCode;
-        teaserContainer.appendChild(playerContainer);
+        
+        if (teaserContainer) {
+            teaserContainer.appendChild(playerContainer);
+        }
         
         // Ocultar loading quando o iframe carregar
         const iframe = playerContainer.querySelector('iframe');
@@ -218,119 +272,47 @@ function handleVipContent(card) {
             }, 5000);
         }
     } else {
-        // Mostrar thumbnail se não houver teaser
-        if (loadingIndicator) loadingIndicator.style.display = 'none';
-        if (modalThumbnail) modalThumbnail.style.display = 'block';
-        if (teaserOverlay) teaserOverlay.style.display = 'flex';
+        // Se não tiver código teaser mas tiver ID de vídeo, tentar gerar
+        if (videoId && videoId.trim() !== '') {
+            const generatedTeaser = `<iframe allow="autoplay; fullscreen;" allowfullscreen class="jmvplayer" frameborder="0" src="https://player.jmvstream.com/qAGjxuwNoNQIj2i9kkVHgLMIxUuMu7/${videoId}" width="100%" height="100%"></iframe>`;
+            
+            const playerContainer = document.createElement('div');
+            playerContainer.className = 'teaser-player';
+            playerContainer.innerHTML = generatedTeaser;
+            
+            if (teaserContainer) {
+                teaserContainer.appendChild(playerContainer);
+            }
+            
+            // Timeout de segurança
+            setTimeout(function() {
+                if (loadingIndicator) loadingIndicator.style.display = 'none';
+            }, 5000);
+        } else {
+            // Mostrar thumbnail se não houver teaser nem ID
+            if (loadingIndicator) loadingIndicator.style.display = 'none';
+            if (modalThumbnail) modalThumbnail.style.display = 'block';
+            if (teaserOverlay) teaserOverlay.style.display = 'flex';
+        }
     }
     
     // Abrir modal
     openModal(videoModal);
 }
 
-// Manter as outras funções auxiliares (setupTabs, setupLoginTabs, etc)
-// ...
-
 /**
- * Configura os modais Bootstrap
- */
-function setupBootstrapModals() {
-    // 1. Botões para abrir modal (usando atributo data-target)
-    const modalTriggers = document.querySelectorAll('[data-toggle="modal"]');
-    modalTriggers.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetSelector = this.getAttribute('data-target');
-            const targetModal = document.querySelector(targetSelector);
-            
-            if (targetModal) {
-                openBootstrapModal(targetModal);
-            }
-        });
-    });
-    
-    // 2. Botões para fechar modal (usando data-dismiss="modal")
-    const closeButtons = document.querySelectorAll('[data-dismiss="modal"]');
-    closeButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            closeBootstrapModal(this);
-        });
-    });
-    
-    // 3. Fechar ao clicar fora do modal (no backdrop ou no próprio modal)
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('modal') && e.target.classList.contains('show')) {
-            closeBootstrapModal(e.target);
-        }
-        
-        if (e.target.classList.contains('modal-backdrop')) {
-            const openModal = document.querySelector('.modal.show');
-            if (openModal) {
-                closeBootstrapModal(openModal);
-            }
-        }
-    });
-    
-    // 4. Fechar com a tecla ESC
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            const openModal = document.querySelector('.modal.show');
-            if (openModal) {
-                closeBootstrapModal(openModal);
-            }
-        }
-    });
-}
-
-/**
- * Abre um modal Bootstrap
- */
-function openBootstrapModal(modal) {
-    if (!modal) return;
-    
-    // Adicionar classe 'show' e display: block
-    modal.classList.add('show');
-    modal.style.display = 'block';
-    document.body.classList.add('modal-open');
-    
-    // Adicionar backdrop se não existir
-    if (!document.querySelector('.modal-backdrop')) {
-        const backdrop = document.createElement('div');
-        backdrop.className = 'modal-backdrop fade show';
-        document.body.appendChild(backdrop);
-    }
-}
-
-/**
- * Fecha um modal Bootstrap
- */
-function closeBootstrapModal(element) {
-    // Encontrar o modal a partir do elemento clicado
-    const modal = element.closest ? element.closest('.modal') : element;
-    
-    if (modal) {
-        // Remover classes de exibição
-        modal.classList.remove('show');
-        modal.style.display = 'none';
-        document.body.classList.remove('modal-open');
-        
-        // Remover backdrop
-        const backdrop = document.querySelector('.modal-backdrop');
-        if (backdrop) {
-            backdrop.remove();
-        }
-    }
-}
-
-/**
- * Configura o sistema de abas do perfil
+ * Configura o sistema de abas do perfil - CORRIGIDO
  */
 function setupTabs() {
     const tabButtons = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
     
     tabButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        // Limpar listeners antigos para evitar duplicação
+        const newButton = button.cloneNode(true);
+        button.parentNode.replaceChild(newButton, button);
+        
+        newButton.addEventListener('click', function() {
             // Remover classe ativa de todos os botões e conteúdos
             tabButtons.forEach(btn => btn.classList.remove('active'));
             tabContents.forEach(content => content.classList.remove('active'));
@@ -340,7 +322,10 @@ function setupTabs() {
             
             // Mostrar conteúdo correspondente
             const tabId = this.getAttribute('data-tab');
-            document.getElementById(tabId).classList.add('active');
+            const tabContent = document.getElementById(tabId);
+            if (tabContent) {
+                tabContent.classList.add('active');
+            }
             
             // Opcional: salvar preferência
             if (window.localStorage) {
@@ -362,7 +347,7 @@ function setupTabs() {
 }
 
 /**
- * Configura animações para elementos da página
+ * Configura animações para elementos da página - CORRIGIDO
  */
 function setupAnimations() {
     // Animação para cards de conteúdo
@@ -371,7 +356,7 @@ function setupAnimations() {
         // Adicionar animação escalonada
         setTimeout(() => {
             card.classList.add('animated');
-        }, index * 100);
+        }, index * 50); // Reduzido de 100 para 50ms para melhorar performance
     });
     
     // Interatividade para a foto do perfil
@@ -394,14 +379,18 @@ function setupAnimations() {
 }
 
 /**
- * Configura as abas do modal de login
+ * Configura as abas do modal de login - CORRIGIDO
  */
 function setupLoginTabs() {
     const tabButtons = document.querySelectorAll('.tab-button');
     const tabContents = document.querySelectorAll('.login-tab-content');
     
     tabButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        // Limpar listeners antigos para evitar duplicação
+        const newButton = button.cloneNode(true);
+        button.parentNode.replaceChild(newButton, button);
+        
+        newButton.addEventListener('click', function() {
             // Remover classes ativas
             tabButtons.forEach(btn => btn.classList.remove('active'));
             tabContents.forEach(content => content.classList.remove('active'));
@@ -418,101 +407,21 @@ function setupLoginTabs() {
 }
 
 /**
- * Configura os indicadores de status online/offline
- */
-function setupOnlineIndicators() {
-    // Buscar status de usuários da API
-    fetchUserStatus();
-    
-    // Verificar a cada 60 segundos se os usuários estão online
-    setInterval(fetchUserStatus, 60000);
-    
-    // Ouvinte para mudanças de visibilidade da página
-    document.addEventListener('visibilitychange', function() {
-        if (!document.hidden) {
-            // Atualizar status quando a página voltar a ser visível
-            fetchUserStatus();
-        }
-    });
-}
-
-/**
- * Busca o status online de usuários da API
- */
-function fetchUserStatus() {
-    // Obter IDs de usuário da página
-    const userId = document.querySelector('.profile-header')?.dataset.userId;
-    if (!userId) return;
-    
-    // Se a API não estiver disponível, simular status online (desenvolvimento)
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        // Em modo de desenvolvimento, alternar status para testes
-        const onlineBadge = document.querySelector('.online-badge');
-        if (onlineBadge) {
-            const isCurrentlyOnline = !onlineBadge.classList.contains('offline-badge');
-            updateOnlineStatus({ isOnline: !isCurrentlyOnline });
-        }
-        return;
-    }
-    
-    // Em produção, usar fetch para obter status real
-    fetch(`/api/users/status/${userId}`, {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest'
-        },
-        cache: 'no-store'
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Erro ao buscar status');
-        }
-        return response.json();
-    })
-    .then(data => {
-        updateOnlineStatus(data);
-    })
-    .catch(error => {
-        console.error('Erro ao verificar status:', error);
-    });
-}
-
-/**
- * Atualiza o indicador visual de status online/offline
- */
-function updateOnlineStatus(statusData) {
-    const onlineBadge = document.querySelector('.online-badge');
-    if (!onlineBadge) return;
-    
-    // Se temos dados e o usuário está online
-    if (statusData && statusData.isOnline) {
-        onlineBadge.classList.remove('offline-badge');
-        onlineBadge.classList.add('online-badge');
-        onlineBadge.setAttribute('title', 'Online Agora');
-        
-        // Adicionar animação de pulse
-        onlineBadge.classList.add('pulse-animation');
-    } else {
-        // Usuário offline
-        onlineBadge.classList.remove('online-badge');
-        onlineBadge.classList.add('offline-badge');
-        onlineBadge.setAttribute('title', 'Offline');
-        
-        // Remover animação
-        onlineBadge.classList.remove('pulse-animation');
-    }
-}
-
-/**
- * Configura o tratamento de erros para imagens
+ * Configura o tratamento de erros para imagens - CORRIGIDO
  */
 function setupImageErrorHandling() {
+    // URL de fallback local - não depende de serviços externos
     const fallbackUrl = '/images/placeholder.jpg';
     
     // Adicionar evento onerror em todas as imagens
     document.querySelectorAll('img').forEach(img => {
+        // Remover handler existente para evitar duplicação
+        img.onerror = null;
+        
         img.addEventListener('error', function() {
+            // Evitar loop infinito
+            this.onerror = null;
+            
             // Verificar contexto da imagem
             if (this.closest('#exclusive .content-card')) {
                 // Para conteúdo exclusivo, esconder a imagem para fundo preto

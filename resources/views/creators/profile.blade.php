@@ -584,6 +584,8 @@ if (!empty($creator->modelo_perfil)) {
 
 @push('scripts')
 <script src="{{ asset('js/creator-profile.js') }}" defer></script>
+<script src="{{ asset('js/video-modal.js') }}" defer></script>
+<script src="{{ asset('js/modal-reset.js') }}" defer></script>
 <script>
     // Tratamento de erro de imagens
     document.addEventListener('DOMContentLoaded', function() {

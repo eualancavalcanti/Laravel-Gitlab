@@ -7,16 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Funcionalidades de abas
     setupTabs();
     
-    // Funcionalidades de modal
-    setupModals();
-    
-    // Animações e interatividade
-    setupAnimations();
-    
-    // Funcionalidade de prévia de conteúdo
-    setupContentPreviews();
-    
-    // Controles para abas do modal de login
+    // Configurar abas do modal de login
     setupLoginTabs();
     
     // Configurar indicadores de status online/offline
@@ -24,6 +15,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Configurar tratamento de erro para imagens
     setupImageErrorHandling();
+    
+    // Animações para elementos da página
+    setupAnimations();
 });
 
 /**
@@ -66,47 +60,6 @@ function setupTabs() {
 }
 
 /**
- * Configura as funcionalidades de modal
- */
-function setupModals() {
-    const modalTriggers = document.querySelectorAll('[data-toggle="modal"]');
-    const closeModalButtons = document.querySelectorAll('.close');
-    
-    // Abrir modais
-    modalTriggers.forEach(trigger => {
-        trigger.addEventListener('click', function() {
-            const targetModal = document.querySelector(this.getAttribute('data-target'));
-            if (targetModal) {
-                targetModal.classList.add('show');
-                document.body.style.overflow = 'hidden';
-            }
-        });
-    });
-    
-    // Fechar modais com o botão de fechar
-    closeModalButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const modal = this.closest('.modal');
-            if (modal) {
-                modal.classList.remove('show');
-                document.body.style.overflow = 'auto';
-            }
-        });
-    });
-    
-    // Fechar modal ao clicar fora
-    const modals = document.querySelectorAll('.modal');
-    modals.forEach(modal => {
-        modal.addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.classList.remove('show');
-                document.body.style.overflow = 'auto';
-            }
-        });
-    });
-}
-
-/**
  * Configura animações para elementos da página
  */
 function setupAnimations() {
@@ -136,101 +89,6 @@ function setupAnimations() {
             }
         });
     }
-}
-
-/**
- * Configura a funcionalidade de prévia do conteúdo
- */
-function setupContentPreviews() {
-    const contentCards = document.querySelectorAll('.content-card');
-    
-    contentCards.forEach(card => {
-        card.addEventListener('click', function() {
-            // Verificar se tem título
-            const titleElement = this.querySelector('.content-title');
-            if (!titleElement) return;
-            
-            // Obter dados do card
-            const title = titleElement.textContent;
-            const isExclusive = this.querySelector('.content-badge.exclusive') !== null;
-            const isVip = this.querySelector('.content-badge.vip') !== null;
-            const isPack = this.querySelector('.content-badge.pack') !== null;
-            const imgElement = this.querySelector('img');
-            const imgSrc = imgElement ? imgElement.src : '/images/placeholder.jpg';
-            
-            // Criar modal de prévia
-            const previewModal = document.createElement('div');
-            previewModal.className = 'preview-modal';
-            previewModal.innerHTML = `
-                <div class="preview-container">
-                    <div class="preview-header">
-                        <h3>${title}</h3>
-                        <button class="close-preview">&times;</button>
-                    </div>
-                    <div class="preview-content">
-                        <div class="preview-image" style="background-image: url('${imgSrc}')">
-                            <div class="preview-blur"></div>
-                            <div class="preview-play">
-                                <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="white" stroke-width="2">
-                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                                </svg>
-                            </div>
-                            <div class="preview-duration">Prévia: 0:30</div>
-                        </div>
-                        <div class="preview-info">
-                            <p>Experimente ${isVip ? 'nosso plano VIP' : 'este conteúdo exclusivo'} para desbloquear o vídeo completo e muito mais!</p>
-                            <div class="preview-action">
-                                ${isVip ? 
-                                    '<button class="btn-preview-vip">Assinar VIP</button>' : 
-                                    `<button class="btn-preview-buy">Comprar por R$ ${(Math.random() * 30 + 19.9).toFixed(2).replace('.', ',')}</button>`
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(previewModal);
-            
-            // Mostrar modal com animação
-            setTimeout(() => {
-                previewModal.classList.add('show');
-            }, 10);
-            
-            // Fechar modal
-            const closeButton = previewModal.querySelector('.close-preview');
-            if (closeButton) {
-                closeButton.addEventListener('click', () => {
-                    previewModal.classList.remove('show');
-                    setTimeout(() => {
-                        previewModal.remove();
-                    }, 300);
-                });
-            }
-            
-            // Ações dos botões
-            const buyBtn = previewModal.querySelector('.btn-preview-buy');
-            const vipBtn = previewModal.querySelector('.btn-preview-vip');
-            
-            if (buyBtn) {
-                buyBtn.addEventListener('click', () => {
-                    window.location.href = '#loginModal';
-                    previewModal.remove();
-                    const loginModal = document.getElementById('loginModal');
-                    if (loginModal) loginModal.classList.add('show');
-                });
-            }
-            
-            if (vipBtn) {
-                vipBtn.addEventListener('click', () => {
-                    window.location.href = '#loginModal';
-                    previewModal.remove();
-                    const loginModal = document.getElementById('loginModal');
-                    if (loginModal) loginModal.classList.add('show');
-                });
-            }
-        });
-    });
 }
 
 /**
@@ -366,65 +224,3 @@ function setupImageErrorHandling() {
         });
     });
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Elementos dos modais
-    const loginModal = document.getElementById('loginModal');
-    const previewModal = document.getElementById('previewModal');
-    
-    // Seletor para todos os cards de conteúdo
-    const contentCards = document.querySelectorAll('.content-card');
-    
-    // Manipular cliques nos cards de conteúdo
-    contentCards.forEach(card => {
-        card.addEventListener('click', function() {
-            // Identificar tipo de conteúdo
-            const isExclusive = this.closest('#exclusive') !== null;
-            const isVip = this.closest('#vip') !== null;
-            
-            if (isVip) {
-                // Conteúdo VIP - Mostrar preview com teaser
-                handleVipContent(this);
-            } else {
-                // Conteúdo exclusivo - Mostrar modal de login diretamente
-                $('#loginModal').modal('show');
-            }
-        });
-    });
-    
-    // Função para gerenciar conteúdo VIP
-    function handleVipContent(card) {
-        // Obter dados do card
-        const title = card.querySelector('.content-title').textContent;
-        const teaserCode = card.getAttribute('data-teaser-code');
-        
-        // Preencher o modal de preview
-        const previewTitle = document.querySelector('#previewModal .preview-title');
-        const previewPlayer = document.querySelector('#previewModal .preview-player');
-        
-        if (previewTitle) previewTitle.textContent = title;
-        
-        // Inserir o teaser, se disponível
-        if (previewPlayer && teaserCode) {
-            previewPlayer.innerHTML = teaserCode;
-        } else {
-            previewPlayer.innerHTML = '<div class="no-preview">Prévia não disponível</div>';
-        }
-        
-        // Mostrar o modal de preview
-        $('#previewModal').modal('show');
-    }
-    
-    // Lidar com a transição de um modal para outro
-    document.querySelectorAll('[data-toggle="modal"][data-target="#loginModal"]').forEach(button => {
-        button.addEventListener('click', function() {
-            // Fechar o modal de preview antes de abrir o login
-            $('#previewModal').modal('hide');
-            
-            // Pequeno delay para garantir que o primeiro esteja fechado
-            setTimeout(() => {
-                $('#loginModal').modal('show');
-            }, 300);
-        });
-    });
-});

@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{{ asset('css/hero-carousel.css') }}">
     <link rel="stylesheet" href="{{ asset('css/content-modal.css') }}">
     <link rel="stylesheet" href="{{ asset('css/hero-fix.css') }}">
+  
     
     <!-- Fontes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -46,7 +47,7 @@
     <script src="{{ asset('js/mobile-carousel.js') }}"></script>
     <script src="{{ asset('js/content-modal.js') }}"></script>
     <script src="{{ asset('js/hero-fix.js') }}"></script>
-    <script src="{{ asset('js/video-modal.js') }}"></script>
+    
     
     @stack('scripts')
 </body>

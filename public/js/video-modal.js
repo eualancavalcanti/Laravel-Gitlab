@@ -1,218 +1,253 @@
 /**
- * Script para gerenciar o modal de vídeo
+ * Gerenciador de modais de vídeo para HotBoys
+ * Lida com conteúdo VIP e Exclusivo de maneira otimizada
  */
 document.addEventListener('DOMContentLoaded', function() {
-    // Elementos do modal
+    // Elementos principais do modal
     const videoModal = document.getElementById('videoModal');
+    if (!videoModal) return;
+    
+    const modalClose = videoModal.querySelector('.modal-close');
     const modalTitle = document.getElementById('videoModalTitle');
     const modalThumbnail = document.getElementById('videoModalThumbnail');
-    const modalDuration = document.getElementById('videoModalDuration');
-    const modalViewers = document.getElementById('videoViewersCount');
-    const closeButton = videoModal.querySelector('.modal-close');
-    const playButton = videoModal.querySelector('.play-button');
-    const loadingIndicator = videoModal.querySelector('.loading-indicator');
+    const teaserContainer = videoModal.querySelector('.teaser-container');
+    const teaserOverlay = videoModal.querySelector('.teaser-overlay');
+    const loginOptions = videoModal.querySelector('.login-options');
+    const loadingIndicator = document.getElementById('videoLoading');
+    const playButton = videoModal.querySelector('.play-button-wrapper');
     
-    // Verificar se todos os elementos necessários existem
-    if (!videoModal || !modalTitle || !modalThumbnail) {
-        console.error('Elementos necessários para o modal de vídeo não encontrados');
-        return;
-    }
+    // Selecionar todos os cards de conteúdo clicáveis
+    const contentCards = document.querySelectorAll('.content-card');
     
-    // Abrir modal ao clicar em elementos com classe .open-video-modal
-    document.addEventListener('click', function(event) {
-        const trigger = event.target.closest('.open-video-modal');
-        if (trigger) {
-            event.preventDefault();
-            
-            // Obter dados do elemento que acionou o modal
-            const videoId = trigger.getAttribute('data-video-id') || '';
-            const title = trigger.getAttribute('data-title') || 'Vídeo Premium';
-            const thumbnail = trigger.getAttribute('data-thumbnail') || '';
-            const viewers = Math.floor(Math.random() * 2000) + 500; // Número aleatório entre 500 e 2500
-            
-            // Preencher o modal com os dados
-            modalTitle.textContent = title;
-            modalThumbnail.src = thumbnail;
-            modalViewers.textContent = formatViewers(viewers) + ' assistindo';
-            
-            // Garantir que não há vídeo sendo exibido
-            removeExistingVideo();
-            
-            // Mostrar o modal
-            openModal();
-        }
+    // Configurar cada card para abrir o modal
+    contentCards.forEach(card => {
+        card.addEventListener('click', function() {
+            openVideoModal(this);
+        });
     });
     
-    // Fechar modal ao clicar no botão de fechar
-    if (closeButton) {
-        closeButton.addEventListener('click', closeModal);
+    /**
+     * Abre o modal de vídeo e configura com base no tipo de conteúdo
+     */
+    function openVideoModal(card) {
+        if (!card) return;
+        
+        // Buscar informações do card
+        const title = card.querySelector('.content-title')?.textContent || 'Vídeo';
+        const thumbnail = card.querySelector('img')?.src || '';
+        const videoId = card.getAttribute('data-video-id') || '';
+        const teaserCode = card.getAttribute('data-teaser-code') || '';
+        const duration = card.querySelector('.content-duration')?.textContent || '00:00';
+        
+        // Determinar o tipo de conteúdo
+        const isExclusive = card.querySelector('.content-badge.exclusive') !== null;
+        const isVip = card.querySelector('.content-badge.vip') !== null;
+        
+        // Configurar o título e thumbnail
+        modalTitle.textContent = title;
+        modalThumbnail.src = thumbnail;
+        modalThumbnail.alt = title;
+        
+        // Remover players anteriores para evitar múltiplos vídeos rodando
+        const existingPlayers = teaserContainer.querySelectorAll('.teaser-player, iframe');
+        existingPlayers.forEach(player => player.remove());
+        
+        // Configuração específica com base no tipo de conteúdo
+        if (isExclusive) {
+            // Configuração para Conteúdo Exclusivo
+            configurarModoExclusivo(card);
+        } else if (isVip) {
+            // Configuração para Conteúdo VIP
+            configurarModoVip(card, teaserCode);
+        } else {
+            // Configuração padrão (fallback)
+            configurarModoPadrao(card);
+        }
+        
+        // Mostrar o modal
+        videoModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // Prevenir rolagem da página
+    }
+    
+    /**
+     * Configuração para conteúdo exclusivo (que requer compra)
+     */
+    function configurarModoExclusivo(card) {
+        // Mostrar thumbnail com overlay para incentivar a compra
+        modalThumbnail.style.display = 'block';
+        teaserOverlay.style.display = 'flex';
+        loginOptions.style.display = 'block';
+        
+        // Atualizar o texto e comportamento do botão
+        const subscribeBtn = videoModal.querySelector('.btn-subscribe');
+        subscribeBtn.innerHTML = `
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="8.5" cy="7" r="4"></circle>
+                <polyline points="17 11 19 13 23 9"></polyline>
+            </svg>
+            Comprar Conteúdo
+        `;
+        
+        // Atualizar informações de preço se disponível
+        const priceElement = card.querySelector('.content-price');
+        if (priceElement) {
+            const priceDisplay = videoModal.querySelector('.option-price .price');
+            if (priceDisplay) {
+                priceDisplay.textContent = priceElement.textContent;
+            }
+        }
+        
+        // Configurar o clique no botão de play para abrir login
+        playButton.onclick = function() {
+            abrirLoginModal();
+        };
+        
+        // Configurar o clique no botão de compra
+        subscribeBtn.onclick = function() {
+            abrirLoginModal();
+        };
+    }
+    
+    /**
+     * Configuração para conteúdo VIP (que mostra teaser)
+     */
+    function configurarModoVip(card, teaserCode) {
+        // Preparar para mostrar o teaser
+        modalThumbnail.style.display = 'none';
+        teaserOverlay.style.display = 'none';
+        loginOptions.style.display = 'block';
+        loadingIndicator.style.display = 'block';
+        
+        // Se tiver código de teaser, inserir o player
+        if (teaserCode && teaserCode.trim() !== '') {
+            // Criar elemento para o player
+            const playerContainer = document.createElement('div');
+            playerContainer.className = 'teaser-player';
+            playerContainer.innerHTML = teaserCode;
+            teaserContainer.appendChild(playerContainer);
+            
+            // Quando o iframe carregar, esconder o indicador de carregamento
+            const iframe = playerContainer.querySelector('iframe');
+            if (iframe) {
+                iframe.onload = function() {
+                    loadingIndicator.style.display = 'none';
+                };
+                
+                // Se o iframe não carregar em 5 segundos, mostrar fallback
+                setTimeout(function() {
+                    if (loadingIndicator.style.display !== 'none') {
+                        loadingIndicator.style.display = 'none';
+                        modalThumbnail.style.display = 'block';
+                        teaserOverlay.style.display = 'flex';
+                    }
+                }, 5000);
+            }
+        } else {
+            // Se não tiver teaser, mostrar thumbnail com overlay
+            loadingIndicator.style.display = 'none';
+            modalThumbnail.style.display = 'block';
+            teaserOverlay.style.display = 'flex';
+        }
+        
+        // Atualizar o texto e comportamento do botão
+        const subscribeBtn = videoModal.querySelector('.btn-subscribe');
+        subscribeBtn.innerHTML = `
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="8.5" cy="7" r="4"></circle>
+                <polyline points="17 11 19 13 23 9"></polyline>
+            </svg>
+            Assinar VIP
+        `;
+        
+        // Configurar o clique no botão de assinatura
+        subscribeBtn.onclick = function() {
+            abrirLoginModal();
+        };
+        
+        // Configurar o clique no botão de play (caso o teaser não carregue)
+        playButton.onclick = function() {
+            // Se estiver visível, significa que o teaser não carregou
+            if (teaserOverlay.style.display === 'flex') {
+                abrirLoginModal();
+            }
+        };
+    }
+    
+    /**
+     * Configuração padrão para outros tipos de conteúdo
+     */
+    function configurarModoPadrao(card) {
+        // Mostrar thumbnail com overlay
+        modalThumbnail.style.display = 'block';
+        teaserOverlay.style.display = 'flex';
+        loginOptions.style.display = 'block';
+        
+        // Atualizar botão para ação padrão
+        const subscribeBtn = videoModal.querySelector('.btn-subscribe');
+        subscribeBtn.innerHTML = `
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="8.5" cy="7" r="4"></circle>
+                <polyline points="17 11 19 13 23 9"></polyline>
+            </svg>
+            Assinar Agora
+        `;
+        
+        // Configurar ações para botões
+        playButton.onclick = function() {
+            abrirLoginModal();
+        };
+        
+        subscribeBtn.onclick = function() {
+            abrirLoginModal();
+        };
+    }
+    
+    /**
+     * Abre o modal de login/registro
+     */
+    function abrirLoginModal() {
+        // Fechar o modal de vídeo
+        fecharModal();
+        
+        // Abrir o modal de login (se existir)
+        const loginModal = document.getElementById('loginModal');
+        if (loginModal) {
+            loginModal.classList.add('show');
+        }
+    }
+    
+    /**
+     * Fecha o modal de vídeo
+     */
+    function fecharModal() {
+        // Remover players para interromper a reprodução
+        const players = teaserContainer.querySelectorAll('.teaser-player, iframe');
+        players.forEach(player => player.remove());
+        
+        // Esconder o modal
+        videoModal.style.display = 'none';
+        document.body.style.overflow = 'auto'; // Restaurar rolagem da página
+    }
+    
+    // Configurar botão de fechar
+    if (modalClose) {
+        modalClose.addEventListener('click', fecharModal);
     }
     
     // Fechar modal ao clicar fora do conteúdo
     videoModal.addEventListener('click', function(e) {
         if (e.target === videoModal) {
-            closeModal();
+            fecharModal();
         }
     });
     
-    // Ação do botão de play
-    if (playButton) {
-        playButton.addEventListener('click', function() {
-            const trigger = document.querySelector('.open-video-modal[data-video-id]');
-            const videoId = trigger ? trigger.getAttribute('data-video-id') : '';
-            
-            if (videoId) {
-                playVideo(videoId);
-            } else {
-                // Se não houver ID de vídeo, usar um vídeo de exemplo
-                playVideo('demo-video');
-            }
-        });
-    }
-    
-    // Fechar modal com a tecla ESC
+    // Fechar modal ao pressionar ESC
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && videoModal.classList.contains('active')) {
-            closeModal();
+        if (e.key === 'Escape' && videoModal.style.display === 'flex') {
+            fecharModal();
         }
     });
-    
-    // Função para abrir o modal
-    function openModal() {
-        videoModal.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Impedir rolagem da página
-    }
-    
-    // Função para fechar o modal
-    function closeModal() {
-        videoModal.classList.remove('active');
-        document.body.style.overflow = ''; // Restaurar rolagem da página
-        removeExistingVideo();
-    }
-    
-    // Função para remover vídeo existente
-    function removeExistingVideo() {
-        const videoElement = videoModal.querySelector('video');
-        if (videoElement) {
-            videoElement.pause();
-            videoElement.remove();
-        }
-        
-        // Mostrar thumbnail e botões novamente
-        if (modalThumbnail) modalThumbnail.style.display = '';
-        const playButtonWrapper = videoModal.querySelector('.play-button-wrapper');
-        if (playButtonWrapper) playButtonWrapper.style.display = '';
-        const previewBadge = videoModal.querySelector('.preview-badge');
-        if (previewBadge) previewBadge.style.display = '';
-    }
-    
-    // Função para reproduzir vídeo
-    function playVideo(videoId) {
-        console.log('Reproduzindo vídeo:', videoId);
-        
-        // Remover vídeo existente
-        removeExistingVideo();
-        
-        // Obter o container do teaser
-        const teaserContainer = videoModal.querySelector('.teaser-container');
-        if (!teaserContainer) return;
-        
-        // Mostrar indicador de carregamento
-        if (loadingIndicator) loadingIndicator.style.display = 'block';
-        
-        // Esconder thumbnail
-        modalThumbnail.style.display = 'none';
-        
-        // Esconder botão de play e badge
-        const playButtonWrapper = videoModal.querySelector('.play-button-wrapper');
-        if (playButtonWrapper) playButtonWrapper.style.display = 'none';
-        const previewBadge = videoModal.querySelector('.preview-badge');
-        if (previewBadge) previewBadge.style.display = 'none';
-        
-        // Criar elemento de vídeo
-        const videoElement = document.createElement('video');
-        videoElement.className = 'teaser-video';
-        videoElement.controls = true;
-        videoElement.autoplay = true;
-        videoElement.playsInline = true;
-        videoElement.muted = false;
-        
-        // Definir a fonte do vídeo com base no ID
-        // Você precisará adaptar esta parte para usar os vídeos reais do seu sistema
-        const videoSrc = getVideoSourceFromId(videoId);
-        
-        videoElement.innerHTML = `
-            <source src="${videoSrc}" type="video/mp4">
-            <p>Seu navegador não suporta vídeos HTML5.</p>
-        `;
-        
-        // Adicionar o vídeo ao container
-        teaserContainer.appendChild(videoElement);
-        
-        // Eventos do vídeo
-        videoElement.addEventListener('canplay', function() {
-            // Esconder o indicador de carregamento
-            if (loadingIndicator) loadingIndicator.style.display = 'none';
-        });
-        
-        videoElement.addEventListener('ended', function() {
-            // Remover vídeo
-            this.remove();
-            // Mostrar CTA para login/assinatura
-            modalThumbnail.style.display = '';
-            if (playButtonWrapper) playButtonWrapper.style.display = '';
-            if (previewBadge) previewBadge.style.display = '';
-        });
-        
-        videoElement.addEventListener('error', function(e) {
-            console.error('Erro ao carregar o vídeo:', e);
-            // Mostrar mensagem de erro
-            alert('Não foi possível carregar o vídeo. Por favor, tente novamente mais tarde.');
-            // Remover vídeo com erro
-            this.remove();
-            // Restaurar elementos visuais
-            modalThumbnail.style.display = '';
-            if (playButtonWrapper) playButtonWrapper.style.display = '';
-            if (previewBadge) previewBadge.style.display = '';
-            if (loadingIndicator) loadingIndicator.style.display = 'none';
-        });
-    }
-    
-    // Função para obter fonte do vídeo a partir do ID
-    function getVideoSourceFromId(videoId) {
-        // Aqui você pode implementar a lógica para buscar a URL real do vídeo
-        // Por enquanto, vamos usar um vídeo demo
-        return 'https://player.vimeo.com/external/426879954.sd.mp4?s=df4cadb04245941a14c4eb6f33fe8809d55fe5f4&profile_id=164&oauth2_token_id=57447761';
-    }
-    
-    // Função para formatar número de visualizações
-    function formatViewers(num) {
-        if (num >= 1000000) {
-            return (num / 1000000).toFixed(1) + 'M';
-        } else if (num >= 1000) {
-            return (num / 1000).toFixed(1) + 'K';
-        }
-        return num.toString();
-    }
-    
-    // Atualizar número de visualizações periodicamente
-    setInterval(() => {
-        if (videoModal.classList.contains('active') && modalViewers) {
-            // Extrair número atual
-            const currentText = modalViewers.textContent;
-            const currentNumber = parseInt(currentText.replace(/[^0-9]/g, ''));
-            
-            if (!isNaN(currentNumber)) {
-                // Variação aleatória entre -5 e +15
-                const variation = Math.floor(Math.random() * 21) - 5;
-                let newNumber = currentNumber + variation;
-                
-                // Garantir número mínimo
-                if (newNumber < 100) newNumber = 100 + Math.floor(Math.random() * 50);
-                
-                // Formatar e atualizar
-                modalViewers.textContent = formatViewers(newNumber) + ' assistindo';
-            }
-        }
-    }, 8000); // Atualizar a cada 8 segundos
 });

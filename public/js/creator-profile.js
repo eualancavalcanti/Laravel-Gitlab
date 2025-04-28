@@ -1,184 +1,174 @@
 /**
- * HotBoys - Creator Profile JavaScript
- * Script para perfil de criador compatível com Bootstrap Modal
+ * HotBoys - Gerenciador de modais unificado
+ * Versão otimizada para conteúdo exclusivo e VIP
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Funcionalidades de abas
+    // Configuração inicial
     setupTabs();
-    
-    // Configurar abas do modal de login
     setupLoginTabs();
-    
-    // Configurar modais de Bootstrap
-    setupBootstrapModals();
-    
-    // Configurar cards de conteúdo
+    setupModalSystem();
     setupContentCards();
-    
-    // Configurar indicadores de status online/offline
     setupOnlineIndicators();
-    
-    // Configurar tratamento de erro para imagens
     setupImageErrorHandling();
-    
-    // Animações para elementos da página
     setupAnimations();
 });
 
 /**
- * Configura os cards de conteúdo para abrir modais diferentes
+ * Sistema unificado de modais
  */
-function setupContentCards() {
-    // Obter todos os cards de conteúdo
-    const contentCards = document.querySelectorAll('.content-card');
+function setupModalSystem() {
+    // Limpar quaisquer modais temporários que possam ter ficado de sessões anteriores
+    const oldExclusiveModals = document.querySelectorAll('#exclusiveModal');
+    oldExclusiveModals.forEach(modal => modal.remove());
     
-    contentCards.forEach(card => {
-        // Remover qualquer ouvinte anterior
-        card.removeEventListener('click', handleCardClick);
-        
-        // Adicionar novo ouvinte
-        card.addEventListener('click', handleCardClick);
+    // Configurar botões de fechar para modais existentes
+    const closeButtons = document.querySelectorAll('.modal .close, .modal .modal-close, [data-dismiss="modal"]');
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const modal = this.closest('.modal');
+            if (modal) {
+                closeModal(modal);
+            }
+        });
+    });
+    
+    // Fechar ao clicar fora do modal
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal') || e.target.classList.contains('modal-backdrop')) {
+            const openModals = document.querySelectorAll('.modal.show, .modal[style*="display: block"]');
+            openModals.forEach(modal => closeModal(modal));
+        }
+    });
+    
+    // Fechar com a tecla ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const openModals = document.querySelectorAll('.modal.show, .modal[style*="display: block"]');
+            if (openModals.length > 0) {
+                openModals.forEach(modal => closeModal(modal));
+            }
+        }
+    });
+    
+    // Configurar gatilhos de modal padrão
+    const modalTriggers = document.querySelectorAll('[data-toggle="modal"]');
+    modalTriggers.forEach(trigger => {
+        trigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetSelector = this.getAttribute('data-target');
+            const targetModal = document.querySelector(targetSelector);
+            
+            if (targetModal) {
+                openModal(targetModal);
+            }
+        });
     });
 }
 
 /**
- * Manipula o clique em um card de conteúdo
+ * Abre um modal de forma consistente
  */
-function handleCardClick(event) {
-    event.preventDefault();
+function openModal(modal) {
+    // Fechar qualquer modal existente primeiro
+    const openModals = document.querySelectorAll('.modal.show, .modal[style*="display: block"]');
+    openModals.forEach(m => {
+        if (m !== modal) closeModal(m);
+    });
     
-    // Determinar o tipo de conteúdo
-    const isExclusive = this.closest('#exclusive') !== null || 
-                        this.querySelector('.content-badge.exclusive') !== null;
+    // Mostrar o modal
+    modal.classList.add('show');
+    modal.style.display = 'block';
+    document.body.classList.add('modal-open');
     
-    const isVip = this.closest('#vip') !== null || 
-                 this.querySelector('.content-badge.vip') !== null;
-    
-    if (isExclusive) {
-        // Para conteúdo exclusivo, mostrar modal especial
-        showExclusiveModal(this);
-    } else if (isVip) {
-        // Para conteúdo VIP, abrir o modal normal
-        openVideoModal(this);
-    } else {
-        // Para outros tipos, abrir o modal normal
-        openVideoModal(this);
+    // Adicionar backdrop se não existir
+    if (!document.querySelector('.modal-backdrop')) {
+        const backdrop = document.createElement('div');
+        backdrop.className = 'modal-backdrop fade show';
+        document.body.appendChild(backdrop);
     }
 }
 
 /**
- * Abre modal para conteúdo exclusivo
+ * Fecha um modal de forma consistente
  */
-function showExclusiveModal(card) {
-    // Obter dados do card
-    const title = card.querySelector('.content-title')?.textContent || 'Conteúdo Exclusivo';
-    const creatorName = document.querySelector('.profile-name')?.textContent || 'Modelo';
-    const creatorImage = document.querySelector('.profile-photo img')?.src || '';
+function closeModal(modal) {
+    if (!modal) return;
     
-    // Criar modal de conteúdo exclusivo se não existir
-    let exclusiveModal = document.getElementById('exclusiveModal');
+    // Remover iframe players para evitar reprodução em segundo plano
+    const iframes = modal.querySelectorAll('iframe');
+    iframes.forEach(iframe => iframe.remove());
     
-    if (!exclusiveModal) {
-        exclusiveModal = document.createElement('div');
-        exclusiveModal.id = 'exclusiveModal';
-        exclusiveModal.className = 'modal';
-        exclusiveModal.setAttribute('tabindex', '-1');
-        exclusiveModal.setAttribute('role', 'dialog');
-        exclusiveModal.setAttribute('aria-hidden', 'true');
-        
-        exclusiveModal.innerHTML = `
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Conteúdo Exclusivo</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body text-center">
-                        <div class="exclusive-preview">
-                            <div class="creator-preview">
-                                <img src="${creatorImage}" alt="${creatorName}" class="creator-image" />
-                                <div class="exclusive-badge">
-                                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                                    </svg>
-                                    Exclusivo
-                                </div>
-                            </div>
-                            <h4 class="exclusive-title mt-3"></h4>
-                            <p class="exclusive-message">Cadastre-se para ver meus conteúdos exclusivos!</p>
-                            <button class="btn btn-danger btn-lg mt-3 enter-button" data-toggle="modal" data-target="#loginModal">
-                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" class="mr-2">
-                                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-                                    <polyline points="10 17 15 12 10 7"></polyline>
-                                    <line x1="15" y1="12" x2="3" y2="12"></line>
-                                </svg>
-                                Entrar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(exclusiveModal);
-        
-        // Adicionar evento para o botão "Entrar"
-        const enterButton = exclusiveModal.querySelector('.enter-button');
-        if (enterButton) {
-            enterButton.addEventListener('click', function() {
-                closeBootstrapModal(exclusiveModal);
-                
-                // Abrir modal de login após fechar o modal exclusivo
-                setTimeout(() => {
-                    const loginModal = document.getElementById('loginModal');
-                    if (loginModal) {
-                        openBootstrapModal(loginModal);
-                    }
-                }, 300);
-            });
-        }
-        
-        // Adicionar evento para botão de fechar
-        const closeButton = exclusiveModal.querySelector('[data-dismiss="modal"]');
-        if (closeButton) {
-            closeButton.addEventListener('click', function() {
-                closeBootstrapModal(exclusiveModal);
-            });
-        }
-        
-        // Fechar ao clicar fora do conteúdo
-        exclusiveModal.addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeBootstrapModal(this);
+    // Esconder o modal
+    modal.classList.remove('show');
+    modal.style.display = 'none';
+    document.body.classList.remove('modal-open');
+    
+    // Remover backdrop
+    const backdrop = document.querySelector('.modal-backdrop');
+    if (backdrop) backdrop.remove();
+}
+
+/**
+ * Configuração de cards de conteúdo
+ */
+function setupContentCards() {
+    const contentCards = document.querySelectorAll('.content-card');
+    
+    contentCards.forEach(card => {
+        card.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Determinar tipo de conteúdo
+            const isExclusive = this.closest('#exclusive') !== null || 
+                              this.querySelector('.content-badge.exclusive') !== null;
+            
+            if (isExclusive) {
+                // Mostrar modal do criador para conteúdo exclusivo
+                handleExclusiveContent(this);
+            } else {
+                // Usar modal de vídeo para outros conteúdos (VIP)
+                handleVipContent(this);
             }
         });
-    }
-    
-    // Atualizar título do modal com o título do conteúdo
-    const titleElement = exclusiveModal.querySelector('.exclusive-title');
-    if (titleElement) {
-        titleElement.textContent = title;
-    }
-    
-    // Abrir o modal exclusivo
-    openBootstrapModal(exclusiveModal);
+    });
 }
 
 /**
- * Abre modal para conteúdo VIP
+ * Manipulador de conteúdo exclusivo
  */
-function openVideoModal(card) {
-    // Obter o modal de vídeo
+function handleExclusiveContent(card) {
+    // Obter dados do perfil do criador
+    const creatorName = document.querySelector('.profile-name')?.textContent || 'Modelo';
+    const creatorImage = document.querySelector('.profile-photo img')?.src || '';
+    const contentTitle = card.querySelector('.content-title')?.textContent || 'Conteúdo Exclusivo';
+
+    // Abrir modal de login diretamente - abordagem simplificada
+    const loginModal = document.getElementById('loginModal');
+    
+    if (loginModal) {
+        // Configurar o título do modal para informar qual conteúdo está sendo acessado
+        const loginTitle = loginModal.querySelector('.modal-title');
+        if (loginTitle) {
+            loginTitle.textContent = `Acesse o conteúdo exclusivo: ${contentTitle}`;
+        }
+        
+        // Abrir o modal de login
+        openModal(loginModal);
+    }
+}
+
+/**
+ * Manipulador de conteúdo VIP
+ */
+function handleVipContent(card) {
     const videoModal = document.getElementById('videoModal');
     if (!videoModal) return;
     
-    // Obter dados do card
+    // Obter informações do card
     const title = card.querySelector('.content-title')?.textContent || 'Vídeo';
     const thumbnail = card.querySelector('img')?.src || '';
-    const videoId = card.getAttribute('data-video-id') || '';
     const teaserCode = card.getAttribute('data-teaser-code') || '';
     
     // Obter elementos do modal
@@ -195,18 +185,17 @@ function openVideoModal(card) {
         modalThumbnail.alt = title;
     }
     
-    // Remover players anteriores
+    // Limpar qualquer player existente
     const existingPlayers = teaserContainer.querySelectorAll('.teaser-player, iframe');
     existingPlayers.forEach(player => player.remove());
     
-    // Mostrar indicador de carregamento
+    // Iniciar carregamento do teaser
     if (loadingIndicator) loadingIndicator.style.display = 'block';
     if (modalThumbnail) modalThumbnail.style.display = 'none';
     if (teaserOverlay) teaserOverlay.style.display = 'none';
     
-    // Se tiver código teaser, inserir
+    // Inserir teaser se disponível
     if (teaserCode && teaserCode.trim() !== '') {
-        // Criar player
         const playerContainer = document.createElement('div');
         playerContainer.className = 'teaser-player';
         playerContainer.innerHTML = teaserCode;
@@ -229,15 +218,18 @@ function openVideoModal(card) {
             }, 5000);
         }
     } else {
-        // Se não tiver teaser, mostrar thumbnail
+        // Mostrar thumbnail se não houver teaser
         if (loadingIndicator) loadingIndicator.style.display = 'none';
         if (modalThumbnail) modalThumbnail.style.display = 'block';
         if (teaserOverlay) teaserOverlay.style.display = 'flex';
     }
     
-    // Abrir o modal
-    openBootstrapModal(videoModal);
+    // Abrir modal
+    openModal(videoModal);
 }
+
+// Manter as outras funções auxiliares (setupTabs, setupLoginTabs, etc)
+// ...
 
 /**
  * Configura os modais Bootstrap

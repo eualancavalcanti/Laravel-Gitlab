@@ -1574,3 +1574,44 @@ hr {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(255, 51, 51, 0.3);
 }
+
+/* Correções para modal */
+body.modal-open {
+    overflow: hidden;
+    padding-right: 15px; /* Evita saltos no layout ao abrir/fechar modal */
+}
+
+.modal {
+    z-index: 1050;
+    display: none;
+}
+
+.modal-backdrop {
+    z-index: 1040;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Garantir que modal de vídeo fique acima dos outros */
+#videoModal {
+    z-index: 1060;
+}
+
+/* Garantir que botões de fechar funcionem */
+.modal .close, 
+.modal .modal-close,
+[data-dismiss="modal"] {
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.modal .close:hover, 
+.modal .modal-close:hover,
+[data-dismiss="modal"]:hover {
+    opacity: 1;
+}
+
+/* Evitar clique em elementos sobrepostos */
+.modal.show * {
+    pointer-events: auto;
+}

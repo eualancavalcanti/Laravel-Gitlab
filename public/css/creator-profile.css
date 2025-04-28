@@ -801,6 +801,30 @@
     background-color: #000;
 }
 
+/* Adicione estes estilos ao seu CSS */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1040;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-backdrop.fade {
+    opacity: 0;
+    transition: opacity 0.15s linear;
+}
+
+.modal-backdrop.show {
+    opacity: 0.5;
+}
+
+body.modal-open {
+    overflow: hidden;
+}
+
 /* Evitar que os modais apareçam juntos */
 body.modal-open .modal + .modal-backdrop.show {
     z-index: 1060;
@@ -1460,6 +1484,23 @@ hr {
         max-height: 90vh;
         overflow-y: auto;
     }
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    outline: 0;
+    display: none;
+}
+
+.modal.show {
+    display: block;
 }
 
 /* Animação de pulse para elementos com essa classe */

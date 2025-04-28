@@ -1,6 +1,6 @@
 /**
  * HotBoys - Creator Profile JavaScript
- * Script para perfil de criador com suporte para indicadores online/offline
+ * Script para perfil de criador compatível com Bootstrap Modal
  */
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Configurar abas do modal de login
     setupLoginTabs();
+    
+    // Configurar modais de Bootstrap
+    setupBootstrapModals();
     
     // Configurar indicadores de status online/offline
     setupOnlineIndicators();
@@ -19,6 +22,83 @@ document.addEventListener('DOMContentLoaded', function() {
     // Animações para elementos da página
     setupAnimations();
 });
+
+/**
+ * Configura os modais Bootstrap
+ */
+function setupBootstrapModals() {
+    // Implementar comportamento do Bootstrap modal manualmente
+    
+    // 1. Botões para abrir modal (usando atributo data-target)
+    const modalTriggers = document.querySelectorAll('[data-toggle="modal"]');
+    modalTriggers.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetSelector = this.getAttribute('data-target');
+            const targetModal = document.querySelector(targetSelector);
+            
+            if (targetModal) {
+                // Adicionar classe 'show' e display: block
+                targetModal.classList.add('show');
+                targetModal.style.display = 'block';
+                document.body.classList.add('modal-open');
+                
+                // Adicionar backdrop se não existir
+                if (!document.querySelector('.modal-backdrop')) {
+                    const backdrop = document.createElement('div');
+                    backdrop.className = 'modal-backdrop fade show';
+                    document.body.appendChild(backdrop);
+                }
+            }
+        });
+    });
+    
+    // 2. Botões para fechar modal (usando data-dismiss="modal")
+    const closeButtons = document.querySelectorAll('[data-dismiss="modal"]');
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            closeBootstrapModal(this);
+        });
+    });
+    
+    // 3. Fechar ao clicar fora do modal (no backdrop)
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal') && e.target.classList.contains('show')) {
+            closeBootstrapModal(e.target);
+        }
+    });
+    
+    // 4. Fechar com a tecla ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const openModal = document.querySelector('.modal.show');
+            if (openModal) {
+                closeBootstrapModal(openModal);
+            }
+        }
+    });
+}
+
+/**
+ * Fecha um modal Bootstrap
+ */
+function closeBootstrapModal(element) {
+    // Encontrar o modal a partir do elemento clicado
+    const modal = element.closest ? element.closest('.modal') : element;
+    
+    if (modal) {
+        // Remover classes de exibição
+        modal.classList.remove('show');
+        modal.style.display = 'none';
+        document.body.classList.remove('modal-open');
+        
+        // Remover backdrop
+        const backdrop = document.querySelector('.modal-backdrop');
+        if (backdrop) {
+            backdrop.remove();
+        }
+    }
+}
 
 /**
  * Configura o sistema de abas do perfil
@@ -136,7 +216,6 @@ function setupOnlineIndicators() {
 
 /**
  * Busca o status online de usuários da API
- * Usa método GET para evitar problemas de CORS/cache em servidores Apache
  */
 function fetchUserStatus() {
     // Obter IDs de usuário da página
@@ -174,7 +253,6 @@ function fetchUserStatus() {
     })
     .catch(error => {
         console.error('Erro ao verificar status:', error);
-        // Em caso de erro, manter o status atual sem alterações
     });
 }
 

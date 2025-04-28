@@ -61,12 +61,19 @@ function setupBootstrapModals() {
         });
     });
     
-    // 3. Fechar ao clicar fora do modal (no backdrop)
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('modal') && e.target.classList.contains('show')) {
-            closeBootstrapModal(e.target);
+    // 3. Fechar ao clicar fora do conteúdo do modal
+document.addEventListener('click', function(e) {
+    // Verificar se o clique foi no elemento modal ou no backdrop
+    if ((e.target.classList.contains('modal') && e.target.classList.contains('show')) || 
+        e.target.classList.contains('modal-backdrop')) {
+        
+        // Buscar o modal aberto
+        const openModal = document.querySelector('.modal.show');
+        if (openModal) {
+            closeBootstrapModal(openModal);
         }
-    });
+    }
+});
     
     // 4. Fechar com a tecla ESC
     document.addEventListener('keydown', function(e) {

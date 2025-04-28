@@ -1507,3 +1507,70 @@ hr {
 .pulse-animation {
     animation: pulse 2s infinite;
 }
+
+/* Estilos para o modal exclusivo */
+.exclusive-preview {
+    text-align: center;
+    padding: 20px;
+}
+
+.creator-preview {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #FF3333;
+    box-shadow: 0 0 20px rgba(255, 51, 51, 0.5);
+}
+
+.creator-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.exclusive-badge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: #FF3333;
+    color: white;
+    border-radius: 50%;
+    padding: 5px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.exclusive-title {
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+.exclusive-message {
+    font-size: 1.1rem;
+    color: #ccc;
+    margin: 10px 0 20px;
+}
+
+.enter-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 30px;
+    font-weight: bold;
+    border-radius: 30px;
+    background: linear-gradient(to right, #FF3333, #FF6666);
+    border: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.enter-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 51, 51, 0.3);
+}

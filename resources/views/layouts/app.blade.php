@@ -47,6 +47,7 @@
     <script src="{{ asset('js/mobile-carousel.js') }}"></script>
     <script src="{{ asset('js/content-modal.js') }}"></script>
     <script src="{{ asset('js/hero-fix.js') }}"></script>
+    <script src="{{ asset('js/modal-manager.js') }}"></script> <!-- Novo gerenciador -->
     
     
     @stack('scripts')

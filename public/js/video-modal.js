@@ -371,7 +371,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     /**
-     * Fecha o modal de vídeo - CORRIGIDO
+     * Fecha o modal de vídeo - CORRIGIDO COMPLETAMENTE
+     * Este é o principal ponto de correção onde o botão de fechar não funcionava corretamente
      */
     function fecharModal() {
         // Remover players para interromper a reprodução
@@ -383,41 +384,41 @@ document.addEventListener('DOMContentLoaded', function() {
         videoModal.classList.remove('show');
         videoModal.style.display = 'none';
         
-        // Verificar se há outros modais abertos
-        const anyModalOpen = document.querySelector('.modal.show:not(#videoModal)');
-        if (!anyModalOpen) {
-            // Remover backdrop apenas se não houver outros modais abertos
-            document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
-            
-            // Restaurar rolagem
-            document.body.classList.remove('modal-open');
-            document.body.style.overflow = '';
-            document.body.style.paddingRight = '';
-        }
+        // IMPORTANTE: Remover TODOS os backdrops independentemente de outros modais
+        const backdrops = document.querySelectorAll('.modal-backdrop');
+        backdrops.forEach(backdrop => {
+            backdrop.remove();
+        });
+        
+        // IMPORTANTE: Limpar sempre o estado do body
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+        
+        // Se houver algum outro modal para mostrar, ele deve adicionar seu próprio backdrop
+        // e configurar o body novamente
     }
     
-    // Configurar botão de fechar
+    // Configurar botão de fechar - CORREÇÃO PRINCIPAL
     if (modalClose) {
         modalClose.addEventListener('click', function(e) {
             e.preventDefault();
-            e.stopPropagation();
-            fecharModal();
+            e.stopPropagation(); // Impedir propagação do evento
+            fecharModal(); // Usar a função corrigida
         });
     }
     
     // Fechar modal ao clicar fora do conteúdo
     videoModal.addEventListener('click', function(e) {
         // Verificar se o clique foi diretamente no backdrop, não em seus filhos
-        if (e.target === videoModal && !e.target.querySelector('.modal-dialog:hover')) {
+        if (e.target === videoModal) {
             fecharModal();
         }
     });
     
     // Fechar modal ao pressionar ESC
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && 
-            videoModal.classList.contains('show') || 
-            videoModal.style.display === 'block') {
+        if (e.key === 'Escape' && videoModal.classList.contains('show')) {
             fecharModal();
         }
     });
@@ -431,5 +432,57 @@ document.addEventListener('DOMContentLoaded', function() {
         card.addEventListener('click', function() {
             openVideoModal(this);
         });
+    });
+    
+    // Adicionar botão de emergência (invisível por padrão)
+    const resetButton = document.createElement('button');
+    resetButton.textContent = 'Resetar Modais';
+    resetButton.style.position = 'fixed';
+    resetButton.style.bottom = '10px';
+    resetButton.style.right = '10px';
+    resetButton.style.zIndex = '9999';
+    resetButton.style.background = '#FF3333';
+    resetButton.style.color = 'white';
+    resetButton.style.border = 'none';
+    resetButton.style.borderRadius = '5px';
+    resetButton.style.padding = '10px 15px';
+    resetButton.style.display = 'none';
+    resetButton.style.fontWeight = 'bold';
+    resetButton.style.cursor = 'pointer';
+    resetButton.className = 'modal-reset-button';
+    
+    document.body.appendChild(resetButton);
+    
+    // Verificar após 3 segundos se há problemas
+    setTimeout(function() {
+        const modalBackdrop = document.querySelector('.modal-backdrop');
+        const openModal = document.querySelector('.modal.show');
+        
+        if ((modalBackdrop && !openModal) || 
+            (document.body.classList.contains('modal-open') && !openModal)) {
+            resetButton.style.display = 'block';
+        }
+    }, 3000);
+    
+    // Comportamento do botão de emergência
+    resetButton.addEventListener('click', function() {
+        // Remover todos os backdrops
+        document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+            backdrop.remove();
+        });
+        
+        // Fechar todos os modais
+        document.querySelectorAll('.modal.show').forEach(modal => {
+            modal.classList.remove('show');
+            modal.style.display = 'none';
+        });
+        
+        // Limpar o body
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+        
+        // Esconder botão
+        this.style.display = 'none';
     });
 });

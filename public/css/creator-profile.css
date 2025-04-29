@@ -316,7 +316,7 @@
     position: relative;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.05);
-    opacity: 0;
+    /*opacity: 0;*/
     transform: translateY(20px);
 }
 

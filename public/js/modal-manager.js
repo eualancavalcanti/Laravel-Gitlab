@@ -1,199 +1,231 @@
 /**
- * Modal Manager - Gerenciador unificado de modais para HotBoys
- * Solução para problemas de conflito entre modais e backdrops persistentes
+ * Modal Manager - Gerenciador universal de modais para HotBoys
+ * Versão 2.0 - Suporte para todos os tipos de modais (.modal e .content-modal)
+ * Solução para problemas de fechamento e backdrops persistentes
  */
 document.addEventListener('DOMContentLoaded', function() {
-    // Referências para modais principais do sistema
+    console.log('Inicializando gerenciador universal de modais');
+    
+    // Identificar todos os modais no sistema
+    const standardModals = Array.from(document.querySelectorAll('.modal'));
+    const contentModals = Array.from(document.querySelectorAll('.content-modal'));
+    const allModals = [...standardModals, ...contentModals];
+    
+    // Verificar modais conhecidos por ID
     const videoModal = document.getElementById('videoModal');
     const loginModal = document.getElementById('loginModal');
-    const exclusiveModal = document.getElementById('exclusiveModal');
     
-    // Array de todos os modais gerenciados
-    const allModals = [videoModal, loginModal, exclusiveModal].filter(modal => modal !== null);
-    
-    // Inicializar o gerenciador de modais
-    initModalManager();
+    // Inicializar o gerenciador
+    initUniversalModalManager();
     
     /**
      * Inicializa o gerenciador central de modais
      */
-    function initModalManager() {
-        // Remover qualquer backdrop residual no carregamento da página
+    function initUniversalModalManager() {
+        // Limpeza inicial - remover quaisquer resíduos
         removeBackdrops();
         resetBodyState();
         
-        // Configurar botões para fechar modais
-        document.querySelectorAll('[data-dismiss="modal"], .modal-close, .close').forEach(button => {
-            // Remover eventos antigos para evitar duplicação
-            const newButton = button.cloneNode(true);
-            if (button.parentNode) {
-                button.parentNode.replaceChild(newButton, button);
+        // Configurar TODOS os botões de fechar modal no documento
+        configurarBotoesFechar();
+        
+        // Configurar fechamento ao clicar fora do modal
+        configurarFechamentoFora();
+        
+        // Configurar fechamento com ESC
+        configurarTeclaESC();
+        
+        // Configurar botões de abertura de modal
+        configurarBotoesAbrir();
+        
+        // Adicionar botão de emergência
+        adicionarBotaoEmergencia();
+        
+        // Iniciar monitoramento de problemas
+        iniciarMonitoramento();
+    }
+    
+    /**
+     * Configura todos os botões que fecham modais
+     */
+    function configurarBotoesFechar() {
+        // Selecionar todos os possíveis botões de fechar
+        const botoesFechar = document.querySelectorAll('.modal-close, .close, [data-dismiss="modal"]');
+        
+        botoesFechar.forEach(botao => {
+            // Criar novo botão para substituir (remove eventos antigos)
+            const novoBotao = botao.cloneNode(true);
+            
+            // Substituir o botão original pelo novo
+            if (botao.parentNode) {
+                botao.parentNode.replaceChild(novoBotao, botao);
             }
             
-            // Adicionar novo handler
-            newButton.addEventListener('click', function(e) {
+            // Adicionar evento de clique ao novo botão
+            novoBotao.addEventListener('click', function(e) {
                 e.preventDefault();
-                e.stopPropagation(); // Impedir propagação do evento
+                e.stopPropagation();
                 
-                const modal = this.closest('.modal');
+                // Encontrar o modal pai (qualquer tipo)
+                const modal = this.closest('.modal') || this.closest('.content-modal');
+                
                 if (modal) {
-                    closeModal(modal);
+                    fecharModal(modal);
+                    console.log('Modal fechado pelo botão X:', modal.id || 'sem id');
                 }
             });
         });
-        
-        // Configurar fechamento de modal ao clicar fora
+    }
+    
+    /**
+     * Configura fechamento ao clicar fora do conteúdo do modal
+     */
+    function configurarFechamentoFora() {
         allModals.forEach(modal => {
-            // Remover eventos antigos para evitar duplicação
-            const newModal = modal.cloneNode(false);
-            Array.from(modal.children).forEach(child => newModal.appendChild(child));
+            // Criar clone para remover eventos existentes
+            const novoModal = modal.cloneNode(false);
             
+            // Transferir o conteúdo para o novo modal
+            while (modal.firstChild) {
+                novoModal.appendChild(modal.firstChild);
+            }
+            
+            // Substituir o modal original
             if (modal.parentNode) {
-                modal.parentNode.replaceChild(newModal, modal);
+                modal.parentNode.replaceChild(novoModal, modal);
                 
-                // Adicionar novo handler
-                newModal.addEventListener('click', function(e) {
-                    // Fechar apenas se o clique foi no backdrop (fora do conteúdo do modal)
+                // Adicionar novo evento de clique
+                novoModal.addEventListener('click', function(e) {
+                    // Verificar se o clique foi no fundo do modal, não em seu conteúdo
                     if (e.target === this) {
-                        closeModal(this);
+                        fecharModal(this);
+                        console.log('Modal fechado por clique fora:', this.id || 'sem id');
                     }
                 });
             }
         });
-        
-        // Configurar fechamento ao pressionar ESC
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                const openModal = document.querySelector('.modal.show');
-                if (openModal) {
-                    closeModal(openModal);
-                }
-            }
-        });
-        
-        // Configurar botões que abrem modais
-        document.querySelectorAll('[data-toggle="modal"]').forEach(trigger => {
-            trigger.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const targetSelector = this.getAttribute('data-target');
-                const targetModal = document.querySelector(targetSelector);
-                
-                if (targetModal) {
-                    openModal(targetModal);
-                }
-            });
-        });
-        
-        // Limpar qualquer resíduo de modal ao carregar a página
-        resetModalState();
-        
-        // Adicionar botão de emergência (invisível por padrão)
-        addEmergencyButton();
-        
-        // Monitorar o DOM para detectar backdrops persistentes
-        monitorBackdrops();
     }
     
     /**
-     * Abre um modal garantindo que outros modais estejam fechados
+     * Configura fechamento com tecla ESC
      */
-    function openModal(modal) {
-        console.log("Abrindo modal:", modal.id);
+    function configurarTeclaESC() {
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                // Procurar qualquer modal aberto
+                const modalAberto = document.querySelector('.modal.show, .content-modal.show');
+                
+                if (modalAberto) {
+                    fecharModal(modalAberto);
+                    console.log('Modal fechado pela tecla ESC:', modalAberto.id || 'sem id');
+                }
+            }
+        });
+    }
+    
+    /**
+     * Configura botões que abrem modais
+     */
+    function configurarBotoesAbrir() {
+        const botoesAbrir = document.querySelectorAll('[data-toggle="modal"]');
         
-        // Certificar-se de que qualquer modal aberto seja fechado primeiro
-        const openModals = document.querySelectorAll('.modal.show');
-        openModals.forEach(openModal => {
-            if (openModal !== modal) {
-                // Fechar modais sem animação para evitar conflitos
-                closeModalImmediately(openModal);
+        botoesAbrir.forEach(botao => {
+            botao.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const seletorAlvo = this.getAttribute('data-target');
+                const modalAlvo = document.querySelector(seletorAlvo);
+                
+                if (modalAlvo) {
+                    abrirModal(modalAlvo);
+                    console.log('Modal aberto:', modalAlvo.id || 'sem id');
+                }
+            });
+        });
+    }
+    
+    /**
+     * Abre um modal com animação suave
+     */
+    function abrirModal(modal) {
+        // Se há outro modal aberto, fechar primeiro
+        const modaisAbertos = document.querySelectorAll('.modal.show, .content-modal.show');
+        modaisAbertos.forEach(modalAberto => {
+            if (modalAberto !== modal) {
+                fecharModalImediatamente(modalAberto);
             }
         });
         
         // Remover backdrops existentes
         removeBackdrops();
         
-        // Criar um novo backdrop limpo
+        // Criar novo backdrop
         const backdrop = document.createElement('div');
         backdrop.className = 'modal-backdrop fade show';
         document.body.appendChild(backdrop);
         
-        // Abrir o novo modal
+        // Mostrar o modal
         modal.classList.add('show');
         modal.style.display = 'block';
-        modal.setAttribute('aria-hidden', 'false');
         
-        // Bloquear scrolling
+        // Bloquear rolagem da página
         document.body.classList.add('modal-open');
         document.body.style.overflow = 'hidden';
         
-        // Compensar largura da scrollbar
-        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-        if (scrollbarWidth > 0) {
-            document.body.style.paddingRight = scrollbarWidth + 'px';
+        // Compensar largura da barra de rolagem
+        const larguraScrollbar = window.innerWidth - document.documentElement.clientWidth;
+        if (larguraScrollbar > 0) {
+            document.body.style.paddingRight = larguraScrollbar + 'px';
         }
     }
     
     /**
-     * Fecha um modal com animação suave - VERSÃO CORRIGIDA
+     * Fecha um modal com animação suave
      */
-    function closeModal(modal) {
-        console.log("Fechando modal:", modal.id);
-        
-        // Remover players de vídeo para interromper reprodução
-        modal.querySelectorAll('iframe').forEach(iframe => {
-            // Primeiro parar a reprodução mudando o src
-            iframe.src = '';
+    function fecharModal(modal) {
+        // Parar reprodução de vídeos
+        const iframes = modal.querySelectorAll('iframe');
+        iframes.forEach(iframe => {
+            iframe.src = ''; // Parar reprodução
             
-            // Depois limpar o conteúdo do container
-            const parent = iframe.parentNode;
-            if (parent) {
-                parent.innerHTML = '';
+            // Limpar container
+            if (iframe.parentNode) {
+                iframe.parentNode.innerHTML = '';
             }
         });
         
         // Esconder o modal
         modal.classList.remove('show');
-        modal.style.display = 'none'; // Remover imediatamente para evitar problemas
-        modal.setAttribute('aria-hidden', 'true');
+        modal.style.display = 'none';
         
-        // IMPORTANTE: Sempre remover todos os backdrops, independentemente de outros modais abertos
+        // Remover TODOS os backdrops
         removeBackdrops();
         
-        // IMPORTANTE: Sempre resetar o estado do body
+        // Restaurar estado do body
         resetBodyState();
-        
-        // Se houver outro modal aberto que precisa ser mostrado, reabri-lo explicitamente
-        const nextModal = document.querySelector('.modal.show');
-        if (nextModal) {
-            setTimeout(() => {
-                openModal(nextModal);
-            }, 10);
-        }
     }
     
     /**
      * Fecha um modal imediatamente sem animação
      */
-    function closeModalImmediately(modal) {
-        // Remover players de vídeo
-        modal.querySelectorAll('iframe').forEach(iframe => {
+    function fecharModalImediatamente(modal) {
+        // Parar reprodução de vídeos
+        const iframes = modal.querySelectorAll('iframe');
+        iframes.forEach(iframe => {
             iframe.src = '';
             
-            const parent = iframe.parentNode;
-            if (parent) {
-                parent.innerHTML = '';
+            if (iframe.parentNode) {
+                iframe.parentNode.innerHTML = '';
             }
         });
         
-        // Esconder o modal sem animação
+        // Esconder imediatamente
         modal.classList.remove('show');
         modal.style.display = 'none';
-        modal.setAttribute('aria-hidden', 'true');
     }
     
     /**
-     * Remove todos os backdrops da página
+     * Remove todos os backdrops
      */
     function removeBackdrops() {
         document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
@@ -202,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     /**
-     * Restaura o estado normal do body
+     * Reseta o estado do body
      */
     function resetBodyState() {
         document.body.classList.remove('modal-open');
@@ -211,139 +243,172 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     /**
-     * Reseta completamente o estado de modais
+     * Reseta todo o sistema de modais
      */
-    function resetModalState() {
+    function resetModalSystem() {
         // Fechar todos os modais
-        document.querySelectorAll('.modal').forEach(modal => {
+        document.querySelectorAll('.modal, .content-modal').forEach(modal => {
             modal.classList.remove('show');
             modal.style.display = 'none';
-            modal.setAttribute('aria-hidden', 'true');
         });
         
         // Remover backdrops
         removeBackdrops();
         
-        // Restaurar body
+        // Resetar body
         resetBodyState();
+        
+        // Reconfigurar event listeners
+        configurarBotoesFechar();
+        configurarFechamentoFora();
     }
     
     /**
-     * Monitora o DOM para detectar e corrigir backdrops persistentes
+     * Adiciona botão de emergência
      */
-    function monitorBackdrops() {
-        // Criar um MutationObserver para detectar mudanças no DOM
+    function adicionarBotaoEmergencia() {
+        // Remover botão existente para evitar duplicação
+        const botaoExistente = document.getElementById('emergency-modal-reset');
+        if (botaoExistente) {
+            botaoExistente.remove();
+        }
+        
+        // Criar botão de emergência
+        const botaoReset = document.createElement('button');
+        botaoReset.id = 'emergency-modal-reset';
+        botaoReset.textContent = 'Resetar Modais';
+        botaoReset.style.position = 'fixed';
+        botaoReset.style.bottom = '10px';
+        botaoReset.style.right = '10px';
+        botaoReset.style.zIndex = '9999';
+        botaoReset.style.background = '#FF3333';
+        botaoReset.style.color = 'white';
+        botaoReset.style.border = 'none';
+        botaoReset.style.borderRadius = '5px';
+        botaoReset.style.padding = '10px 15px';
+        botaoReset.style.fontWeight = 'bold';
+        botaoReset.style.cursor = 'pointer';
+        botaoReset.style.display = 'none';
+        botaoReset.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.3)';
+        
+        // Adicionar ao body
+        document.body.appendChild(botaoReset);
+        
+        // Adicionar evento de clique
+        botaoReset.addEventListener('click', function() {
+            resetModalSystem();
+            this.style.display = 'none';
+            
+            // Exibir mensagem
+            const mensagem = document.createElement('div');
+            mensagem.textContent = 'Sistema de modais resetado com sucesso';
+            mensagem.style.position = 'fixed';
+            mensagem.style.bottom = '60px';
+            mensagem.style.left = '50%';
+            mensagem.style.transform = 'translateX(-50%)';
+            mensagem.style.background = 'rgba(0, 0, 0, 0.8)';
+            mensagem.style.color = 'white';
+            mensagem.style.padding = '10px 20px';
+            mensagem.style.borderRadius = '5px';
+            mensagem.style.zIndex = '9999';
+            
+            document.body.appendChild(mensagem);
+            
+            // Remover mensagem após 3 segundos
+            setTimeout(() => {
+                mensagem.remove();
+            }, 3000);
+        });
+        
+        // Configurar detecção de sequência de ESC
+        let contadorESC = 0;
+        let ultimoESCTempo = 0;
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const agora = Date.now();
+                
+                // Verificar se foi uma sequência rápida
+                if (agora - ultimoESCTempo < 500) {
+                    contadorESC++;
+                } else {
+                    contadorESC = 1;
+                }
+                
+                ultimoESCTempo = agora;
+                
+                // Após 3 ESCs rápidos, mostrar botão
+                if (contadorESC >= 3) {
+                    botaoReset.style.display = 'block';
+                    contadorESC = 0;
+                }
+            }
+        });
+    }
+    
+    /**
+     * Inicia monitoramento para problemas com modais
+     */
+    function iniciarMonitoramento() {
+        // Verificar problemas iniciais após carregamento
+        setTimeout(verificarProblemas, 3000);
+        
+        // Verificação periódica
+        setInterval(verificarProblemas, 10000);
+        
+        // Observar mudanças no DOM
         const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
-                // Verificar se foi adicionado algum elemento
                 if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                    // Verificar se há backdrop sem modal ativo
-                    setTimeout(function() {
-                        const hasBackdrop = document.querySelector('.modal-backdrop');
-                        const hasActiveModal = document.querySelector('.modal.show');
-                        
-                        if (hasBackdrop && !hasActiveModal) {
-                            console.log("Detectado backdrop sem modal ativo. Removendo...");
-                            removeBackdrops();
-                            resetBodyState();
-                        }
-                    }, 100);
+                    setTimeout(verificarProblemas, 500);
                 }
             });
         });
         
-        // Iniciar a observação do body para novas adições
-        observer.observe(document.body, { childList: true });
+        observer.observe(document.body, { childList: true, subtree: true });
     }
     
     /**
-     * Adiciona um botão de emergência para casos onde modais travem
+     * Verifica problemas comuns com modais
      */
-    function addEmergencyButton() {
-        // Remover botão existente para evitar duplicação
-        const existingButton = document.getElementById('modal-emergency-reset');
-        if (existingButton) {
-            existingButton.remove();
+    function verificarProblemas() {
+        const temBackdrop = document.querySelector('.modal-backdrop');
+        const temModalAberto = document.querySelector('.modal.show, .content-modal.show');
+        const bodyBloqueado = document.body.classList.contains('modal-open');
+        
+        // Problema: backdrop sem modal aberto
+        if (temBackdrop && !temModalAberto) {
+            console.warn('Problema detectado: backdrop sem modal aberto - corrigindo');
+            removeBackdrops();
         }
         
-        // Criar botão de emergência
-        const resetButton = document.createElement('button');
-        resetButton.textContent = 'Resetar Modais';
-        resetButton.id = 'modal-emergency-reset';
-        resetButton.className = 'modal-reset-button';
-        resetButton.style.position = 'fixed';
-        resetButton.style.bottom = '10px';
-        resetButton.style.right = '10px';
-        resetButton.style.zIndex = '9999';
-        resetButton.style.background = '#FF3333';
-        resetButton.style.color = 'white';
-        resetButton.style.border = 'none';
-        resetButton.style.borderRadius = '5px';
-        resetButton.style.padding = '10px 15px';
-        resetButton.style.fontWeight = 'bold';
-        resetButton.style.display = 'none';
-        resetButton.style.cursor = 'pointer';
-        
-        // Adicionar ao body
-        document.body.appendChild(resetButton);
-        
-        // Verificar após 3 segundos se há problemas
-        setTimeout(function() {
-            const modalBackdrop = document.querySelector('.modal-backdrop');
-            const openModal = document.querySelector('.modal.show');
-            
-            if ((modalBackdrop && !openModal) || 
-                (document.body.classList.contains('modal-open') && !openModal)) {
-                resetButton.style.display = 'block';
-            }
-        }, 3000);
-        
-        // Mostrar botão após sequência de ESC rápidos
-        let escCount = 0;
-        let lastEscTime = 0;
-        
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                const now = Date.now();
-                if (now - lastEscTime < 500) {
-                    escCount++;
-                    if (escCount >= 3) {
-                        resetButton.style.display = 'block';
-                        escCount = 0;
-                    }
-                } else {
-                    escCount = 1;
-                }
-                lastEscTime = now;
-            }
-        });
-        
-        // Comportamento do botão
-        resetButton.addEventListener('click', function() {
-            resetModalState();
-            this.style.display = 'none';
-            
-            // Notificar o usuário que os modais foram resetados
-            alert('Interface de modais restaurada com sucesso!');
-        });
-    }
-    
-    // Verificação periódica para backdrops persistentes
-    setInterval(function() {
-        const hasBackdrop = document.querySelector('.modal-backdrop');
-        const hasActiveModal = document.querySelector('.modal.show');
-        
-        if (hasBackdrop && !hasActiveModal) {
-            console.log("Detectado backdrop persistente na verificação periódica. Removendo...");
-            removeBackdrops();
+        // Problema: body bloqueado sem modal aberto
+        if (bodyBloqueado && !temModalAberto) {
+            console.warn('Problema detectado: body bloqueado sem modal aberto - corrigindo');
             resetBodyState();
         }
-    }, 5000); // Verificar a cada 5 segundos
+        
+        // Problema: modal aberto sem backdrop 
+        if (temModalAberto && !temBackdrop) {
+            console.warn('Problema detectado: modal aberto sem backdrop - corrigindo');
+            const backdrop = document.createElement('div');
+            backdrop.className = 'modal-backdrop fade show';
+            document.body.appendChild(backdrop);
+        }
+        
+        // Mostrar botão de emergência se detectar problemas
+        if ((temBackdrop && !temModalAberto) || (bodyBloqueado && !temModalAberto)) {
+            const botaoEmergencia = document.getElementById('emergency-modal-reset');
+            if (botaoEmergencia) {
+                botaoEmergencia.style.display = 'block';
+            }
+        }
+    }
     
-    // Expor funções para uso global
+    // Expor API para uso global
     window.modalManager = {
-        open: openModal,
-        close: closeModal,
-        reset: resetModalState
+        open: abrirModal,
+        close: fecharModal,
+        reset: resetModalSystem
     };
 });

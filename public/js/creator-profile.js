@@ -142,6 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 /**
  * Configura sistema básico de modais
+ * Esta é a função corrigida para resolver o problema de fechamento
  */
 function setupBasicModals() {
     // Limpar qualquer backdrop existente e resetar o body
@@ -163,11 +164,21 @@ function setupBasicModals() {
         });
     });
     
-    // Configurar botões para fechar modais
-    document.querySelectorAll('[data-dismiss="modal"], .modal .close, .modal .modal-close').forEach(button => {
-        button.addEventListener('click', function(e) {
+    // CORREÇÃO: Configurar botões para fechar modais
+    // Abordagem com event listener direto em cada botão
+    document.querySelectorAll('.modal .close, .modal .modal-close, [data-dismiss="modal"]').forEach(button => {
+        // Remover event listeners antigos
+        const newButton = button.cloneNode(true);
+        if (button.parentNode) {
+            button.parentNode.replaceChild(newButton, button);
+        }
+        
+        // Adicionar novo event listener
+        newButton.addEventListener('click', function(e) {
             e.preventDefault();
+            e.stopPropagation(); // Prevenir propagação do evento
             
+            // Encontrar o modal pai e fechá-lo
             const modal = this.closest('.modal');
             if (modal) {
                 closeModal(modal);
@@ -175,10 +186,26 @@ function setupBasicModals() {
         });
     });
     
-    // Fechar modal ao clicar fora
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('modal') && !e.target.querySelector('.modal-dialog:hover')) {
-            closeModal(e.target);
+    // CORREÇÃO: Fechar modal ao clicar fora
+    document.querySelectorAll('.modal').forEach(modal => {
+        // Criar uma cópia do modal para remover event listeners existentes
+        const clonedModal = modal.cloneNode(false); // Shallow clone
+        
+        // Transferir filhos para o clone
+        while (modal.firstChild) {
+            clonedModal.appendChild(modal.firstChild);
+        }
+        
+        // Substituir o modal original pelo clone
+        if (modal.parentNode) {
+            modal.parentNode.replaceChild(clonedModal, modal);
+            
+            // Adicionar novo event listener
+            clonedModal.addEventListener('click', function(e) {
+                if (e.target === this) { // Clique direto no fundo do modal
+                    closeModal(this);
+                }
+            });
         }
     });
     

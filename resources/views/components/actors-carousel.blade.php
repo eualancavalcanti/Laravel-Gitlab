@@ -12,7 +12,7 @@
             <div class="actors-carousel">
                 @forelse($actors as $actor)
                     <div class="actor-card">
-                        <a href="{{ route('creator.profile', ['username' => $actor->nome_usuario ?? strtolower(str_replace(' ', '', $actor->nome))]) }}" class="actor-link">
+                        <a href="{{ route('creator.profile', ['username' => ($actor->nome_usuario ? ltrim($actor->nome_usuario, '@') : strtolower(str_replace(' ', '', $actor->nome)))]) }}" class="actor-link">
                             <div class="actor-image" style="background-image: url('https://server2.hotboys.com.br/arquivos/{{ $actor->foto_principal }}')">
                                 <div class="actor-tags">
                                     @if(!empty($actor->tag_principal))
@@ -30,7 +30,7 @@
                                 <span>{{ $actor->penis ?? '0' }} cm</span>
                             </div>
                         </a>
-                        <a href="{{ route('creator.profile', ['username' => $actor->nome_usuario ?? strtolower(str_replace(' ', '', $actor->nome))]) }}" class="btn-primary">
+                        <a href="{{ route('creator.profile', ['username' => ($actor->nome_usuario ? ltrim($actor->nome_usuario, '@') : strtolower(str_replace(' ', '', $actor->nome)))]) }}" class="btn-primary">
                             Ver Perfil
                         </a>
                     </div>

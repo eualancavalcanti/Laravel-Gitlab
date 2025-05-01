@@ -10,11 +10,12 @@
     <!-- Estilos -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/carousel-styles.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/hero-touch-carousel.css') }}">
+<link rel="stylesheet" href="{{ asset('css/hero-touch-carousel.css') }}">
     <link rel="stylesheet" href="{{ asset('css/mobile-carousel.css') }}">
     <link rel="stylesheet" href="{{ asset('css/hero-carousel.css') }}">
     <link rel="stylesheet" href="{{ asset('css/content-modal.css') }}">
     <link rel="stylesheet" href="{{ asset('css/hero-fix.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/creator-profile.css') }}">
   
     
     <!-- Fontes -->

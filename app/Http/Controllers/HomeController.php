@@ -83,7 +83,7 @@ class HomeController extends Controller
     // podemos preencher com algumas cenas recentes
     if ($watchingItems->isEmpty()) {
         $fallbackCenas = Cenas::where('status', 'Ativo')
-                    ->orderBy('created_at', 'desc')
+                    ->orderBy('id_produtor_creator', 'desc')
                     ->skip(7)  // Pular as que já estão no carrossel hero
                     ->take(6)
                     ->get();
@@ -94,7 +94,7 @@ class HomeController extends Controller
             $item->video_id = $cena->id;
             $item->thumbnail = 'https://server2.hotboys.com.br/arquivos/' . $cena->cena_vitrine;
             $item->remaining_time = '1:30:00';
-            $item->viewers = rand(800, 2500);
+            $item->viewers = format_views($cena->visualizacao ?? 0);
             $item->progress = rand(10, 90);
             
             $watchingItems->push($item);
@@ -103,29 +103,70 @@ class HomeController extends Controller
        
        
         $featuredActors = DB::table('modelos')->where('status', 'Ativo')->take(5)->get();
-        $trendingCreators = DB::table('modelos')->where('status', 'Ativo')->take(5)->get();
         
- // Definir trendingContent para exibir cenas
-$trendingContent = DB::table('cenas')->where('status', 'Ativo')
-->orderBy('created_at', 'desc')
-->take(10)
-->get();
+// Consulta ilustrativa para "Clientes assistindo no momento"
+// Esta é uma simulação de conteúdos populares que os usuários estão assistindo
+$trendingContentResults = DB::table('cenas')
+    ->where('status', 'Ativo')
+    ->orderBy('visualizacao', 'desc') // Ordenar por mais visualizados
+    ->take(12)
+    ->get();
+
+// Formatar os resultados para o carrossel
+$trendingContent = new Collection();
+foreach ($trendingContentResults as $cena) {
+    $item = new \stdClass();
+    $item->title = $cena->titulo;
+    $item->video_id = $cena->id;
+    $item->thumbnail = 'https://server2.hotboys.com.br/arquivos/' . $cena->cena_vitrine;
+    $item->remaining_time = rand(10, 59) . ':' . rand(10, 59);
+    // Usar a coluna visualizacao da tabela com o formatador
+    $item->viewers = format_views($cena->visualizacao ?? 0);
+    $item->progress = rand(10, 90);
+    
+    $trendingContent->push($item);
+}
 
 // Buscar modelos ativos para featuredActors
 $featuredActors = DB::table('modelos')
 ->where('status', 'Ativo')
-->orderBy('visualizacao', 'desc')
-->take(5)
+->whereNotNull('foto_principal')  // Garantir que tenha foto de perfil
+->where('foto_principal', '!=', '')  // Garantir que o campo não esteja vazio
+->orderBy('id', 'desc')  // Ordenar pelo ID de forma decrescente (mais recentes primeiro)
+->take(12)
 ->get();
 
-// Buscar modelos para trendingCreators
-$trendingCreators = DB::table('modelos')
-->where('status', 'Ativo')
-->orderBy('created_at', 'desc')
-->take(6)
-->get();
+// Consulta para "Últimas novidades" - pega os registros mais recentes
+$latestContentResults = DB::table('cenas')
+    ->where('status', 'Ativo')
+    ->orderBy('id', 'desc') // Ordenar do mais recente para o mais antigo
+    ->take(12)
+    ->get();
+
+// Formatar os resultados para o carrossel
+$latestContent = new Collection();
+foreach ($latestContentResults as $cena) {
+    $item = new \stdClass();
+    $item->title = $cena->titulo;
+    $item->video_id = $cena->id;
+    $item->thumbnail = 'https://server2.hotboys.com.br/arquivos/' . $cena->cena_vitrine;
+    $item->remaining_time = 'Novo';
+    // Usar a coluna visualizacao da tabela com o formatador
+    $item->viewers = format_views($cena->visualizacao ?? 0);
+    $item->progress = 0; // Conteúdo novo, sem progresso
+    
+    $latestContent->push($item);
+}
+
+// Buscar modelos para trendingCreators usando o modelo Eloquent
+// para poder aproveitar o scope withBackgroundAndProfile
+$trendingCreators = Creator::where('status', 'Ativo')
+    ->withBackgroundAndProfile() // Usa o scope para garantir que tenha foto de perfil e imagem de fundo
+    ->orderBy('id_produtor_creator', 'desc') // Pega os mais recentes primeiro
+    ->take(12) // Pega um pouco mais caso alguns não tenham imagem de fundo
+    ->get();
 
 // Você também já definiu $watchingItems, mas não está usando no compact
-return view('home', compact('heroSlides', 'trendingContent', 'featuredActors', 'trendingCreators', 'watchingItems'));
+return view('home', compact('heroSlides', 'trendingContent', 'featuredActors', 'trendingCreators', 'watchingItems', 'latestContent'));
     }
 }

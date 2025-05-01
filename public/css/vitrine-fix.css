@@ -1,0 +1,105 @@
+/* 
+ * Correções específicas para as vitrines no HotBoys
+ * Este arquivo corrige problemas de carregamento e exibição de imagens
+ */
+
+/* Estilo de fallback para imagens que não carregam */
+.fallback-image {
+    background-color: rgba(20, 20, 20, 0.9) !important;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* Tratamento específico para cards */
+.content-card {
+    min-height: 240px;
+    background-color: var(--card-bg);
+    position: relative;
+}
+
+.content-card img, 
+.actor-card img,
+.creator-card-premium img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.3s ease;
+}
+
+/* Tratamento específico para cards com imagens quebradas */
+.content-card img.fallback-image:before {
+    content: 'Imagem não disponível';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Ajustes para vitrines do tipo trending-creators */
+.creator-card-premium .profile-photo {
+    background-color: var(--card-bg);
+    border: 3px solid rgba(20, 20, 20, 0.9);
+}
+
+.creator-card-premium .profile-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.creator-banner {
+    background-color: rgba(20, 20, 20, 0.5);
+    min-height: 100px;
+}
+
+/* Efeito de transição para carregamento */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.content-grid img, 
+.actors-carousel img,
+.creators-carousel img {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Ajustes específicos para problemas de layout no Safari e iOS */
+@supports (-webkit-touch-callout: none) {
+    .content-card, 
+    .actor-card,
+    .creator-card-premium {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+    }
+    
+    .content-grid, 
+    .actors-carousel,
+    .creators-carousel {
+        -webkit-overflow-scrolling: touch;
+        -webkit-transform: translateZ(0);
+    }
+}
+
+/* Melhorias de desempenho para imagens nos carrosséis */
+.content-grid img[loading="lazy"], 
+.actors-carousel img[loading="lazy"],
+.creators-carousel img[loading="lazy"] {
+    transform: translateZ(0);
+    will-change: transform, opacity;
+}
+
+/* Fix para iOS Safari */
+.dragging {
+    -webkit-overflow-scrolling: auto !important;
+}

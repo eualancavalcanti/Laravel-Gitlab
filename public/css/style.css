@@ -1163,6 +1163,54 @@ img {
     }
 }
 
+/* Estilos para imagens quebradas com fallback */
+.fallback-image {
+    position: relative;
+    background-color: rgba(40, 40, 40, 0.8);
+    object-fit: contain !important;
+    padding: 10px;
+}
+
+.fallback-image::after {
+    content: 'Imagem não disponível';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    text-align: center;
+    width: 80%;
+}
+
+/* Estilos especiais para imagens de conteúdo exclusivo com erro */
+#exclusive .fallback-image,
+.exclusive-content .fallback-image {
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+#exclusive .fallback-image::after,
+.exclusive-content .fallback-image::after {
+    content: 'Conteúdo Exclusivo';
+    color: var(--hot-red);
+    font-weight: bold;
+}
+
+/* Ajustes para imagens de placeholder nos cards */
+.content-card .fallback-image {
+    width: 100%;
+    height: 100%;
+}
+
+.actor-image .fallback-image {
+    border-radius: 0;
+    height: 100%;
+}
+
+.creator-image .fallback-image {
+    border-radius: inherit;
+}
+
 /* Media queries para responsividade */
 @media (max-width: 768px) {
     .section-header {

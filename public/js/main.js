@@ -381,6 +381,57 @@ function handleImageError(img, fallbackUrl) {
         img.src = fallbackUrl || '/images/placeholder.jpg';
     }
 }
+
+    /**
+     * Função auxiliar para tratar imagens quebradas nos carrosséis
+     * @param {HTMLImageElement} img - Elemento de imagem a ser verificado
+     * @param {string} fallbackUrl - URL da imagem padrão (opcional)
+     * @param {boolean} isExclusive - Se a imagem faz parte de conteúdo exclusivo (opcional)
+     * @return {void}
+     */
+    function handleBrokenCarouselImages(img, fallbackUrl = null, isExclusive = false) {
+        // Define a imagem padrão caso não seja fornecida
+        const defaultFallback = '/images/placeholder-content.jpg';
+        
+        // Configura o evento onerror para substituir a imagem quando ocorrer erro
+        img.onerror = function() {
+            // Remove o evento onerror para evitar loops infinitos
+            this.onerror = null;
+            
+            // Para conteúdo exclusivo, pode ter tratamento especial
+            if (isExclusive || this.closest('#exclusive .content-card')) {
+                // Apenas esconde a imagem mantendo o fundo escuro para conteúdo exclusivo
+                this.style.display = 'none';
+                console.log('Erro ao carregar imagem exclusiva - mantendo fundo escuro');
+            } else {
+                // Substitui a imagem pela padrão
+                this.src = fallbackUrl || defaultFallback;
+                console.log('Imagem substituída por padrão:', this.alt || 'sem alt');
+            }
+            
+            // Adiciona classe para estilização específica de fallback
+            this.classList.add('fallback-image');
+        };
+        
+        // Se a imagem já estiver com erro (src inválido), aciona o fallback imediatamente
+        if (img.complete && (img.naturalWidth === 0 || img.naturalHeight === 0)) {
+            img.onerror();
+        }
+    }
+
+    // Aplicar tratamento de imagens quebradas nos carrosséis existentes
+    function applyBrokenImageHandling() {
+        // Seleciona todas as imagens em carrosséis
+        const carouselImages = document.querySelectorAll('.content-grid img, .actors-carousel img, .creators-grid img');
+        
+        // Aplica tratamento para cada imagem
+        carouselImages.forEach(img => {
+            handleBrokenCarouselImages(img);
+        });
+        
+        console.log('Tratamento de imagens quebradas aplicado a', carouselImages.length, 'imagens');
+    }
+
     // Função para renderizar conteúdos sendo assistidos - Otimizada
     function renderWatchingContent() {
         const grid = document.querySelector('.content-grid');
@@ -396,7 +447,8 @@ function handleImageError(img, fallbackUrl) {
             const img = document.createElement('img');
             img.src = content.thumbnail;
             img.alt = content.title;
-            img.onerror = () => handleImageError(img);
+            // Usar a nova função auxiliar para tratamento de imagens quebradas
+            handleBrokenCarouselImages(img);
             
             const overlay = document.createElement('div');
             overlay.className = 'content-overlay';
@@ -461,19 +513,8 @@ function renderActors() {
         img.style.height = '100%';
         img.style.objectFit = 'cover';
         
-       // Adicionar tratamento de erro para a imagem
-img.onerror = function() {
-    // Verifica se a imagem está em um conteúdo exclusivo
-    if (this.closest('#exclusive .content-card')) {
-        // Para conteúdo exclusivo, apenas esconde a imagem
-        this.style.display = 'none';
-        console.log('Erro ao carregar imagem exclusiva - mantendo fundo preto');
-    } else {
-        // Imagem de fallback em caso de erro para conteúdo não exclusivo
-        this.src = '/images/placeholder.jpg'; // Use uma imagem local em vez da do Unsplash
-        console.log('Erro ao carregar imagem do ator:', actor?.name || 'desconhecido');
-    }
-};
+        // Usar a função padronizada para tratamento de imagens quebradas
+        handleBrokenCarouselImages(img);
         
         imageWrapper.appendChild(img);
         
@@ -544,15 +585,21 @@ img.onerror = function() {
             const imageDiv = document.createElement('div');
             imageDiv.className = 'creator-image';
             
-            // Precarregamento de imagem
-            const preloadImg = new Image();
-            preloadImg.src = creator.image;
-            preloadImg.onload = () => {
-                imageDiv.style.backgroundImage = `url(${creator.image})`;
-            };
-            preloadImg.onerror = () => {
-                imageDiv.style.backgroundImage = 'url(https://images.unsplash.com/photo-1517999144091-3d9dca6d1e43?w=300&h=300&fit=crop)';
-            };
+            // Criar elemento de imagem real em vez de usar background-image
+            // para poder aproveitar o tratamento padronizado de imagens quebradas
+            const img = document.createElement('img');
+            img.src = creator.image;
+            img.alt = creator.name;
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.objectFit = 'cover';
+            img.style.borderRadius = 'inherit';
+            
+            // Usar a função padronizada para tratamento de imagens quebradas
+            handleBrokenCarouselImages(img, '/images/creator-placeholder.jpg');
+            
+            // Adicionar a imagem ao container
+            imageDiv.appendChild(img);
             
             if (creator.verified) {
                 const badge = document.createElement('span');
@@ -795,6 +842,9 @@ img.onerror = function() {
         renderWatchingContent();
         renderActors();
         renderTrendingCreators();
+        
+        // Aplicar tratamento de imagens quebradas para as imagens já existentes no DOM
+        applyBrokenImageHandling();
     
         // Configurar carrosséis com detecção de dimensão do dispositivo
         const carousels = document.querySelectorAll('.section-container');
@@ -826,6 +876,9 @@ img.onerror = function() {
                 carousels.forEach(carousel => {
                     setupCarousel(carousel, newScrollAmount);
                 });
+                
+                // Verificar novamente as imagens após o redimensionamento
+                applyBrokenImageHandling();
             }, 300);
         });
         
@@ -836,6 +889,31 @@ img.onerror = function() {
             } else {
                 startAutoplay();
             }
+        });
+        
+        // Também verificar as imagens quando o DOM for modificado
+        // usando MutationObserver para detectar novas imagens adicionadas
+        const observer = new MutationObserver(mutations => {
+            mutations.forEach(mutation => {
+                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                    // Verificar se foram adicionadas novas imagens
+                    const hasNewImages = Array.from(mutation.addedNodes).some(node => 
+                        node.nodeName === 'IMG' || 
+                        (node.nodeType === 1 && node.querySelector('img'))
+                    );
+                    
+                    if (hasNewImages) {
+                        // Aplicar tratamento nas novas imagens
+                        applyBrokenImageHandling();
+                    }
+                }
+            });
+        });
+        
+        // Observar mudanças no DOM para os contêineres de carrossel
+        const carouselContainers = document.querySelectorAll('.content-grid, .actors-carousel, .creators-grid');
+        carouselContainers.forEach(container => {
+            observer.observe(container, { childList: true, subtree: true });
         });
     }
 });

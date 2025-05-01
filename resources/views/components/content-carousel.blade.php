@@ -10,13 +10,27 @@
         </div>
         <div class="carousel-container">
             <div class="content-grid">
-            @forelse($watchingItems ?? [] as $item)
+            @forelse($watchingItems ?? [] as $key => $item)
                 <!-- Modificar os cards para abrirem o modal -->
                 <div class="content-card open-video-modal"
                     data-video-id="{{ $item->video_id ?? '' }}"
                     data-title="{{ $item->title ?? '' }}"
                     data-thumbnail="{{ $item->thumbnail ?? '' }}">
-                    <img src="{{ $item->thumbnail ?? '' }}" alt="{{ $item->title ?? '' }}">
+                    @if($key < 4)
+                    {{-- As primeiras 4 imagens são carregadas com prioridade alta --}}
+                    <img src="{{ $item->thumbnail ?? '' }}" 
+                         alt="{{ $item->title ?? '' }}"
+                         fetchpriority="{{ $key < 2 ? 'high' : 'auto' }}"
+                         decoding="async"
+                         onerror="this.onerror=null; this.src='/images/placeholder-content.jpg'; this.classList.add('fallback-image');">
+                    @else
+                    {{-- As demais imagens usam lazy loading --}}
+                    <img src="{{ $item->thumbnail ?? '' }}" 
+                         alt="{{ $item->title ?? '' }}"
+                         loading="lazy"
+                         decoding="async"
+                         onerror="this.onerror=null; this.src='/images/placeholder-content.jpg'; this.classList.add('fallback-image');">
+                    @endif
                     <div class="content-overlay">
                         <h3>{{ $item->title ?? '' }}</h3>
                         <span class="duration">{{ $item->remaining_time ?? '1:30:00' }} restantes</span>
@@ -39,3 +53,33 @@
         </div>
     </div>
 </section>
+
+@once
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Precarregar as primeiras imagens para melhorar a experiência do usuário
+        const preloadImages = () => {
+            const carousels = document.querySelectorAll('.content-grid');
+            carousels.forEach(carousel => {
+                // Selecionar as primeiras 4 imagens de cada carrossel
+                const firstImages = carousel.querySelectorAll('img:nth-child(-n+4)');
+                
+                // Adicionar ao preloader
+                firstImages.forEach(img => {
+                    if (img.complete) return;
+                    
+                    // Criar um objeto de imagem para precarregar
+                    const preloadLink = document.createElement('link');
+                    preloadLink.rel = 'preload';
+                    preloadLink.as = 'image';
+                    preloadLink.href = img.src;
+                    document.head.appendChild(preloadLink);
+                });
+            });
+        };
+
+        // Executar o precarregamento
+        preloadImages();
+    });
+</script>
+@endonce

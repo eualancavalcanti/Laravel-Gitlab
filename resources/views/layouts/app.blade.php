@@ -10,12 +10,11 @@
     <!-- Estilos -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/carousel-styles.css') }}">
-<link rel="stylesheet" href="{{ asset('css/hero-touch-carousel.css') }}">
     <link rel="stylesheet" href="{{ asset('css/mobile-carousel.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/hero-carousel.css') }}">
     <link rel="stylesheet" href="{{ asset('css/content-modal.css') }}">
     <link rel="stylesheet" href="{{ asset('css/hero-fix.css') }}">
     <link rel="stylesheet" href="{{ asset('css/creator-profile.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/vitrine-fix.css') }}">
   
     
     <!-- Fontes -->
@@ -42,14 +41,10 @@
     @include('partials.footer')
     
     <!-- Scripts -->
-    <script src="{{ asset('js/main.js') }}"></script>
+    <script src="{{ asset('js/unified-carousel.js') }}"></script>
     <script src="{{ asset('js/complementary.js') }}"></script>
-    <script src="{{ asset('js/hero-touch-carousel.js') }}"></script>
-    <script src="{{ asset('js/mobile-carousel.js') }}"></script>
     <script src="{{ asset('js/content-modal.js') }}"></script>
-    <script src="{{ asset('js/hero-fix.js') }}"></script>
-    <script src="{{ asset('js/modal-manager.js') }}"></script> <!-- Novo gerenciador -->
-    
+    <script src="{{ asset('js/modal-manager.js') }}"></script> <!-- Gerenciador de modais -->
     
     @stack('scripts')
 </body>

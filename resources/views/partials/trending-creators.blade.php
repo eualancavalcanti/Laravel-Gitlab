@@ -34,7 +34,8 @@
                             <!-- Foto de perfil com badge de verificação -->
                             <div class="creator-profile">
                                 <a href="{{ route('creator.profile', ['username' => $creator->nome_usuario ?? strtolower(str_replace(' ', '', $creator->nome))]) }}" class="profile-link">
-                                    <div class="profile-photo" style="background-image: url('{{ $creator->image }}')">
+                                    <div class="profile-photo">
+                                        <img src="{{ $creator->image }}" alt="{{ $creator->nome }}" onerror="this.onerror=null; this.src='/images/placeholder-profile.jpg'; this.classList.add('fallback-image');">
                                         @if($creator->exclusivos == 'Sim')
                                             <span class="verified-badge">
                                                 <i class="lucide-badge-check"></i>
@@ -42,25 +43,17 @@
                                         @endif
                                     </div>
                                 </a>
-                                
-                                <div class="creator-details">
-                                    <h3 class="creator-name">
-                                        <a href="{{ route('creator.profile', ['username' => $creator->nome_usuario ?? strtolower(str_replace(' ', '', $creator->nome))]) }}">
-                                            {{ $creator->nome }}
-                                        </a>
-                                    </h3>
-                                    <div class="creator-info">
-                                        <span class="creator-role">{{ $creator->tipo_modelo ?? 'Modelo' }}</span>
-                                        <span class="creator-age">{{ $creator->idade ?? '18' }} anos</span>
-                                    </div>
+                                <div class="creator-info">
+                                    <h3>{{ $creator->nome }}</h3>
+                                    <span class="creator-role">Modelo Premium</span>
                                 </div>
                             </div>
                             
-                            <!-- Estatísticas do criador -->
+                            <!-- Métricas do criador -->
                             <div class="creator-metrics">
-                                <div class="metric exclusive">
-                                    <i class="lucide-lock"></i>
-                                    <span>{{ $creator->conteudos_individuais_count ?? 0 }} <small>Exclusivos</small></span>
+                                <div class="metric">
+                                    <i class="lucide-video"></i>
+                                    <span>{{ $creator->conteudos_individuais_count ?? 0 }} <small>vídeos</small></span>
                                 </div>
                                 <div class="metric vip">
                                     <i class="lucide-film"></i>
@@ -81,16 +74,23 @@
                     </div>
                 @empty
                     <!-- Cards de placeholder quando não há dados -->
-                    @for($i = 0; $i < 4; $i++)
+                    @for($i = 0; $i < 5; $i++)
                         <div class="creator-card-premium skeleton" aria-hidden="true">
-                            <div class="skeleton-banner"></div>
-                            <div class="skeleton-content">
-                                <div class="skeleton-profile"></div>
-                                <div class="skeleton-details">
-                                    <div class="skeleton-line"></div>
-                                    <div class="skeleton-line short"></div>
+                            <div class="creator-banner">
+                                <div class="creator-overlay"></div>
+                            </div>
+                            <div class="creator-main-content">
+                                <div class="creator-profile">
+                                    <div class="profile-photo skeleton-circle"></div>
+                                    <div class="creator-info">
+                                        <div class="skeleton-line"></div>
+                                        <div class="skeleton-line sm"></div>
+                                    </div>
                                 </div>
-                                <div class="skeleton-metrics"></div>
+                                <div class="creator-metrics">
+                                    <div class="metric skeleton-pill"></div>
+                                    <div class="metric skeleton-pill"></div>
+                                </div>
                                 <div class="skeleton-button"></div>
                             </div>
                         </div>

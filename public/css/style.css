@@ -1163,6 +1163,54 @@ img {
     }
 }
 
+/* Estilos para imagens quebradas com fallback */
+.fallback-image {
+    position: relative;
+    background-color: rgba(40, 40, 40, 0.8);
+    object-fit: contain !important;
+    padding: 10px;
+}
+
+.fallback-image::after {
+    content: 'Imagem não disponível';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    text-align: center;
+    width: 80%;
+}
+
+/* Estilos especiais para imagens de conteúdo exclusivo com erro */
+#exclusive .fallback-image,
+.exclusive-content .fallback-image {
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+#exclusive .fallback-image::after,
+.exclusive-content .fallback-image::after {
+    content: 'Conteúdo Exclusivo';
+    color: var(--hot-red);
+    font-weight: bold;
+}
+
+/* Ajustes para imagens de placeholder nos cards */
+.content-card .fallback-image {
+    width: 100%;
+    height: 100%;
+}
+
+.actor-image .fallback-image {
+    border-radius: 0;
+    height: 100%;
+}
+
+.creator-image .fallback-image {
+    border-radius: inherit;
+}
+
 /* Media queries para responsividade */
 @media (max-width: 768px) {
     .section-header {
@@ -1190,5 +1238,521 @@ img {
     
     .premium-header h2 {
         font-size: 1.5rem;
+    }
+}
+
+/* Pricing Section - Estilos completos */
+.pricing {
+    padding: 6rem 0;
+    background: var(--dark-bg);
+    position: relative;
+    overflow: hidden;
+}
+
+.pricing::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at top right, rgba(255, 51, 51, 0.1), transparent 70%);
+    pointer-events: none;
+}
+
+/* Estilos para a seção de features */
+.features-section {
+    margin-bottom: 3rem;
+}
+
+.features-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.features-header h2 {
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.header-icon {
+    color: var(--hot-red);
+}
+
+.features-header .highlight {
+    background: var(--gradient-hot);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+}
+
+.features-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.feature-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    gap: 1.2rem;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(255, 51, 51, 0.15);
+    background: rgba(255, 51, 51, 0.05);
+    border-color: rgba(255, 51, 51, 0.2);
+}
+
+.feature-icon-container {
+    background: linear-gradient(135deg, rgba(255, 51, 51, 0.1), rgba(255, 26, 26, 0.2));
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.feature-icon {
+    color: var(--hot-red);
+}
+
+.feature-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.feature-content h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.2rem;
+}
+
+.feature-content p {
+    margin: 0;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+/* Estilos para o grid de preços */
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.price-card {
+    background: var(--card-bg);
+    padding: 2.5rem;
+    border-radius: var(--border-radius-card);
+    position: relative;
+    transition: var(--transition-normal);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+}
+
+.price-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(255, 51, 51, 0.2);
+}
+
+.price-card.featured {
+    background: linear-gradient(145deg, rgba(255, 51, 51, 0.1), rgba(255, 26, 26, 0.05));
+    border: 2px solid var(--hot-red);
+    transform: scale(1.05);
+    z-index: 2;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 51, 51, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.recommended {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gradient-hot);
+    padding: 0.5rem 1.5rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 2px 15px rgba(255, 51, 51, 0.4);
+}
+
+.price-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.price-header h3 {
+    font-size: clamp(1.3rem, 3vw, 1.5rem);
+    margin-bottom: 1rem;
+}
+
+.price {
+    font-size: clamp(2rem, 4vw, 2.5rem);
+    font-weight: 700;
+    color: var(--hot-red);
+}
+
+.price span {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    font-weight: normal;
+}
+
+/* Novos estilos para os cards de preço */
+.price-benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.benefit-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+}
+
+.benefit-icon {
+    color: var(--hot-red);
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+}
+
+.benefit-item p {
+    margin: 0;
+    line-height: 1.4;
+}
+
+.btn-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 30px;
+    width: 100%;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.btn-action:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+}
+
+.btn-icon {
+    flex-shrink: 0;
+}
+
+/* Estilos para o card VIP */
+.vip-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.vip-header h3 {
+    font-size: 1.8rem;
+    margin: 0 0 0.5rem;
+    background: var(--gradient-hot);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+}
+
+.vip-price {
+    margin-bottom: 0.5rem;
+}
+
+.price-tag {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--hot-red);
+}
+
+.price-period {
+    font-size: 1rem;
+    color: var(--text-secondary);
+}
+
+.vip-subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin: 0.5rem 0 0;
+}
+
+.vip-benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.vip-action {
+    text-align: center;
+}
+
+.limited-offer {
+    display: inline-block;
+    background: rgba(255, 255, 0, 0.2);
+    color: #FFCC00;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.3rem 1rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.btn-vip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: var(--hot-red);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 30px;
+    width: 100%;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+    box-shadow: 0 5px 15px rgba(255, 51, 51, 0.4);
+}
+
+.btn-vip:hover {
+    transform: translateY(-3px);
+    background: #ff4d4d;
+    box-shadow: 0 8px 20px rgba(255, 51, 51, 0.6);
+}
+
+.security-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+/* Media queries de responsividade para a seção de pricing */
+@media (max-width: 768px) {
+    .feature-card {
+        padding: 1.2rem;
+    }
+    
+    .features-grid {
+        gap: 1rem;
+    }
+    
+    .price-card.featured {
+        padding: 1.5rem;
+        transform: none;
+        order: -1;
+    }
+    
+    .price-tag {
+        font-size: 1.8rem;
+    }
+    
+    .btn-vip {
+        padding: 0.8rem 1.5rem;
+    }
+    
+    .pricing-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* Footer - Estilos completos */
+footer {
+    background: var(--darker-bg);
+    padding: 4rem 0 0;
+    border-top: 1px solid rgba(255, 51, 51, 0.1);
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 4rem;
+}
+
+.footer-brand p {
+    margin: 1.5rem 0;
+    color: var(--text-secondary);
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    max-width: 400px;
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.social-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    transition: var(--transition-normal);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-decoration: none;
+}
+
+.social-btn:hover {
+    background: var(--hot-red);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-neon);
+}
+
+.footer-links {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.link-group h4 {
+    font-size: clamp(1.1rem, 2.5vw, 1.2rem);
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+}
+
+.link-group a {
+    display: block;
+    color: var(--text-secondary);
+    text-decoration: none;
+    margin-bottom: 0.8rem;
+    transition: var(--transition-normal);
+    font-size: clamp(0.9rem, 2vw, 1rem);
+}
+
+.link-group a:hover {
+    color: var(--hot-red);
+    transform: translateX(5px);
+}
+
+.footer-bottom {
+    margin-top: 4rem;
+    padding: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.footer-info {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.footer-info p {
+    color: var(--text-secondary);
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
+}
+
+.footer-badges {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--card-bg);
+    border-radius: 20px;
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
+    color: var(--text-secondary);
+}
+
+.badge i {
+    color: var(--hot-red);
+}
+
+/* Media queries para o footer */
+@media (max-width: 1024px) {
+    .footer-content {
+        gap: 3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .footer-links {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .footer-badges {
+        justify-content: center;
+    }
+
+    .footer-info {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-links {
+        grid-template-columns: 1fr;
     }
 }

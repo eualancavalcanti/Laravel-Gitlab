@@ -287,12 +287,11 @@ class HomeController extends Controller
             $latestContent->push($item);
         }
 
-        // Buscar modelos para trendingCreators usando o modelo Eloquent
-        // para poder aproveitar o scope withBackgroundAndProfile
+        // Buscar modelos para trendingCreators - voltando para a consulta original que lista os últimos modelos
         $trendingCreators = Creator::where('status', 'Ativo')
             ->withBackgroundAndProfile() // Usa o scope para garantir que tenha foto de perfil e imagem de fundo
             ->orderBy('id_produtor_creator', 'desc') // Pega os mais recentes primeiro
-            ->take(12) // Pega um pouco mais caso alguns não tenham imagem de fundo
+            ->take(12) // Limita a 12 resultados
             ->get();
 
         return view('home', compact('heroSlides', 'trendingContent', 'featuredActors', 'trendingCreators', 'watchingItems', 'latestContent'));

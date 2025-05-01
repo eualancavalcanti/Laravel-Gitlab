@@ -12,10 +12,10 @@ class TouchCarousel {
         
         // Configurações padrão
         this.options = Object.assign({
-            slideSelector: '.content-grid, .actors-carousel', // Seletor dos slides
+            slideSelector: '.content-grid, .actors-carousel, .creators-carousel', // Seletor dos slides
             navPrevSelector: '.prev',                         // Botão anterior
             navNextSelector: '.next',                         // Botão próximo
-            itemSelector: '.content-card, .actor-card',       // Itens dentro do slide
+            itemSelector: '.content-card, .actor-card, .creator-card-premium',       // Itens dentro do slide
             threshold: 100,                                   // Limite de pixels para considerar como swipe
             transitionSpeed: 300,                             // Velocidade de transição em ms
             momentum: true,                                   // Habilitar momentum/inércia
@@ -263,7 +263,7 @@ class TouchCarousel {
         
         // Valor de inércia inicial baseado na velocidade
         this.momentum = {
-            value: this.velocityX * 100,
+            value: this.velocityX * 120, // Aumentado para uma sensação mais fluida
             active: true
         };
         
@@ -280,18 +280,21 @@ class TouchCarousel {
         // Atualiza a posição do scroll com base na inércia
         this.track.scrollLeft -= this.momentum.value;
         
-        // Reduz a inércia gradualmente (simulando atrito)
-        this.momentum.value *= 0.95;
+        // Reduz a inércia gradualmente (desaceleração mais suave)
+        this.momentum.value *= 0.96; // Desaceleração mais suave
         
         // Continua animando enquanto tiver movimento significativo
         if (Math.abs(this.momentum.value) > 0.5) {
             this.rafId = requestAnimationFrame(this.animateMomentum.bind(this));
         } else {
-            // Quando estiver quase parando, snap para o item mais próximo
+            // Quando estiver quase parando, snap para o item mais próximo com um pequeno atraso
             this.cancelMomentum();
             
             if (this.options.snapToItem) {
-                this.snapToNearestItem(this.momentum.value < 0);
+                // Pequeno atraso antes de fazer o snap para evitar saltos bruscos
+                setTimeout(() => {
+                    this.snapToNearestItem(this.momentum.value < 0);
+                }, 50);
             }
         }
     }
@@ -309,7 +312,7 @@ class TouchCarousel {
     }
     
     /**
-     * Snap para o item mais próximo
+     * Snap para o item mais próximo - versão melhorada
      */
     snapToNearestItem(isMovingForward = true) {
         // Encontra todos os pontos de snap (início de cada item)
@@ -317,30 +320,90 @@ class TouchCarousel {
         const trackRect = this.track.getBoundingClientRect();
         const currentScrollLeft = this.track.scrollLeft;
         
-        // Calcula o ponto de snap para cada item
+        // Calcula o centro da visualização
+        const viewportCenter = trackRect.width / 2;
+        
+        // Calcula o ponto de snap para cada item (centralizado)
         const snapPoints = items.map(item => {
             const itemRect = item.getBoundingClientRect();
-            const itemLeft = itemRect.left - trackRect.left + currentScrollLeft;
-            return itemLeft;
+            const itemCenter = itemRect.left - trackRect.left + (itemRect.width / 2) + currentScrollLeft;
+            const distance = Math.abs(itemCenter - viewportCenter - currentScrollLeft);
+            return { position: itemCenter - viewportCenter, distance };
         });
         
         // Adiciona o fim do carrossel como último ponto de snap
-        snapPoints.push(this.track.scrollWidth - this.track.clientWidth);
+        const endPoint = { 
+            position: this.track.scrollWidth - this.track.clientWidth, 
+            distance: Math.abs((this.track.scrollWidth - this.track.clientWidth) - currentScrollLeft) 
+        };
+        snapPoints.push(endPoint);
         
-        // Encontra o ponto de snap mais próximo
+        // Adiciona o início do carrossel como primeiro ponto de snap
+        const startPoint = { position: 0, distance: currentScrollLeft };
+        snapPoints.unshift(startPoint);
+        
+        // Encontra o ponto de snap mais próximo com base na direção
         let targetScrollLeft;
         
         if (isMovingForward) {
-            // Encontra o próximo ponto à direita
-            targetScrollLeft = snapPoints.find(point => point > currentScrollLeft + 10) || snapPoints[snapPoints.length - 1];
+            // Filtra apenas os pontos à frente da posição atual
+            const forwardPoints = snapPoints.filter(point => point.position > currentScrollLeft + 5);
+            
+            if (forwardPoints.length > 0) {
+                // Ordena por distância e pega o mais próximo
+                targetScrollLeft = forwardPoints.sort((a, b) => a.distance - b.distance)[0].position;
+            } else {
+                // Se não houver pontos à frente, vai para o último
+                targetScrollLeft = endPoint.position;
+            }
         } else {
-            // Encontra o próximo ponto à esquerda
-            targetScrollLeft = [...snapPoints].reverse().find(point => point < currentScrollLeft - 10) || snapPoints[0];
+            // Filtra apenas os pontos atrás da posição atual
+            const backwardPoints = snapPoints.filter(point => point.position < currentScrollLeft - 5);
+            
+            if (backwardPoints.length > 0) {
+                // Ordena por distância e pega o mais próximo
+                targetScrollLeft = backwardPoints.sort((a, b) => a.distance - b.distance)[0].position;
+            } else {
+                // Se não houver pontos atrás, vai para o primeiro
+                targetScrollLeft = startPoint.position;
+            }
         }
         
-        // Adiciona uma transição suave para o ponto de snap
+        // Aplica uma curva de animação mais suave
         this.track.style.scrollBehavior = 'smooth';
-        this.track.scrollLeft = targetScrollLeft;
+        
+        // Em iOS, a scrollBehavior pode não funcionar tão bem, então implementamos uma animação alternativa
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        
+        if (isIOS) {
+            // Animação personalizada para iOS
+            const startPosition = this.track.scrollLeft;
+            const distance = targetScrollLeft - startPosition;
+            const duration = 500; // ms
+            const startTime = Date.now();
+            
+            // Função de animação personalizada com curva de easing
+            const animateScroll = () => {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Função de easing (ease-out-cubic)
+                const easeOutCubic = progress => 1 - Math.pow(1 - progress, 3);
+                const easedProgress = easeOutCubic(progress);
+                
+                this.track.scrollLeft = startPosition + (distance * easedProgress);
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animateScroll);
+                }
+            };
+            
+            // Inicia a animação personalizada
+            requestAnimationFrame(animateScroll);
+        } else {
+            // Para outros navegadores, usa scroll-behavior nativo
+            this.track.scrollLeft = targetScrollLeft;
+        }
     }
     
     /**
@@ -414,20 +477,47 @@ class TouchCarousel {
 
 // Inicializar todos os carrosséis quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', () => {
-    // Seleciona todos os contêineres de carrossel
-    const carouselContainers = document.querySelectorAll('.section-container');
-    
-    // Cria um objeto TouchCarousel para cada contêiner
-    const carousels = Array.from(carouselContainers).map(container => {
+    // Inicializa o carrossel principal de hero
+    const heroContainers = document.querySelectorAll('.hero-section .section-container');
+    const heroCarousels = Array.from(heroContainers).map(container => {
         return new TouchCarousel(container);
     });
+    
+    // Inicializa carrosséis de conteúdo
+    const contentContainers = document.querySelectorAll('.continue-watching .section-container, .featured-content .section-container');
+    const contentCarousels = Array.from(contentContainers).map(container => {
+        return new TouchCarousel(container);
+    });
+    
+    // Inicializa carrosséis de atores
+    const actorContainers = document.querySelectorAll('.featured-actors .section-container');
+    const actorCarousels = Array.from(actorContainers).map(container => {
+        return new TouchCarousel(container);
+    });
+    
+    // Inicializa explicitamente o carrossel de criadores do momento
+    const creatorContainers = document.querySelectorAll('.trending-creators .section-container');
+    const creatorCarousels = Array.from(creatorContainers).map(container => {
+        return new TouchCarousel(container, {
+            slideSelector: '.creators-carousel',
+            itemSelector: '.creator-card-premium'
+        });
+    });
+    
+    // Combina todos os carrosséis em um único array para facilitar o gerenciamento
+    const allCarousels = [
+        ...heroCarousels,
+        ...contentCarousels,
+        ...actorCarousels,
+        ...creatorCarousels
+    ].filter(carousel => carousel); // Filtra valores nulos
     
     // Recalcula os tamanhos em redimensionamento de janela
     let resizeTimer;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
-            carousels.forEach(carousel => {
+            allCarousels.forEach(carousel => {
                 if (carousel.calculateItemWidth) {
                     carousel.calculateItemWidth();
                 }

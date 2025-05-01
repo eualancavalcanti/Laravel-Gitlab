@@ -22,7 +22,7 @@ class Creator extends Model
     // Mapeamento de nomes para compatibilidade com frontend
     protected $appends = [
         'name', 'username', 'role', 'followers', 'likes', 'image', 'verified', 
-        'trending', 'profile_url'
+        'trending', 'profile_url', 'background_image', 'conteudos_individuais_count', 'associador_cenas_count'
     ];
     
     /**
@@ -102,6 +102,31 @@ class Creator extends Model
     }
     
     /**
+     * Acessor para obter caminho da imagem de fundo
+     */
+    public function getBackgroundImageAttribute()
+    {
+        if (!empty($this->imagem_background)) {
+            return 'https://api.creator.hotboys.com.br/storage/perfis/' . $this->imagem_background;
+        }
+        
+        // Fallback para foto_principal se não tiver imagem_background
+        if (!empty($this->foto_principal)) {
+            return 'https://server2.hotboys.com.br/arquivos/' . $this->foto_principal;
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Verifica se o criador tem imagem de fundo válida
+     */
+    public function hasBackgroundImage()
+    {
+        return !empty($this->imagem_background);
+    }
+    
+    /**
      * Acessor para verificar se é verificado (compatibilidade com frontend)
      */
     public function getVerifiedAttribute()
@@ -131,6 +156,61 @@ class Creator extends Model
     public function cenas()
     {
         return $this->hasMany(Cena::class, 'modelo_id', 'id');
+    }
+    
+    /**
+     * Relacionamento com a tabela conteudos_individuais_atores
+     * Esta tabela relaciona o modelo com conteúdos individuais
+     */
+    public function conteudosIndividuais()
+    {
+        return $this->belongsToMany(
+            'App\Models\ConteudoIndividual', 
+            'conteudos_individuais_atores', 
+            'id_ator', 
+            'id_conteudo'
+        );
+    }
+    
+    /**
+     * Relacionamento com a tabela associador_cenas
+     * Esta tabela relaciona o modelo com cenas regulares
+     */
+    public function associadorCenas()
+    {
+        return $this->hasMany(
+            'App\Models\AssociadorCena', 
+            'id_modelo', 
+            'id'
+        );
+    }
+    
+    /**
+     * Acessor para obter a quantidade de conteúdos individuais
+     * do modelo
+     */
+    public function getConteudosIndividuaisCountAttribute()
+    {
+        // Consulta direta ao banco para performance
+        $count = \DB::table('conteudos_individuais_atores')
+            ->where('id_ator', $this->id)
+            ->count();
+            
+        return $count;
+    }
+    
+    /**
+     * Acessor para obter a quantidade de cenas em que o
+     * modelo participa através da tabela associador_cenas
+     */
+    public function getAssociadorCenasCountAttribute()
+    {
+        // Consulta direta ao banco para performance
+        $count = \DB::table('associador_cenas')
+            ->where('id_modelo', $this->id)
+            ->count();
+            
+        return $count;
     }
     
     /**
@@ -165,4 +245,16 @@ class Creator extends Model
     {
         return $query->orderBy('created_at', 'desc');
     }
+    
+    /**
+     * Scope para buscar modelos com foto de perfil e imagem de fundo
+     */
+    public function scopeWithBackgroundAndProfile($query)
+    {
+        return $query->whereNotNull('foto_principal')   // Campo foto_principal para a foto de perfil
+                     ->where('foto_principal', '!=', '') // Garantir que não seja uma string vazia
+                     ->whereNotNull('imagem_background')     // Campo imagem_background para imagem de fundo
+                     ->where('imagem_background', '!=', ''); // Garantir que não seja uma string vazia
+    }
+    
 }

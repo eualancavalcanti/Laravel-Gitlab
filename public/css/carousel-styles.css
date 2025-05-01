@@ -9,7 +9,7 @@
     touch-action: pan-y; /* Permite scroll vertical mas intercepta horizontal */
 }
 
-/* Trilha do carrossel - suaviza o arrastar */
+/* Trilha do carrossel - rolagem suave otimizada */
 .content-grid, 
 .actors-carousel {
     display: flex;
@@ -18,12 +18,17 @@
     scroll-behavior: smooth;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    scroll-snap-type: x mandatory;
+    scroll-snap-type: x proximity; /* Alterado para proximity - rolagem mais natural */
+    scroll-snap-points-x: repeat(100%);
     padding: 1rem 2rem;
-    -webkit-overflow-scrolling: touch; /* Scroll inercial para iOS */
-    will-change: transform; /* Otimização para GPU */
-    user-select: none; /* Impede seleção de texto durante arrastar */
+    -webkit-overflow-scrolling: touch;
+    will-change: transform;
+    user-select: none;
     cursor: grab;
+    /* Otimizações para melhor desempenho */
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
 }
 
 /* Esconde a barra de rolagem */
@@ -39,14 +44,18 @@
     scroll-behavior: auto !important;
 }
 
-/* Items do carrossel */
+/* Items do carrossel - com transições mais suaves */
 .content-card,
 .actor-card,
 .creator-card {
-    scroll-snap-align: start;
-    transform: translateZ(0); /* Força aceleração de hardware */
-    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
-    -webkit-tap-highlight-color: transparent; /* Remove highlight de toque */
+    scroll-snap-align: center; /* Alterado para center em vez de start */
+    scroll-snap-stop: always; /* Garante que a rolagem sempre pare nos itens */
+    transform: translateZ(0);
+    transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.4s ease-out;
+    -webkit-tap-highlight-color: transparent;
+    /* Otimizações para iOS */
+    -webkit-transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
 }
 
 /* Estado dos cards durante arrastar */
@@ -61,7 +70,7 @@
     cursor: grabbing;
 }
 
-/* Botões de navegação do carrossel */
+/* Botões de navegação do carrossel - Design refinado */
 .carousel-nav {
     display: flex;
     gap: 1rem;
@@ -69,30 +78,48 @@
 }
 
 .nav-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     color: white;
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     z-index: 10;
     -webkit-tap-highlight-color: transparent;
-    will-change: transform, opacity;
+    will-change: transform, background-color, box-shadow;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.nav-btn i {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
 }
 
 .nav-btn:active {
-    transform: scale(0.92);
+    transform: scale(0.94);
+    background: rgba(255, 51, 51, 0.5);
+}
+
+.nav-btn:hover i {
+    transform: translateX(-2px);
+}
+
+.nav-btn.next:hover i {
+    transform: translateX(2px);
 }
 
 .nav-btn:not(:disabled):hover {
     background: var(--hot-red);
-    transform: scale(1.1);
-    box-shadow: 0 0 15px rgba(255, 51, 51, 0.4);
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(255, 51, 51, 0.4), 0 0 30px rgba(255, 51, 51, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
 .nav-btn.disabled,

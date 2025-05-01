@@ -9,9 +9,14 @@
     <!-- Carrossel de Conteúdo em Alta -->
     @include('components.content-carousel', [
         'title' => 'Clientes assistindo no momento', 
-        'items' => $trendingContent
+        'watchingItems' => $trendingContent
     ])
     
+    <!-- Carrossel de Últimas Novidades -->
+    @include('components.content-carousel', [
+        'title' => 'Últimas novidades', 
+        'watchingItems' => $latestContent
+    ])
     
     <!-- Carrossel de Atores -->
     @include('components.actors-carousel', [

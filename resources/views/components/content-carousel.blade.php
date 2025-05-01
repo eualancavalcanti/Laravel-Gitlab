@@ -10,15 +10,15 @@
         </div>
         <div class="carousel-container">
             <div class="content-grid">
-            @forelse($watchingItems as $item)
+            @forelse($watchingItems ?? [] as $item)
                 <!-- Modificar os cards para abrirem o modal -->
                 <div class="content-card open-video-modal"
                     data-video-id="{{ $item->video_id ?? '' }}"
-                    data-title="{{ $item->title }}"
-                    data-thumbnail="{{ $item->thumbnail }}">
-                    <img src="{{ $item->thumbnail }}" alt="{{ $item->title }}">
+                    data-title="{{ $item->title ?? '' }}"
+                    data-thumbnail="{{ $item->thumbnail ?? '' }}">
+                    <img src="{{ $item->thumbnail ?? '' }}" alt="{{ $item->title ?? '' }}">
                     <div class="content-overlay">
-                        <h3>{{ $item->title }}</h3>
+                        <h3>{{ $item->title ?? '' }}</h3>
                         <span class="duration">{{ $item->remaining_time ?? '1:30:00' }} restantes</span>
                     </div>
                     <div class="watching-info">
@@ -31,6 +31,9 @@
                 </div>
             @empty
                 <!-- Conteúdo para quando não houver itens -->
+                <div class="empty-content">
+                    <p>Nenhum conteúdo disponível no momento.</p>
+                </div>
             @endforelse
             </div>
         </div>

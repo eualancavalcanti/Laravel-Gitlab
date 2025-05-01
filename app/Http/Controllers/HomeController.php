@@ -191,8 +191,7 @@ class HomeController extends Controller
             ->where('exibicao', 'Todos')
             ->groupBy('id_conteudo')
             ->orderBy('id', 'desc')
-            ->skip(4)
-            ->take(6)
+            ->take(7)
             ->get();
 
         // Buscar as cenas correspondentes aos IDs de conteúdo
@@ -225,8 +224,8 @@ class HomeController extends Controller
         if ($watchingItems->isEmpty()) {
             $fallbackCenas = Cenas::where('status', 'Ativo')
                         ->orderBy('id_produtor_creator', 'desc')
-                        ->skip(7)  // Pular as que já estão no carrossel hero
-                        ->take(6)
+                     // Pular as que já estão no carrossel hero
+                        ->take(5)
                         ->get();
             
             foreach ($fallbackCenas as $cena) {
@@ -242,7 +241,7 @@ class HomeController extends Controller
             ->whereNotNull('foto_principal')  // Garantir que tenha foto de perfil
             ->where('foto_principal', '!=', '')  // Garantir que o campo não esteja vazio
             ->orderBy('id', 'desc')  // Ordenar pelo ID de forma decrescente (mais recentes primeiro)
-            ->take(20)
+            ->take(8)
             ->get();
             
         // Formatar os modelos para o formato esperado pelo carrossel de atores
@@ -258,7 +257,7 @@ class HomeController extends Controller
             ->where('status', 'Ativo')
             ->where('data_liberacao_conteudo', '<=', now()) // Apenas conteúdos já liberados
             ->orderBy('visualizacao', 'desc') // Ordenar por mais visualizados primeiro
-            ->take(12)
+            ->take(7)
             ->get();
 
         // Formatar os resultados para o carrossel
@@ -275,7 +274,7 @@ class HomeController extends Controller
             ->where('status', 'Ativo')
             ->where('data_liberacao_conteudo', '<=', now()) // Apenas conteúdos já liberados
             ->orderBy('data_liberacao_conteudo', 'desc') // Ordenar pela data de liberação
-            ->take(12)
+            ->take(7)
             ->get();
 
         // Formatar os resultados para o carrossel
@@ -291,7 +290,7 @@ class HomeController extends Controller
         $trendingCreators = Creator::where('status', 'Ativo')
             ->withBackgroundAndProfile() // Usa o scope para garantir que tenha foto de perfil e imagem de fundo
             ->orderBy('id_produtor_creator', 'desc') // Pega os mais recentes primeiro
-            ->take(12) // Limita a 12 resultados
+            ->take(8) // Limita a 12 resultados
             ->get();
 
         return view('home', compact('heroSlides', 'trendingContent', 'featuredActors', 'trendingCreators', 'watchingItems', 'latestContent'));

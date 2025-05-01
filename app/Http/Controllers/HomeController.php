@@ -242,7 +242,7 @@ class HomeController extends Controller
             ->whereNotNull('foto_principal')  // Garantir que tenha foto de perfil
             ->where('foto_principal', '!=', '')  // Garantir que o campo não esteja vazio
             ->orderBy('id', 'desc')  // Ordenar pelo ID de forma decrescente (mais recentes primeiro)
-            ->take(12)
+            ->take(20)
             ->get();
             
         // Formatar os modelos para o formato esperado pelo carrossel de atores

@@ -121,3 +121,6 @@ Route::get('img/{filename}', [RemoteImageController::class, 'show'])
 
 // Rota para o proxy de imagens
 Route::get('img/{filename}', 'App\Http\Controllers\RemoteImageController@show')->name('image.proxy');     
+
+Route::get('/planos', 'App\Http\Controllers\PlanosController@index')->name('planos.index');
+Route::get('/planos/{codigo}/assinar', 'App\Http\Controllers\PlanosController@assinar')->name('planos.assinar');

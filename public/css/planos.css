@@ -1,0 +1,289 @@
+/* Estilos para a página de planos */
+.planos-container {
+    overflow-x: hidden;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+}
+
+.planos-hero {
+    background: linear-gradient(135deg, #151515, #380000);
+    position: relative;
+    color: #fff;
+    padding: 4rem 0;
+}
+
+.text-danger {
+    color: #FF3333 !important;
+}
+
+.display-4 {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.lead {
+    font-size: 1.25rem;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-weight: 500;
+}
+
+.bg-danger {
+    background-color: #FF3333 !important;
+}
+
+.btn-danger {
+    background-color: #FF3333;
+    border-color: #FF3333;
+}
+
+.btn-danger:hover {
+    background-color: #dd2020;
+    border-color: #dd2020;
+}
+
+.btn-outline-danger {
+    color: #FF3333;
+    border-color: #FF3333;
+}
+
+.btn-outline-danger:hover {
+    background-color: #FF3333;
+    color: #fff;
+}
+
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin: 0 auto;
+    border-radius: 50%;
+    background-color: #FF3333;
+}
+
+.vantagens {
+    background: #121212;
+    color: #fff;
+    padding: 4rem 0;
+}
+
+.vantagens .card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.vantagens h2, .vantagens h4 {
+    color: #fff;
+}
+
+.vantagens p {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.planos {
+    background: #000;
+    color: #fff;
+    padding: 4rem 0;
+}
+
+.planos h2 {
+    color: #fff;
+}
+
+.planos .lead {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.plano-card {
+    background: rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.plano-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(255, 51, 51, 0.2) !important;
+}
+
+.plano-destaque {
+    border: 2px solid #FF3333 !important;
+}
+
+.destaque-badge, .popular-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #FF3333;
+    color: white;
+    padding: 5px 15px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    z-index: 10;
+}
+
+.popular-badge {
+    background: #ffc107;
+    color: #212529;
+}
+
+.card-header {
+    background-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+.card-price {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #FF3333;
+}
+
+.economia-texto {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.card-body {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.text-success {
+    color: #4cd964 !important;
+}
+
+/* Tabs de planos */
+.nav-pills .nav-link {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 0 5px;
+    border-radius: 30px;
+    padding: 8px 20px;
+    transition: all 0.3s ease;
+}
+
+.nav-pills .nav-link.active {
+    background-color: #FF3333;
+    color: white;
+    border-color: #FF3333;
+}
+
+.nav-pills .nav-link:hover:not(.active) {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Formas de pagamento */
+.formas-pagamento {
+    background: #121212;
+    color: #fff;
+    padding: 4rem 0;
+}
+
+.pagamento-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #FF3333;
+}
+
+.formas-pagamento .card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.seguranca-pagamento {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* FAQ */
+.faq {
+    background: #000;
+    color: #fff;
+    padding: 4rem 0;
+}
+
+.accordion-item {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    color: #fff;
+}
+
+.accordion-button {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    color: #fff !important;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: rgba(255, 51, 51, 0.1) !important;
+    color: #FF3333 !important;
+    box-shadow: none;
+}
+
+.accordion-body {
+    background-color: rgba(0, 0, 0, 0.2);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.accordion-button:after {
+    filter: invert(1);
+}
+
+/* CTA Final */
+.cta-final {
+    background: linear-gradient(135deg, #151515, #380000);
+    color: #fff;
+    padding: 4rem 0;
+}
+
+/* Responsividade */
+@media (max-width: 767.98px) {
+    .card-price {
+        font-size: 2rem;
+    }
+    
+    .nav-pills .nav-link {
+        margin-bottom: 5px;
+    }
+    
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    .gap-4 {
+        gap: 1rem !important;
+    }
+    
+    .container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+
+/* Correções para alinhar com o design existente */
+.bg-light {
+    background-color: #121212 !important;
+}
+
+.bg-dark {
+    background-color: #000 !important;
+}
+
+.text-muted {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+h4.fw-bold {
+    color: #fff;
+}

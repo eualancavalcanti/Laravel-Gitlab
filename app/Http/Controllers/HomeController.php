@@ -146,7 +146,7 @@ class HomeController extends Controller
             $slide = new HeroSlide();
             $slide->title = $cena->titulo;
             $slide->description = $cena->descricao;
-            $slide->date = $cena->data;
+            $slide->date = $cena->getDataLiberacaoFormatada('d/m/Y');
             
             // Lógica de fallback em cascata para imagens
             // Verificar todas as possibilidades de imagens na ordem de preferência

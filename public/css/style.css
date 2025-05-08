@@ -107,6 +107,20 @@ img {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
+}
+
+.navbar-left, .navbar-right {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-left {
+    justify-content: flex-start;
+}
+
+.navbar-right {
+    justify-content: flex-end;
 }
 
 .logo {
@@ -155,8 +169,6 @@ img {
     padding: 0;
     overflow: hidden;
 }
-
-
 
 .hero-slide {
     position: absolute;

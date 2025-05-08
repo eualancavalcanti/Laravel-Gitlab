@@ -36,3 +36,35 @@ if (!function_exists('formatViews')) {
         return format_views($number, $precision);
     }
 }
+
+/**
+ * Formata uma data timestamp em formato legível
+ * 
+ * @param string|int|DateTime $date A data a ser formatada
+ * @param string $format O formato desejado (padrão: d/m/Y H:i)
+ * @return string A data formatada
+ */
+if (!function_exists('format_date')) {
+    function format_date($date, $format = 'd/m/Y H:i')
+    {
+        if (empty($date)) {
+            return '';
+        }
+        
+        if (is_numeric($date)) {
+            return date($format, $date);
+        }
+        
+        if ($date instanceof \DateTime) {
+            return $date->format($format);
+        }
+        
+        // Tentar converter a string para timestamp
+        try {
+            return date($format, strtotime($date));
+        } catch (\Exception $e) {
+            // Se falhar, retornar a string original
+            return $date;
+        }
+    }
+}

@@ -124,45 +124,7 @@ Route::get('/planos/{codigo}/pagamento', [PlanosController::class, 'pagamento'])
 Route::get('/consulta-planos', function() {
     return DB::table('planos')->count();
 });
-Route::get('/teste-planos', function() {
-    return view('planos', [
-        'planos' => [(object)[
-            'id' => 1,
-            'codigo' => 'TESTE',
-            'titulo' => 'Plano de Teste',
-            'subtitulo' => 'Apenas para teste',
-            'preco' => 99.90,
-            'duracao_dias' => 30,
-            'tipo_pagamento' => 'cartao',
-            'recursos' => json_encode(['Recurso 1', 'Recurso 2']),
-            'popular' => 1,
-            'destaque' => 0,
-            'descricao_curta' => 'Descrição de teste'
-        ]],
-        'planosPorPeriodo' => [
-            'mensal' => [(object)[
-                'id' => 1,
-                'codigo' => 'TESTE',
-                'titulo' => 'Plano de Teste',
-                'subtitulo' => 'Apenas para teste',
-                'preco' => 99.90,
-                'duracao_dias' => 30,
-                'tipo_pagamento' => 'cartao',
-                'recursos' => json_encode(['Recurso 1', 'Recurso 2']),
-                'popular' => 1,
-                'destaque' => 0,
-                'descricao_curta' => 'Descrição de teste'
-            ]]
-        ],
-        'vantagens' => [
-            ['icone' => 'fa-lock', 'titulo' => 'Vantagem 1', 'descricao' => 'Descrição da vantagem 1'],
-            ['icone' => 'fa-film', 'titulo' => 'Vantagem 2', 'descricao' => 'Descrição da vantagem 2']
-        ],
-        'tiposPagamento' => [
-            'cartao' => ['icone' => 'fa-credit-card', 'titulo' => 'Cartão de Crédito', 'descricao' => 'Descrição do pagamento']
-        ]
-    ]);
-});
+
 
 // Rotas para planos premium
 Route::get('/api/planos/principais', [PlanosController::class, 'getPrincipais'])->name('api.plans.main');

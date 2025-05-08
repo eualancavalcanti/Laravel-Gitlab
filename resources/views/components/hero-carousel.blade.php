@@ -24,7 +24,7 @@
                  data-video-id=""
                  data-image-url="{{ asset('images/hero/default.jpg') }}"
                  data-image-type="default"
-                 data-fallback-url="{{ asset('images/hero/default.jpg') }}">
+                 data-fallback-url="{{ asset('images/hero/default.jpg') }}">   
             </div>
         @endforelse
     </div>

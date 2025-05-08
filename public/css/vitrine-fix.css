@@ -103,3 +103,290 @@
 .dragging {
     -webkit-overflow-scrolling: auto !important;
 }
+
+/**
+ * Correções para os carrosséis da vitrine - HotBoys
+ * Resolve problemas de conflito entre diferentes implementações de carrossel
+ */
+
+/* Desabilitar inicialização automática de carrosséis antigos */
+.content-grid:not([data-initialized]), 
+.actors-carousel:not([data-initialized]),
+.creators-carousel:not([data-initialized]) {
+    scroll-behavior: smooth;
+}
+
+/* Estilos para estado desabilitado dos botões de navegação */
+.nav-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Correção para todos os carrosséis de conteúdo */
+.content-grid, .actors-carousel, .creators-carousel {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    padding: 1rem 0;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    
+    /* Propriedades para transição suave com inércia */
+    transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform, scroll-position;
+    
+    /* Otimizações de performance */
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    -webkit-font-smoothing: subpixel-antialiased;
+}
+
+.content-grid::-webkit-scrollbar, 
+.actors-carousel::-webkit-scrollbar, 
+.creators-carousel::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Opera */
+}
+
+/* Garantir que o carrossel específico "Clientes assistindo no momento" mantenha suas configurações */
+#clientes-assistindo .content-grid {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 1rem 0;
+}
+
+/* Garantir que os cards tenham tamanho adequado */
+.content-card {
+    min-width: 280px;
+    scroll-snap-align: start;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                opacity 0.2s ease;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .content-card {
+        min-width: 75vw;
+    }
+}
+
+@media (max-width: 480px) {
+    .content-card {
+        min-width: 85vw;
+    }
+}
+
+/* Garantir que eventos de clique funcionem corretamente */
+.content-card, 
+.actor-card, 
+.creator-card-premium {
+    cursor: pointer;
+    z-index: 1;
+}
+
+/* Efeitos suaves para itens nos carrosséis */
+.content-card, .actor-card, .creator-card-premium {
+    scroll-snap-align: start;
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                opacity 0.2s ease;
+}
+
+/* Efeito de entrada suave ao deslizar */
+.carousel-container:hover .content-card,
+.carousel-container:hover .actor-card,
+.carousel-container:hover .creator-card-premium {
+    transform-origin: center;
+}
+
+/* Efeito de destaque no elemento central (opcional) */
+.content-card:hover, 
+.actor-card:hover, 
+.creator-card-premium:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+}
+
+/* Efeito de transição nos botões de navegação */
+.nav-btn {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.nav-btn:hover:not(.disabled) {
+    transform: scale(1.1);
+}
+
+.nav-btn:active:not(.disabled) {
+    transform: scale(0.95);
+}
+
+.btn-fade-out {
+    opacity: 0.2;
+    pointer-events: none;
+}
+
+/* Estilo para o carrossel quando estiver sendo arrastado */
+.dragging {
+    cursor: grabbing !important;
+    user-select: none;
+    scroll-behavior: auto !important;
+}
+
+.dragging * {
+    pointer-events: none;
+}
+
+/* Efeito de escala para itens próximos ao centro (opcional) */
+@media (min-width: 768px) {
+    .content-grid, .actors-carousel, .creators-carousel {
+        padding-bottom: 20px; /* Espaço extra para o efeito de escala */
+    }
+    
+    .content-card, .actor-card, .creator-card-premium {
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+}
+
+/* Otimizações para dispositivos móveis */
+@media (max-width: 767px) {
+    .content-grid, .actors-carousel, .creators-carousel {
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        padding: 0.5rem 0;
+        gap: 1rem;
+    }
+    
+    .content-card, .actor-card, .creator-card-premium {
+        scroll-snap-align: center;
+    }
+    
+    /* Botões de navegação menores em mobile */
+    .nav-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+    
+    /* Espaço extra para deslizamento mais confortável */
+    .carousel-container {
+        margin: 0 -10px;
+        padding: 0 10px;
+        overflow: visible;
+    }
+}
+
+/* Otimizações para performance */
+.carousel-container {
+    overflow: hidden;
+    contain: layout paint style;
+}
+
+/* Desativar animações para usuários que preferem movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+    .content-grid, .actors-carousel, .creators-carousel {
+        scroll-behavior: auto;
+    }
+    
+    .content-card, .actor-card, .creator-card-premium {
+        transition-duration: 0.1s;
+    }
+}
+
+/* Estilos para os badges de conteúdo */
+.content-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    z-index: 2;
+}
+
+.content-badge.vip {
+    background-color: var(--hot-red, #FF3333);
+    color: white;
+}
+
+.content-badge.exclusive {
+    background-color: #FFD700;
+    color: black;
+}
+
+/* Overlay de play para melhor experiência do usuário */
+.play-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 1;
+}
+
+.content-card:hover .play-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 1;
+}
+
+.play-icon {
+    width: 50px;
+    height: 50px;
+    background-color: var(--hot-red, #FF3333);
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transform: scale(0.8);
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.content-card:hover .play-icon {
+    transform: scale(1);
+}
+
+.play-icon i {
+    color: white;
+    font-size: 1.5rem;
+}
+
+/* Ajuste para garantir que as informações do card não sejam cobertas */
+.content-overlay {
+    z-index: 2;
+    position: relative;
+}
+
+/* Ajustes para a duração e título do conteúdo */
+.content-title {
+    margin: 0 0 0.3rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.content-duration {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+}

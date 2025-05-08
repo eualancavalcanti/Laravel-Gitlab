@@ -7,10 +7,12 @@
     @include('components.hero-carousel', ['heroSlides' => $heroSlides])
     
     <!-- Carrossel de Conteúdo em Alta -->
-    @include('components.content-carousel', [
-        'title' => 'Clientes assistindo no momento', 
-        'watchingItems' => $trendingContent
-    ])
+    <div id="clientes-assistindo">
+        @include('components.content-carousel', [
+            'title' => 'Clientes assistindo no momento', 
+            'watchingItems' => $trendingContent
+        ])
+    </div>
     
     <!-- Carrossel de Últimas Novidades -->
     @include('components.content-carousel', [

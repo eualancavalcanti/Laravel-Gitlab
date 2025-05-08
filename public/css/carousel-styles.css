@@ -242,3 +242,77 @@
     from { opacity: 1; }
     to { opacity: 0; visibility: hidden; }
 }
+
+/* Melhorias de acessibilidade para cards clicáveis - Adicionado para resolver problemas de modal */
+.content-card, 
+.open-video-modal,
+.hero .btn-primary.cta,
+.hero-slide {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+}
+
+.content-card:hover, 
+.open-video-modal:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    z-index: 2;
+}
+
+.hero .btn-primary.cta:hover {
+    transform: scale(1.05);
+}
+
+/* Adiciona um overlay de foco para melhorar acessibilidade */
+.content-card:focus, 
+.open-video-modal:focus,
+.hero .btn-primary.cta:focus {
+    outline: 2px solid #ff3333;
+    outline-offset: 2px;
+}
+
+/* Garante que todos os componentes do card acionem o evento de clique */
+.content-card *, 
+.open-video-modal * {
+    pointer-events: none;
+}
+
+/* Melhora a aparência do botão de play em cards */
+.play-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    background: rgba(0, 0, 0, 0.4);
+    transition: opacity 0.3s ease;
+}
+
+.content-card:hover .play-overlay,
+.open-video-modal:hover .play-overlay {
+    opacity: 1;
+}
+
+.play-icon {
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 51, 51, 0.8);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.play-icon:hover {
+    transform: scale(1.1);
+    background: rgba(255, 51, 51, 1);
+}

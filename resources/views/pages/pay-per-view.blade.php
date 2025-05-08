@@ -44,7 +44,7 @@
         
         <div class="ppv-content">
             @foreach($ppvItems as $item)
-                <div class="ppv-item" data-category="{{ $item['category'] }}" data-duration="{{ str_contains($item['duration'], ':') && explode(':', $item['duration'])[0] > 30 ? 'long' : (str_contains($item['duration'], ':') && explode(':', $item['duration'])[0] < 10 ? 'short' : 'medium') }}" data-price="{{ $item['price'] < 15 ? 'low' : ($item['price'] > 30 ? 'high' : 'medium') }}">
+                <div class="ppv-item" data-category="{{ $item['category'] }}" data-duration="{{ str_contains($item['duration'], ':') && explode(':', $item['duration'])[0] > 30 ? 'long' : (str_contains($item['duration'], ':') && explode(':', $item['duration'])[0] < 10 ? 'short' : 'medium') }}" data-price="{{ $item['price'] < 15 ? 'low' : ($item['price'] > 30 ? 'high' : 'medium') }}" data-ppv="true">
                     <div class="ppv-thumbnail">
                         @if($item['category'] === 'exclusive')
                             <div class="ppv-exclusive-badge">Exclusivo</div>

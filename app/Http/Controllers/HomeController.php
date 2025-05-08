@@ -25,20 +25,20 @@ class HomeController extends Controller
     private function formatCarouselItem($cena, $remaining_time = null, $progress = null)
     {
         $item = new \stdClass();
-        $item->title = $cena->titulo;
-        $item->video_id = $cena->id;
+        $item->title = $cena->titulo ?? 'Sem título';
+        $item->video_id = $cena->id ?? '';
         
         // Lógica de fallback em cascata para imagens
         // Verificar todas as possibilidades de imagens na ordem de preferência
         $thumbnail_url = asset('images/placeholder-content.jpg'); // Valor padrão
         
-        if (!empty($cena->cena_vitrine)) {
+        if (isset($cena->cena_vitrine) && !empty($cena->cena_vitrine)) {
             $thumbnail_url = 'https://server2.hotboys.com.br/arquivos/' . $cena->cena_vitrine;
-        } elseif (!empty($cena->cena_lista)) {
+        } elseif (isset($cena->cena_lista) && !empty($cena->cena_lista)) {
             $thumbnail_url = 'https://server2.hotboys.com.br/arquivos/' . $cena->cena_lista;
-        } elseif (!empty($cena->cena_home)) {
+        } elseif (isset($cena->cena_home) && !empty($cena->cena_home)) {
             $thumbnail_url = 'https://server2.hotboys.com.br/arquivos/' . $cena->cena_home;
-        } elseif (!empty($cena->vitrine_slider)) {
+        } elseif (isset($cena->vitrine_slider) && !empty($cena->vitrine_slider)) {
             $thumbnail_url = 'https://server2.hotboys.com.br/arquivos/' . $cena->vitrine_slider;
         }
         
@@ -46,9 +46,32 @@ class HomeController extends Controller
         $item->thumbnail_type = $this->getImageType($cena);
         
         // Definir valores padrão caso não sejam fornecidos
-        $item->remaining_time = $remaining_time ?? rand(10, 59) . ':' . rand(10, 59);
-        $item->viewers = format_views($cena->visualizacao ?? 0);
+        $item->remaining_time = $remaining_time ?? (isset($cena->duracao) ? $cena->duracao : rand(10, 59) . ':' . rand(10, 59));
+        
+        // Usar visualização segura com fallback para valor padrão
+        $visualizacao = isset($cena->visualizacao) ? $cena->visualizacao : 0;
+        $item->viewers = function_exists('format_views') ? format_views($visualizacao) : $visualizacao;
+        
+        // Progresso com valor padrão
         $item->progress = $progress ?? rand(10, 90);
+        
+        // Propriedades para interação com o modal
+        $item->is_vip = isset($cena->exibicao) && $cena->exibicao === 'Vips';
+        $item->is_exclusive = isset($cena->exclusivo) && $cena->exclusivo === 'Sim';
+        
+        // Indicador que este não é um card de pay-per-view (importante para os event listeners)
+        $item->is_ppv = false;
+        
+        // Código do teaser para exibição no modal
+        $item->teaser_code = isset($cena->video_code) ? $cena->video_code : '';
+        
+        // Duração formatada para exibição
+        if (isset($cena->duracao) && !empty($cena->duracao)) {
+            $item->duration = $cena->duracao;
+        } else {
+            // Gerar uma duração aleatória razoável se não estiver disponível
+            $item->duration = rand(1, 2) . ':' . str_pad(rand(10, 59), 2, '0', STR_PAD_LEFT) . ':' . str_pad(rand(10, 59), 2, '0', STR_PAD_LEFT);
+        }
         
         return $item;
     }

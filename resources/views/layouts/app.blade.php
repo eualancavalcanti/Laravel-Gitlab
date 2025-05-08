@@ -30,7 +30,7 @@
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
     
-    @stack('styles')
+    {{-- @stack('styles') --}}
 </head>
 <body>
     <!-- Navegação -->
@@ -49,14 +49,23 @@
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Scripts -->
-    <!-- Gerenciador unificado de carrosséis (substitui unified-carousel.js) -->
+    <!-- Scripts Essenciais -->
     <script src="{{ asset('js/carousel-manager.js') }}"></script>
     <script src="{{ asset('js/complementary.js') }}"></script>
-    <script src="{{ asset('js/content-modal.js') }}"></script>
-    <script src="{{ asset('js/modal-manager.js') }}"></script> <!-- Gerenciador de modais -->
+    
+    <!-- Scripts de Modal -->
+    <script src="{{ asset('js/unified-modal-handler.js') }}"></script> <!-- Nosso manipulador principal -->
+    <script src="{{ asset('js/modal-manager.js') }}"></script> <!-- Script original, investigar -->
 
+    <!-- Scripts Removidos/Comentados que causavam conflito -->
+    {{-- <script src="{{ asset('js/content-modal.js') }}"></script> --}}
+    {{-- <script src="{{ asset('js/subscription-modal-handler.js') }}"></script> --}}
+    {{-- <script src="{{ asset('js/card-click-handler.js') }}"></script> --}}
+    {{-- <script src="{{ asset('js/modal-fix.js') }}"></script> --}}
+    {{-- <script src="{{ asset('js/event-propagation-fix.js') }}"></script> --}}
+    {{-- <script src="{{ asset('js/modal-diagnostic.js') }}"></script> --}}
     
     @stack('scripts')
+
 </body>
 </html>

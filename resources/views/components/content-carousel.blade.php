@@ -16,11 +16,15 @@
         <div class="carousel-container">
             <div class="content-grid">
             @forelse($watchingItems ?? [] as $key => $item)
-                <!-- Modificar os cards para abrirem o modal -->
-                <div class="content-card open-video-modal"
+                <!-- Card de conteúdo otimizado para abrir o modal de vídeo -->
+                <div class="content-card open-video-modal" 
                     data-video-id="{{ $item->video_id ?? '' }}"
-                    data-title="{{ $item->title ?? '' }}"
-                    data-thumbnail="{{ $item->thumbnail ?? '' }}">
+                    data-title="{{ $item->title ?? '' }}" 
+                    data-thumbnail="{{ $item->thumbnail ?? '' }}"
+                    data-teaser-code="{{ $item->teaser_code ?? '' }}"
+                    data-duration="{{ $item->remaining_time ?? '1:30:00' }}"
+                    data-type="{{ isset($item->is_vip) && $item->is_vip ? 'vip' : 'standard' }}">
+                    
                     @if($key < 4)
                     {{-- As primeiras 4 imagens são carregadas com prioridade alta --}}
                     <img src="{{ $item->thumbnail ?? '' }}" 
@@ -36,16 +40,35 @@
                          decoding="async"
                          onerror="this.onerror=null; this.src='/images/placeholder-content.jpg'; this.classList.add('fallback-image');">
                     @endif
+                    
                     <div class="content-overlay">
-                        <h3>{{ $item->title ?? '' }}</h3>
-                        <span class="duration">{{ $item->remaining_time ?? '1:30:00' }} restantes</span>
+                        <h3 class="content-title">{{ $item->title ?? '' }}</h3>
+                        <span class="content-duration">{{ $item->remaining_time ?? '1:30:00' }}</span>
+                        
+                        @if(isset($item->is_vip) && $item->is_vip)
+                            <span class="content-badge vip">VIP</span>
+                        @endif
+                        
+                        @if(isset($item->is_exclusive) && $item->is_exclusive)
+                            <span class="content-badge exclusive">Exclusivo</span>
+                        @endif
                     </div>
+                    
                     <div class="watching-info">
                         <i class="lucide-users"></i>
-                        {{ $item->viewers ?? '1.2K' }}
+                        <span class="viewers-count">{{ $item->viewers ?? '1.2K' }}</span>
                     </div>
+                    
                     <div class="content-progress">
                         <div class="progress-bar" style="--progress: {{ $item->progress ?? 50 }}%"></div>
+                    </div>
+                    
+                    <div class="play-overlay">
+                        <button class="play-icon" aria-label="Assistir vídeo">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-play">
+                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                            </svg>
+                        </button>
                     </div>
                 </div>
             @empty

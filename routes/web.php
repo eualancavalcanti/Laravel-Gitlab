@@ -56,7 +56,7 @@ Route::get('/catalog', function () {
     return view('pages.catalog');
 })->name('catalog');
 
-Route::get('/pay-per-view', [App\Http\Controllers\PayPerViewController::class, 'index'])->name('pay-per-view');
+Route::get('/pay-per-view', 'App\Http\Controllers\PayPerViewController@index')->name('pay-per-view.index');
 
 Route::get('/system-status', function () {
     return view('pages.system-status');
@@ -128,3 +128,6 @@ Route::get('/consulta-planos', function() {
 
 // Rotas para planos premium
 Route::get('/api/planos/principais', [PlanosController::class, 'getPrincipais'])->name('api.plans.main');
+
+// Rotas para Pay-Per-View
+Route::get('/pay-per-view/{id}', 'App\Http\Controllers\PayPerViewController@show')->name('pay-per-view.show');

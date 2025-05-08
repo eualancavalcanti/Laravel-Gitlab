@@ -142,4 +142,33 @@ class PayPerViewController extends Controller
             ]
         ];
     }
+
+    /**
+     * Exibe os detalhes de um item pay-per-view específico
+     */
+    public function show($id)
+    {
+        // Buscar dados dos itens pay-per-view
+        $ppvItems = $this->getPpvItems();
+        
+        // Encontrar o item específico pelo ID
+        $item = null;
+        foreach ($ppvItems as $ppvItem) {
+            if ($ppvItem['id'] == $id) {
+                $item = $ppvItem;
+                break;
+            }
+        }
+        
+        // Se não encontrar o item, redirecionar para a página principal de pay-per-view
+        if (!$item) {
+            return redirect()->route('pay-per-view.index')
+                ->with('error', 'Conteúdo não encontrado.');
+        }
+        
+        // Retornar a view com os detalhes do item
+        return view('pages.pay-per-view-details', [
+            'item' => $item
+        ]);
+    }
 }

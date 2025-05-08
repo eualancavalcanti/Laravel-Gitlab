@@ -275,20 +275,205 @@ function initializeHeroCarousel() {
  * Configura a navegação de um carrossel
  */
 function setupNavigation(track, prevBtn, nextBtn) {
-    // Configurar botões de navegação
+    // Configuração de velocidade e comportamento do scroll
+    const scrollConfig = {
+        behavior: 'smooth',
+        easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+    };
+    
+    // Variáveis para controle de deslizamento
+    let isScrolling = false;
+    let scrollTimeout;
+    let itemWidth = 0;
+    let visibleItems = 0;
+    
+    // Calcular quantos itens são visíveis e o tamanho do scroll
+    function calculateScrollMetrics() {
+        const trackWidth = track.offsetWidth;
+        const items = track.querySelectorAll('.content-card, .actor-card, .creator-card-premium');
+        
+        if (items.length === 0) return;
+        
+        // Calcular largura média dos itens
+        itemWidth = items[0].offsetWidth + parseInt(getComputedStyle(items[0]).marginRight || 0);
+        
+        // Calcular quantos itens cabem na viewport
+        visibleItems = Math.floor(trackWidth / itemWidth);
+        
+        // Garantir pelo menos 1 item
+        visibleItems = Math.max(1, visibleItems);
+    }
+    
+    // Calcular métricas iniciais
+    calculateScrollMetrics();
+    
+    // Recalcular quando a janela for redimensionada
+    window.addEventListener('resize', calculateScrollMetrics);
+    
+    // Configurar botões de navegação com animação suave
     prevBtn.addEventListener('click', () => {
-        track.scrollBy({
-            left: -track.offsetWidth * 0.8,
-            behavior: 'smooth'
-        });
+        if (isScrolling) return;
+        isScrolling = true;
+        
+        // Calcular a quantidade de scroll baseada na viewport
+        const scrollDistance = Math.max(itemWidth * Math.floor(visibleItems * 0.8), itemWidth);
+        
+        // Aplicar scroll com animação
+        smoothScrollBy(track, -scrollDistance);
+        
+        // Atualizar botões após a transição
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            updateButtonVisibility();
+            isScrolling = false;
+        }, 500);
     });
     
     nextBtn.addEventListener('click', () => {
-        track.scrollBy({
-            left: track.offsetWidth * 0.8,
-            behavior: 'smooth'
-        });
+        if (isScrolling) return;
+        isScrolling = true;
+        
+        // Calcular a quantidade de scroll baseada na viewport
+        const scrollDistance = Math.max(itemWidth * Math.floor(visibleItems * 0.8), itemWidth);
+        
+        // Aplicar scroll com animação
+        smoothScrollBy(track, scrollDistance);
+        
+        // Atualizar botões após a transição
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            updateButtonVisibility();
+            isScrolling = false;
+        }, 500);
     });
+    
+    // Função para rolagem suave com inércia
+    function smoothScrollBy(element, distance) {
+        const startPosition = element.scrollLeft;
+        const startTime = performance.now();
+        const duration = 500;
+        
+        // Função de animação para scroll com efeito de inércia
+        function scrollAnimation(currentTime) {
+            const elapsedTime = currentTime - startTime;
+            
+            if (elapsedTime < duration) {
+                // Calcular nova posição com easing
+                const easingFactor = easeOutQuart(elapsedTime / duration);
+                element.scrollLeft = startPosition + (distance * easingFactor);
+                requestAnimationFrame(scrollAnimation);
+            } else {
+                // Finalizar no destino exato
+                element.scrollLeft = startPosition + distance;
+                isScrolling = false;
+                updateButtonVisibility();
+            }
+        }
+        
+        // Iniciar animação
+        requestAnimationFrame(scrollAnimation);
+    }
+    
+    // Função de easing para animação suave
+    function easeOutQuart(t) {
+        return 1 - Math.pow(1 - t, 4);
+    }
+    
+    // Implementar scroll por arrastar (drag to scroll)
+    let isDragging = false;
+    let startX, startScrollLeft;
+    
+    // Eventos de toque
+    track.addEventListener('touchstart', handleDragStart, { passive: true });
+    track.addEventListener('touchmove', handleDragMove, { passive: false });
+    track.addEventListener('touchend', handleDragEnd);
+    
+    // Eventos de mouse
+    track.addEventListener('mousedown', handleDragStart);
+    track.addEventListener('mousemove', handleDragMove);
+    track.addEventListener('mouseup', handleDragEnd);
+    track.addEventListener('mouseleave', handleDragEnd);
+    
+    function handleDragStart(e) {
+        isDragging = true;
+        track.classList.add('dragging');
+        startX = e.pageX || e.touches[0].pageX;
+        startScrollLeft = track.scrollLeft;
+        
+        // Parar momentum scroll em andamento
+        cancelAnimationFrame(track.scrollRAF);
+    }
+    
+    function handleDragMove(e) {
+        if (!isDragging) return;
+        
+        e.preventDefault();
+        const x = e.pageX || e.touches[0].pageX;
+        const dragDistance = x - startX;
+        
+        // Aplicar movimento com um pouco de resistência para sensação tátil
+        track.scrollLeft = startScrollLeft - dragDistance;
+        
+        // Atualizar estado dos botões durante o arrasto
+        updateButtonVisibility();
+    }
+    
+    function handleDragEnd() {
+        if (!isDragging) return;
+        
+        isDragging = false;
+        track.classList.remove('dragging');
+        
+        // Implementar efeito de inércia após soltar
+        const endTime = performance.now();
+        const endScrollLeft = track.scrollLeft;
+        
+        // Calcular velocidade e aplicar momentum
+        const velocity = (endScrollLeft - startScrollLeft) * 0.5;
+        
+        if (Math.abs(velocity) > 10) {
+            applyMomentum(track, velocity);
+        }
+    }
+    
+    // Aplicar inércia (momentum) após arrastamento
+    function applyMomentum(element, velocity) {
+        let currentVelocity = velocity;
+        const friction = 0.92; // Ajuste para mais ou menos inércia
+        
+        function momentumStep() {
+            if (Math.abs(currentVelocity) > 0.5) {
+                element.scrollLeft += currentVelocity;
+                currentVelocity *= friction;
+                element.scrollRAF = requestAnimationFrame(momentumStep);
+            } else {
+                // Verificar se precisamos snap para um item
+                snapToNearestItem();
+                updateButtonVisibility();
+            }
+        }
+        
+        cancelAnimationFrame(element.scrollRAF);
+        element.scrollRAF = requestAnimationFrame(momentumStep);
+    }
+    
+    // Função para snap para o item mais próximo
+    function snapToNearestItem() {
+        // Evitar snap automático em dispositivos móveis
+        if (window.innerWidth < 768) return;
+        
+        const itemWidth = track.querySelector('.content-card, .actor-card, .creator-card-premium')?.offsetWidth || 0;
+        if (!itemWidth) return;
+        
+        const currentPosition = track.scrollLeft;
+        const nearestItemIndex = Math.round(currentPosition / itemWidth);
+        const targetPosition = nearestItemIndex * itemWidth;
+        
+        // Só fazer snap se a diferença for significativa
+        if (Math.abs(currentPosition - targetPosition) > itemWidth * 0.2) {
+            smoothScrollBy(track, targetPosition - currentPosition);
+        }
+    }
     
     // Atualizar visibilidade dos botões
     function updateButtonVisibility() {
@@ -297,16 +482,30 @@ function setupNavigation(track, prevBtn, nextBtn) {
         
         prevBtn.classList.toggle('disabled', isAtStart);
         nextBtn.classList.toggle('disabled', isAtEnd);
+        
+        // Aplica classes de transição para fade in/out suave
+        if (isAtStart) {
+            prevBtn.classList.add('btn-fade-out');
+        } else {
+            prevBtn.classList.remove('btn-fade-out');
+        }
+        
+        if (isAtEnd) {
+            nextBtn.classList.add('btn-fade-out');
+        } else {
+            nextBtn.classList.remove('btn-fade-out');
+        }
     }
     
     // Inicializar estado dos botões
     updateButtonVisibility();
     
     // Atualizar estado dos botões durante o scroll
-    track.addEventListener('scroll', updateButtonVisibility);
-    
-    // Verificar também ao redimensionar a janela
-    window.addEventListener('resize', updateButtonVisibility);
+    track.addEventListener('scroll', () => {
+        // Usar debounce para melhorar performance
+        clearTimeout(track.scrollTimeout);
+        track.scrollTimeout = setTimeout(updateButtonVisibility, 100);
+    });
 }
 
 /**

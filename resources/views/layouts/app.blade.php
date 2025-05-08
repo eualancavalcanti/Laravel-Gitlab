@@ -50,7 +50,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/unified-carousel.js') }}"></script>
+    <!-- Gerenciador unificado de carrosséis (substitui unified-carousel.js) -->
+    <script src="{{ asset('js/carousel-manager.js') }}"></script>
     <script src="{{ asset('js/complementary.js') }}"></script>
     <script src="{{ asset('js/content-modal.js') }}"></script>
     <script src="{{ asset('js/modal-manager.js') }}"></script> <!-- Gerenciador de modais -->

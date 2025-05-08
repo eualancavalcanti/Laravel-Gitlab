@@ -1,5 +1,10 @@
 <!-- resources/views/components/content-carousel.blade.php -->
-<section class="continue-watching">
+@php
+    // Gerar um ID único para este carrossel
+    $carouselId = 'carousel-' . md5(uniqid($title ?? 'default', true));
+@endphp
+
+<section class="continue-watching" id="{{ $carouselId }}">
     <div class="section-container">
         <div class="section-header">
             <h2><i class="lucide-play-circle" aria-hidden="true"></i> {{ $title ?? 'Conteúdo em Destaque' }}</h2>
@@ -53,33 +58,3 @@
         </div>
     </div>
 </section>
-
-@once
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Precarregar as primeiras imagens para melhorar a experiência do usuário
-        const preloadImages = () => {
-            const carousels = document.querySelectorAll('.content-grid');
-            carousels.forEach(carousel => {
-                // Selecionar as primeiras 4 imagens de cada carrossel
-                const firstImages = carousel.querySelectorAll('img:nth-child(-n+4)');
-                
-                // Adicionar ao preloader
-                firstImages.forEach(img => {
-                    if (img.complete) return;
-                    
-                    // Criar um objeto de imagem para precarregar
-                    const preloadLink = document.createElement('link');
-                    preloadLink.rel = 'preload';
-                    preloadLink.as = 'image';
-                    preloadLink.href = img.src;
-                    document.head.appendChild(preloadLink);
-                });
-            });
-        };
-
-        // Executar o precarregamento
-        preloadImages();
-    });
-</script>
-@endonce

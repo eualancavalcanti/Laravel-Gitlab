@@ -1,0 +1,649 @@
+/**
+ * Estilos para a página de busca do HotBoys
+ * Com suporte para classes com prefixo hb-
+ */
+
+/* Container principal de busca */
+.hb-search-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Formulário de busca */
+.hb-search-form-container {
+    margin-bottom: 2rem;
+}
+
+.hb-search-form {
+    width: 100%;
+}
+
+.hb-search-input-group {
+    display: flex;
+    position: relative;
+}
+
+.hb-search-input {
+    width: 100%;
+    padding: 1rem 4rem 1rem 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    color: white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.hb-search-input:focus {
+    outline: none;
+    box-shadow: 0 0 15px rgba(255, 51, 51, 0.3);
+    border-color: var(--hot-red, #FF3333);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.hb-search-button {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--hot-red, #FF3333);
+    border: none;
+    color: white;
+    border-radius: 50px;
+    height: calc(100% - 10px);
+    padding: 0 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.hb-search-button:hover {
+    background: #ff4d4d;
+}
+
+.hb-search-button span {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .hb-search-button span {
+        display: inline;
+    }
+}
+
+/* Filtros */
+.hb-search-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+    .hb-search-filters {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
+.hb-filter-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.hb-filter-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: var(--text-secondary, #adb5bd);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.hb-filter-btn:hover {
+    background: rgba(255, 51, 51, 0.2);
+    color: white;
+}
+
+.hb-filter-btn.active {
+    background: var(--hot-red, #FF3333);
+    color: white;
+}
+
+.hb-filter-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.hb-filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.hb-filter-group label {
+    font-size: 0.85rem;
+    color: var(--text-secondary, #adb5bd);
+}
+
+.hb-filter-select {
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    cursor: pointer;
+    min-width: 120px;
+}
+
+.hb-filter-select:focus {
+    outline: none;
+    border-color: var(--hot-red, #FF3333);
+}
+
+/* Resultados */
+.hb-search-results {
+    margin-bottom: 3rem;
+}
+
+.hb-results-count {
+    margin-bottom: 1rem;
+    color: var(--text-secondary, #adb5bd);
+    font-size: 0.9rem;
+}
+
+.hb-results-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+@media (min-width: 640px) {
+    .hb-results-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .hb-results-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Itens de resultado */
+.hb-result-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hb-result-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.hb-thumbnail {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+}
+
+.hb-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.hb-result-item:hover .hb-thumbnail img {
+    transform: scale(1.05);
+}
+
+.hb-duration {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+.hb-content-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.hb-content-badge.exclusive {
+    background: #ff3366;
+    color: white;
+}
+
+.hb-content-badge.vip {
+    background: #6b21a8;
+    color: white;
+}
+
+.hb-content-badge.ppv {
+    background: #f59e0b;
+    color: white;
+}
+
+.hb-result-info {
+    padding: 1rem;
+}
+
+.hb-result-title {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: white;
+    line-height: 1.3;
+}
+
+.hb-result-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary, #adb5bd);
+}
+
+.hb-creator a {
+    color: var(--hot-red, #FF3333);
+    text-decoration: none;
+}
+
+.hb-creator a:hover {
+    text-decoration: underline;
+}
+
+.hb-views, .hb-date {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.hb-ppv-price {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.8rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hb-price-tag {
+    font-weight: 600;
+    color: #f59e0b;
+}
+
+.hb-buy-btn {
+    background: #f59e0b;
+    color: white;
+    border: none;
+    padding: 0.4rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.hb-buy-btn:hover {
+    background: #d97706;
+}
+
+/* Estilo específico para cards de criadores */
+.hb-creator-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.hb-creator-image {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+}
+
+.hb-creator-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hb-creator-badges {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    display: flex;
+    gap: 0.3rem;
+}
+
+.hb-badge {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.hb-badge-vip {
+    background: #6b21a8;
+    color: white;
+}
+
+.hb-verified-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background: var(--hot-red, #FF3333);
+    color: white;
+    border-radius: 50%;
+}
+
+.hb-creator-info {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.hb-creator-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.hb-creator-stats {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    color: var(--text-secondary, #adb5bd);
+    font-size: 0.85rem;
+}
+
+.hb-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.hb-creator-action {
+    margin-top: auto;
+    display: inline-block;
+    text-align: center;
+    padding: 0.6rem 1rem;
+    background: var(--hot-red, #FF3333);
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+.hb-creator-action:hover {
+    background: #ff4d4d;
+}
+
+/* Estilo específico para cards de categoria */
+.hb-category-card {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 1.5rem;
+}
+
+.hb-category-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--hot-red, #FF3333);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.hb-category-info h3 {
+    margin-bottom: 0.3rem;
+}
+
+.hb-category-info p {
+    color: var(--text-secondary, #adb5bd);
+    font-size: 0.9rem;
+}
+
+/* Paginação */
+.hb-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+
+.hb-pagination-numbers {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.hb-pagination-numbers a, .hb-pagination-dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary, #adb5bd);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.hb-pagination-numbers a:hover {
+    background: rgba(255, 51, 51, 0.2);
+    color: white;
+}
+
+.hb-pagination-numbers a.active {
+    background: var(--hot-red, #FF3333);
+    color: white;
+}
+
+.hb-pagination-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary, #adb5bd);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.hb-pagination-btn:hover:not(:disabled) {
+    background: rgba(255, 51, 51, 0.2);
+    color: white;
+}
+
+.hb-pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Estados vazios e carregamento */
+.hb-empty-search, .hb-no-results, .hb-search-loading {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.hb-empty-search-icon, .hb-no-results-icon {
+    font-size: 3rem;
+    color: var(--hot-red, #FF3333);
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.hb-empty-search h3, .hb-no-results h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+}
+
+.hb-empty-search p, .hb-no-results p {
+    color: var(--text-secondary, #adb5bd);
+    margin-bottom: 1.5rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hb-search-suggestions {
+    margin-top: 2rem;
+}
+
+.hb-search-suggestions h4 {
+    margin-bottom: 1rem;
+    color: var(--text-secondary, #adb5bd);
+}
+
+.hb-suggestion-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.hb-suggestion-tag {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.hb-suggestion-tag:hover {
+    background: var(--hot-red, #FF3333);
+}
+
+.hb-reset-search-btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: 20px;
+    background: var(--hot-red, #FF3333);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.hb-reset-search-btn:hover {
+    background: #ff4d4d;
+}
+
+.hb-loading-spinner {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 1rem;
+    border: 4px solid rgba(255, 51, 51, 0.3);
+    border-top: 4px solid var(--hot-red, #FF3333);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Classes de compatibilidade (manter durante transição) */
+.search-container, .content-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.search-form {
+    width: 100%;
+}
+
+.search-input {
+    width: 100%;
+    padding: 1rem 4rem 1rem 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    color: white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.search-button {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--hot-red, #FF3333);
+    border: none;
+    color: white;
+    border-radius: 50px;
+    height: calc(100% - 10px);
+    padding: 0 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.filter-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: var(--text-secondary, #adb5bd);
+    cursor: pointer;
+}
+
+.filter-btn.active {
+    background: var(--hot-red, #FF3333);
+    color: white;
+}
+
+.content-card, .result-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.pagination-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary, #adb5bd);
+    border: none;
+    cursor: pointer;
+}

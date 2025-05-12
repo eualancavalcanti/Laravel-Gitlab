@@ -4,7 +4,8 @@
  */
 
 /* Estilo de fallback para imagens que não carregam */
-.fallback-image {
+.fallback-image,
+.hb-fallback-image {
     background-color: rgba(20, 20, 20, 0.9) !important;
     position: relative;
     display: flex;
@@ -18,7 +19,8 @@
 }
 
 /* Tratamento específico para cards */
-.content-card {
+.content-card,
+.hb-content-card {
     min-height: 240px;
     background-color: var(--card-bg);
     position: relative;
@@ -26,7 +28,10 @@
 
 .content-card img, 
 .actor-card img,
-.creator-card-premium img {
+.creator-card-premium img,
+.hb-content-card img, 
+.hb-actor-card img,
+.hb-creator-card-premium img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -35,7 +40,9 @@
 }
 
 /* Tratamento específico para cards com imagens quebradas */
-.content-card img.fallback-image:before {
+.content-card img.fallback-image:before,
+.hb-content-card img.fallback-image:before,
+.hb-content-card img.hb-fallback-image:before {
     content: 'Imagem não disponível';
     position: absolute;
     top: 50%;
@@ -45,19 +52,22 @@
 }
 
 /* Ajustes para vitrines do tipo trending-creators */
-.creator-card-premium .profile-photo {
+.creator-card-premium .profile-photo,
+.hb-creator-card-premium .hb-profile-photo {
     background-color: var(--card-bg);
     border: 3px solid rgba(20, 20, 20, 0.9);
 }
 
-.creator-card-premium .profile-photo img {
+.creator-card-premium .profile-photo img,
+.hb-creator-card-premium .hb-profile-photo img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
 }
 
-.creator-banner {
+.creator-banner,
+.hb-creator-banner {
     background-color: rgba(20, 20, 20, 0.5);
     min-height: 100px;
 }
@@ -70,7 +80,10 @@
 
 .content-grid img, 
 .actors-carousel img,
-.creators-carousel img {
+.creators-carousel img,
+.hb-content-grid img, 
+.hb-actors-carousel img,
+.hb-creators-carousel img {
     animation: fadeIn 0.3s ease-in;
 }
 
@@ -78,23 +91,33 @@
 @supports (-webkit-touch-callout: none) {
     .content-card, 
     .actor-card,
-    .creator-card-premium {
+    .creator-card-premium,
+    .hb-content-card, 
+    .hb-actor-card,
+    .hb-creator-card-premium {
         -webkit-transform: translateZ(0);
         transform: translateZ(0);
     }
     
     .content-grid, 
     .actors-carousel,
-    .creators-carousel {
+    .creators-carousel,
+    .hb-content-grid, 
+    .hb-actors-carousel,
+    .hb-creators-carousel {
         -webkit-overflow-scrolling: touch;
         -webkit-transform: translateZ(0);
+        transform: translateZ(0);
     }
 }
 
 /* Melhorias de desempenho para imagens nos carrosséis */
 .content-grid img[loading="lazy"], 
 .actors-carousel img[loading="lazy"],
-.creators-carousel img[loading="lazy"] {
+.creators-carousel img[loading="lazy"],
+.hb-content-grid img[loading="lazy"], 
+.hb-actors-carousel img[loading="lazy"],
+.hb-creators-carousel img[loading="lazy"] {
     transform: translateZ(0);
     will-change: transform, opacity;
 }
@@ -102,4 +125,294 @@
 /* Fix para iOS Safari */
 .dragging {
     -webkit-overflow-scrolling: auto !important;
+}
+
+/* Fix para iOS Safari */
+.dragging {
+    -webkit-overflow-scrolling: auto !important;
+}
+
+/**
+ * Correções para os carrosséis da vitrine - HotBoys
+ * Resolve problemas de conflito entre diferentes implementações de carrossel
+ */
+
+/* Desabilitar inicialização automática de carrosséis antigos */
+.content-grid:not([data-initialized]), 
+.actors-carousel:not([data-initialized]),
+.hb-creators-carousel:not([data-initialized]) {
+    scroll-behavior: smooth;
+}
+
+/* Estilos para estado desabilitado dos botões de navegação */
+.nav-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Correção para todos os carrosséis de conteúdo */
+.content-grid, .actors-carousel, .hb-creators-carousel {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    padding: 1rem 0;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    
+    /* Propriedades para transição suave com inércia */
+    transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform, scroll-position;
+    
+    /* Otimizações de performance */
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    -webkit-font-smoothing: subpixel-antialiased;
+}
+
+.content-grid::-webkit-scrollbar, 
+.actors-carousel::-webkit-scrollbar, 
+.hb-creators-carousel::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Opera */
+}
+
+/* Garantir que o carrossel específico "Clientes assistindo no momento" mantenha suas configurações */
+#clientes-assistindo .content-grid {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 1rem 0;
+}
+
+/* Garantir que os cards tenham tamanho adequado */
+.content-card {
+    min-width: 280px;
+    scroll-snap-align: start;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                opacity 0.2s ease;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .content-card {
+        min-width: 75vw;
+    }
+}
+
+@media (max-width: 480px) {
+    .content-card {
+        min-width: 85vw;
+    }
+}
+
+/* Garantir que eventos de clique funcionem corretamente */
+.hb-content-card, 
+.hb-actor-card, 
+.creator-card-premium {
+    cursor: pointer;
+    z-index: 1;
+}
+
+/* Efeitos suaves para itens nos carrosséis */
+.hb-content-card, .hb-actor-card, .hb-creator-card-premium {
+    scroll-snap-align: start;
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                opacity 0.2s ease;
+}
+
+/* Efeito de entrada suave ao deslizar */
+.carousel-container:hover .hb-content-card,
+.carousel-container:hover .hb-actor-card,
+.carousel-container:hover .hb-creator-card-premium {
+    transform-origin: center;
+}
+
+/* Efeito de destaque no elemento central (opcional) */
+.hb-content-card:hover, 
+.hb-actor-card:hover, 
+.hb-creator-card-premium:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+}
+
+/* Efeito de transição nos botões de navegação */
+.nav-btn {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.nav-btn:hover:not(.disabled) {
+    transform: scale(1.1);
+}
+
+.nav-btn:active:not(.disabled) {
+    transform: scale(0.95);
+}
+
+.btn-fade-out {
+    opacity: 0.2;
+    pointer-events: none;
+}
+
+/* Estilo para o carrossel quando estiver sendo arrastado */
+.dragging {
+    cursor: grabbing !important;
+    user-select: none;
+    scroll-behavior: auto !important;
+}
+
+.dragging * {
+    pointer-events: none;
+}
+
+/* Efeito de escala para itens próximos ao centro (opcional) */
+@media (min-width: 768px) {
+    .content-grid, .actors-carousel, .hb-creators-carousel {
+        padding-bottom: 20px; /* Espaço extra para o efeito de escala */
+    }
+      .hb-content-card, .hb-actor-card, .hb-creator-card-premium {
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+}
+
+/* Otimizações para dispositivos móveis */
+@media (max-width: 767px) {
+    .content-grid, .actors-carousel, .hb-creators-carousel {
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        padding: 0.5rem 0;
+        gap: 1rem;
+    }
+      .hb-content-card, .hb-actor-card, .hb-creator-card-premium {
+        scroll-snap-align: center;
+    }
+    
+    /* Botões de navegação menores em mobile */
+    .nav-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+    
+    /* Espaço extra para deslizamento mais confortável */
+    .carousel-container {
+        margin: 0 -10px;
+        padding: 0 10px;
+        overflow: visible;
+    }
+}
+
+/* Otimizações para performance */
+.carousel-container {
+    overflow: hidden;
+    contain: layout paint style;
+}
+
+/* Desativar animações para usuários que preferem movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+    .content-grid, .actors-carousel, .hb-creators-carousel {
+        scroll-behavior: auto;
+    }
+    
+    .content-card, .actor-card, .hb-creator-card-premium {
+        transition-duration: 0.1s;
+    }
+}
+
+/* Estilos para os badges de conteúdo */
+.content-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    z-index: 2;
+}
+
+.content-badge.vip {
+    background-color: var(--hot-red, #FF3333);
+    color: white;
+}
+
+.content-badge.exclusive {
+    background-color: #FFD700;
+    color: black;
+}
+
+/* Overlay de play para melhor experiência do usuário */
+.play-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 1;
+}
+
+.content-card:hover .play-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 1;
+}
+
+.play-icon {
+    width: 50px;
+    height: 50px;
+    background-color: var(--hot-red, #FF3333);
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transform: scale(0.8);
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.content-card:hover .play-icon {
+    transform: scale(1);
+}
+
+.play-icon i {
+    color: white;
+    font-size: 1.5rem;
+}
+
+/* Ajuste para garantir que as informações do card não sejam cobertas */
+.content-overlay {
+    z-index: 2;
+    position: relative;
+}
+
+/* Ajustes para a duração e título do conteúdo */
+.content-title {
+    margin: 0 0 0.3rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.content-duration {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
 }

@@ -1,7 +1,6 @@
-<section class="hero" aria-label="Destaques">
-    <div class="hero-slides">
-        @forelse($heroSlides as $index => $slide)
-            <div class="hero-slide {{ $index === 0 ? 'active' : '' }}" 
+<section class="hb-hero" aria-label="Destaques">
+    <div class="hb-hero-slides">        @forelse($heroSlides as $index => $slide)
+            <div class="hb-hero-slide {{ $index === 0 ? 'active' : '' }}" 
                  data-title="{{ $slide->title }}" 
                  data-description="{{ $slide->description }}" 
                  data-date="{{ $slide->date }}"
@@ -13,9 +12,8 @@
                  data-fallback-url="{{ asset('images/hero/default.jpg') }}">
                 <!-- Imagem será carregada via JavaScript para melhor tratamento de erros -->
             </div>
-        @empty
-            <!-- Slide padrão se não houver dados -->
-            <div class="hero-slide active" 
+        @empty            <!-- Slide padrão se não houver dados -->
+            <div class="hb-hero-slide active" 
                  data-title="Conteúdo Premium" 
                  data-description="Experimente o melhor conteúdo premium da plataforma." 
                  data-date="Premium"
@@ -24,18 +22,16 @@
                  data-video-id=""
                  data-image-url="{{ asset('images/hero/default.jpg') }}"
                  data-image-type="default"
-                 data-fallback-url="{{ asset('images/hero/default.jpg') }}">
+                 data-fallback-url="{{ asset('images/hero/default.jpg') }}">   
             </div>
-        @endforelse
-    </div>
-    <div class="hero-content">
-        <div class="hero-metadata">
-            <span class="date">{{ $heroSlides->isNotEmpty() ? $heroSlides[0]->date : 'Premium' }}</span>
-            <span class="vip-badge">VIP</span>
-        </div>
-        <h1>{{ $heroSlides->isNotEmpty() ? $heroSlides[0]->title : 'Conteúdo Premium' }}</h1>
-        <p class="hero-description">{{ $heroSlides->isNotEmpty() ? $heroSlides[0]->description : 'Descubra experiências exclusivas em nossa plataforma.' }}</p>
-        <div class="hero-buttons">
+        @endforelse    </div>
+    <div class="hb-hero-content">
+        <div class="hb-hero-metadata">
+            <span class="hb-date">{{ $heroSlides->isNotEmpty() ? $heroSlides[0]->date : 'Premium' }}</span>
+            <span class="hb-vip-badge">VIP</span>
+        </div>        <h1>{{ $heroSlides->isNotEmpty() ? $heroSlides[0]->title : 'Conteúdo Premium' }}</h1>
+        <p class="hb-hero-description">{{ $heroSlides->isNotEmpty() ? $heroSlides[0]->description : 'Descubra experiências exclusivas em nossa plataforma.' }}</p>
+        <div class="hb-hero-buttons">
     <button class="btn-primary cta open-video-modal" 
             data-video-id="{{ $heroSlides->isNotEmpty() ? $heroSlides[0]->video_id : '' }}"
             data-title="{{ $heroSlides->isNotEmpty() ? $heroSlides[0]->title : 'Conteúdo Premium' }}"
@@ -46,21 +42,19 @@
         <i class="lucide-crown" aria-hidden="true"></i> Conteúdo VIP
     </button>
 </div>
-    </div>
-    <!-- Os indicadores serão adicionados via JavaScript se não existirem -->
+    </div>    <!-- Os indicadores serão adicionados via JavaScript se não existirem -->
     @if($heroSlides->count() > 1)
-    <div class="hero-indicators">
+    <div class="hb-hero-indicators">
         @foreach($heroSlides as $index => $slide)
-            <div class="indicator {{ $index === 0 ? 'active' : '' }}"></div>
+            <div class="hb-indicator {{ $index === 0 ? 'active' : '' }}"></div>
         @endforeach
     </div>
     @endif
 </section>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Função para lidar com carregamento de imagens na vitrine principal
-    const heroSlides = document.querySelectorAll('.hero-slide');
+document.addEventListener('DOMContentLoaded', function() {    // Função para lidar com carregamento de imagens na vitrine principal
+    const heroSlides = document.querySelectorAll('.hb-hero-slide');
     console.log('Iniciando carregamento de imagens para ' + heroSlides.length + ' slides');
     
     heroSlides.forEach((slide, index) => {

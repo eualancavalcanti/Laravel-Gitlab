@@ -3,9 +3,14 @@
  * Lida com conteúdo VIP e Exclusivo de maneira otimizada
  */
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('[content-modal] Inicializando gerenciador de modais de vídeo...');
+    
     // Elementos principais do modal
     const videoModal = document.getElementById('videoModal');
-    if (!videoModal) return;
+    if (!videoModal) {
+        console.error('[content-modal] Modal de vídeo não encontrado no DOM!');
+        return;
+    }
     
     const modalClose = videoModal.querySelector('.modal-close');
     const modalTitle = document.getElementById('videoModalTitle');
@@ -16,13 +21,49 @@ document.addEventListener('DOMContentLoaded', function() {
     const loadingIndicator = document.getElementById('videoLoading');
     const playButton = videoModal.querySelector('.play-button-wrapper');
     
-    // Selecionar todos os cards de conteúdo clicáveis
-    const contentCards = document.querySelectorAll('.content-card');
+    // Verificar componentes essenciais
+    if (!teaserContainer || !teaserOverlay || !loginOptions || !playButton) {
+        console.error('[content-modal] Componentes essenciais do modal não encontrados!', {
+            teaserContainer: !!teaserContainer,
+            teaserOverlay: !!teaserOverlay,
+            loginOptions: !!loginOptions,
+            playButton: !!playButton
+        });
+    }
+      console.log('[content-modal] Registrando manipuladores de clique para todos os tipos de cards...');
     
-    // Configurar cada card para abrir o modal
-    contentCards.forEach(card => {
-        card.addEventListener('click', function() {
-            openVideoModal(this);
+    // A solução mais eficaz - usar um event listener único no documento
+    document.querySelectorAll('.content-card.open-video-modal').forEach(card => {
+        card.addEventListener('click', function(event) {
+            // Verificar se o clique foi em um link ou dentro de um link
+            let target = event.target;
+            let isLink = false;
+            
+            // Verificar se o elemento clicado ou algum de seus pais é um link
+            while (target && target !== this) {
+                if (target.tagName === 'A') {
+                    isLink = true;
+                    break;
+                }
+                target = target.parentNode;
+            }
+            
+            // Se for um link, permitir comportamento padrão (não abrir modal)
+            if (isLink) {
+                console.log('[content-modal] Clique em link detectado, permitindo comportamento padrão');
+                return;
+            }
+            
+            // Se não for link, abrir o modal
+            event.preventDefault();
+            const contentId = this.getAttribute('data-content-id');
+            if (contentId) {
+                openContentModal(contentId);
+            } else {
+                // Fallback para abrir o modal com o próprio card
+                openVideoModal(this);
+            }
+        });
         });
     });
     
@@ -30,23 +71,59 @@ document.addEventListener('DOMContentLoaded', function() {
      * Abre o modal de vídeo e configura com base no tipo de conteúdo
      */
     function openVideoModal(card) {
-        if (!card) return;
+        if (!card) {
+            console.error('[content-modal] Tentativa de abrir modal sem card válido');
+            return;
+        }
+        
+        console.log('[content-modal] Abrindo modal para card:', card);
         
         // Buscar informações do card
-        const title = card.querySelector('.content-title')?.textContent || 'Vídeo';
-        const thumbnail = card.querySelector('img')?.src || '';
+        // Primeiro tenta buscar pelos novos elementos com classe, depois pelos atributos de dados
+        const title = card.querySelector('.content-title')?.textContent || 
+                     card.getAttribute('data-title') || 
+                     'Vídeo';
+                     
+        const thumbnail = card.querySelector('img')?.src || 
+                          card.getAttribute('data-thumbnail') || 
+                          '';
+                          
         const videoId = card.getAttribute('data-video-id') || '';
+        
         const teaserCode = card.getAttribute('data-teaser-code') || '';
-        const duration = card.querySelector('.content-duration')?.textContent || '00:00';
+        
+        const duration = card.querySelector('.content-duration')?.textContent || 
+                        card.getAttribute('data-duration') || 
+                        '00:00';
         
         // Determinar o tipo de conteúdo
-        const isExclusive = card.querySelector('.content-badge.exclusive') !== null;
-        const isVip = card.querySelector('.content-badge.vip') !== null;
+        const isExclusive = card.querySelector('.content-badge.exclusive') !== null || 
+                           card.getAttribute('data-type') === 'exclusive';
+                           
+        const isVip = card.querySelector('.content-badge.vip') !== null || 
+                     card.getAttribute('data-type') === 'vip';
+        
+        console.log('[content-modal] Dados do card:', {
+            title, videoId, isExclusive, isVip
+        });
         
         // Configurar o título e thumbnail
         modalTitle.textContent = title;
         modalThumbnail.src = thumbnail;
         modalThumbnail.alt = title;
+        
+        // Atualizar o contador de visualizações
+        const viewersCount = card.querySelector('.viewers-count')?.textContent || '1.2K';
+        const viewersElement = document.getElementById('videoViewersCount');
+        if (viewersElement) {
+            viewersElement.textContent = viewersCount + ' assistindo';
+        }
+        
+        // Atualizar duração
+        const durationElement = document.getElementById('videoModalDuration');
+        if (durationElement) {
+            durationElement.textContent = duration;
+        }
         
         // Remover players anteriores para evitar múltiplos vídeos rodando
         const existingPlayers = teaserContainer.querySelectorAll('.teaser-player, iframe');
@@ -65,8 +142,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Mostrar o modal
+        videoModal.classList.add('js-modal-open');
         videoModal.style.display = 'flex';
-        document.body.style.overflow = 'hidden'; // Prevenir rolagem da página
+        document.body.style.overflow = 'hidden';
     }
     
     /**
@@ -228,8 +306,9 @@ document.addEventListener('DOMContentLoaded', function() {
         players.forEach(player => player.remove());
         
         // Esconder o modal
+        videoModal.classList.remove('js-modal-open');
         videoModal.style.display = 'none';
-        document.body.style.overflow = 'auto'; // Restaurar rolagem da página
+        document.body.style.overflow = 'auto';
     }
     
     // Configurar botão de fechar

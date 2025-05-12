@@ -5,7 +5,13 @@
 @php
 // Função para garantir que nomes de arquivos sejam codificados corretamente
 function safeImageUrl($url) {
-    // Verificar se a URL é de API Creator (para imagens de background)
+    // V                                <div class="hb-content-badge exclusive">Exclusivo</div>
+                                <div class="hb-content-duration">{{ $content->duration }}</div>
+                                <div class="hb-play-icon">
+                                    <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                    </svg>
+                                </div>r se a URL é de API Creator (para imagens de background)
     if (strpos($url, 'api.creator.hotboys.com.br') !== false) {
         // Retornar URL direta sem proxy para imagens da API Creator
         return $url;
@@ -48,15 +54,15 @@ if (!empty($creator->modelo_perfil)) {
 @endphp
 
 @section('content')
-<div class="profile-container">
+<div class="hb-profile-container">
     <!-- Área do Banner via proxy -->
-    <div class="profile-banner" style="background-image: url('{{ $bannerUrl }}')">
-        <div class="banner-overlay"></div>
+    <div class="hb-profile-banner" style="background-image: url('{{ $bannerUrl }}')">
+        <div class="hb-banner-overlay"></div>
     </div>
     
     <!-- Seção de Informações do Perfil -->
     <div class="container">
-        <div class="profile-header">
+        <div class="hb-profile-header">
             <!-- Foto de Perfil otimizada -->
             <div class="profile-photo">
                 <picture>
@@ -186,50 +192,45 @@ if (!empty($creator->modelo_perfil)) {
         <!-- Conteúdo das Abas -->
         <div class="tab-contents">
             <!-- Aba de Conteúdo Exclusivo -->
-            @if($showTabs['exclusive'])
-            <div class="tab-content {{ $activeTab == 'exclusive' ? 'active' : '' }}" id="exclusive">
-                <div class="content-grid">
-                    @forelse($exclusiveContent as $content)
-                    <div class="content-card" 
+            @if($showTabs['exclusive'])            <div class="tab-content {{ $activeTab == 'exclusive' ? 'active' : '' }}" id="exclusive">
+                <div class="hb-content-grid">
+                    @forelse($exclusiveContent as $content)<div class="hb-content-card" 
                          data-video-id="{{ $content->id ?? '' }}"
                          data-teaser-code="{{ $content->teaser_code ?? '' }}">
-                        <div class="thumbnail">
-                            <picture>
-                                <source srcset="{{ safeImageUrl($content->thumbnail) }}" type="image/webp">
-                                <img src="{{ safeImageUrl($content->thumbnail) }}" alt="{{ $content->title }}" loading="lazy" width="320" height="180" 
-                                     onerror="this.onerror=null; this.closest('.content-card.exclusive') ? this.style.display='none' : this.src='{{ $fallbackImageUrl }}';">
-                            </picture>
-                            <div class="thumbnail-overlay"></div>
-                            <div class="content-badge exclusive">Exclusivo</div>
-                            <div class="content-duration">{{ $content->duration }}</div>
-                            <div class="play-icon">
-                                <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                                </svg>
-                            </div>
-                            <div class="content-lock">
-                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="content-info">
-                            <h3 class="content-title">{{ $content->title }}</h3>
-                            <div class="content-meta">
-                                <div class="content-price">R$ {{ number_format($content->price, 2, ',', '.') }}</div>
-                                <div class="content-likes">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        <a href="#" class="hb-content-card-link" 
+                           data-video-id="{{ $content->id ?? '' }}"
+                           data-title="{{ $content->title ?? '' }}">
+                            <div class="hb-thumbnail">
+                                <picture>
+                                    <source srcset="{{ safeImageUrl($content->thumbnail) }}" type="image/webp">
+                                    <img src="{{ safeImageUrl($content->thumbnail) }}" alt="{{ $content->title }}" loading="lazy" width="320" height="180"                                         onerror="this.onerror=null; this.closest('.hb-content-card.exclusive') ? this.style.display='none' : this.src='{{ $fallbackImageUrl }}';">
+                                </picture>                                <div class="hb-thumbnail-overlay"></div>
+                                <div class="hb-content-badge exclusive">Exclusivo</div>                                <div class="hb-content-duration">{{ $content->duration }}</div>
+                                <div class="hb-play-icon">
+                                    <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
                                     </svg>
-                                    {{ $content->likes_count }}
+                                </div>                                <div class="hb-content-lock">
+                                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                    </svg>
+                                </div>
+                            </div>                            <div class="hb-content-info">
+                                <h3 class="hb-content-title">{{ $content->title }}</h3>
+                                <div class="hb-content-meta">
+                                    <div class="hb-content-price">R$ {{ number_format($content->price, 2, ',', '.') }}</div>
+                                    <div class="hb-content-likes">
+                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                        </svg>
+                                        {{ $content->likes_count }}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    @empty
-                    <div class="empty-content">
-                        <div class="empty-icon">
+                        </a>
+                    </div>                    @empty                    <div class="hb-empty-content">
+                        <div class="hb-empty-icon">
                             <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
                                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                                 <polyline points="17 8 12 3 7 8"></polyline>
@@ -246,50 +247,48 @@ if (!empty($creator->modelo_perfil)) {
             @endif
 
             <!-- Aba de Conteúdo VIP -->
-            @if($showTabs['vip'])
-            <div class="tab-content {{ $activeTab == 'vip' ? 'active' : '' }}" id="vip">
-                <div class="content-grid">
-                    @forelse($vipContent as $content)
-                    <div class="content-card"
+            @if($showTabs['vip'])            <div class="tab-content {{ $activeTab == 'vip' ? 'active' : '' }}" id="vip">
+                <div class="hb-content-grid">
+                    @forelse($vipContent as $content)<div class="hb-content-card"
                          data-video-id="{{ $content->id ?? '' }}"
                          data-teaser-code="{{ $content->teaser_code ?? '' }}">
-                        <div class="thumbnail">
-                            <picture>
-                                <source srcset="{{ safeImageUrl($content->thumbnail) }}" type="image/webp">
-                                <img src="{{ safeImageUrl($content->thumbnail) }}" alt="{{ $content->title }}" loading="lazy" width="320" height="180"
-                                     onerror="this.onerror=null; this.src='{{ $fallbackImageUrl }}';">
-                            </picture>
-                            <div class="thumbnail-overlay"></div>
-                            <div class="content-badge vip">VIP</div>
-                            <div class="content-duration">{{ $content->duration }}</div>
-                            <div class="play-icon">
-                                <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                                </svg>
-                            </div>
-                            <div class="content-lock">
-                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="content-info">
-                            <h3 class="content-title">{{ $content->title }}</h3>
-                            <div class="content-meta">
-                                <div class="content-price">VIP</div>
-                                <div class="content-likes">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        <a href="#" class="hb-content-card-link" 
+                           data-video-id="{{ $content->id ?? '' }}"
+                           data-title="{{ $content->title ?? '' }}">
+                            <div class="hb-thumbnail">
+                                <picture>
+                                    <source srcset="{{ safeImageUrl($content->thumbnail) }}" type="image/webp">
+                                    <img src="{{ safeImageUrl($content->thumbnail) }}" alt="{{ $content->title }}" loading="lazy" width="320" height="180"
+                                         onerror="this.onerror=null; this.src='{{ $fallbackImageUrl }}';">
+                                </picture>
+                                <div class="hb-thumbnail-overlay"></div>                                <div class="hb-content-badge vip">VIP</div>
+                                <div class="hb-content-duration">{{ $content->duration }}</div>
+                                <div class="hb-play-icon">
+                                    <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
                                     </svg>
-                                    {{ $content->likes_count }}
+                                </div><div class="hb-content-lock">
+                                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                    </svg>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    @empty
-                    <div class="empty-content">
-                        <div class="empty-icon">
+                            <div class="hb-content-info">
+                                <h3 class="hb-content-title">{{ $content->title }}</h3>
+                                <div class="hb-content-meta">
+                                    <div class="hb-content-price">VIP</div>
+                                    <div class="hb-content-likes">
+                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                        </svg>
+                                        {{ $content->likes_count }}
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>                    @empty                    <div class="hb-empty-content">
+                        <div class="hb-empty-icon">
                             <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
                                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                                 <polyline points="17 8 12 3 7 8"></polyline>
@@ -306,39 +305,34 @@ if (!empty($creator->modelo_perfil)) {
             @endif
 
             <!-- Aba de Packs -->
-            @if($showTabs['packs'])
-            <div class="tab-content {{ $activeTab == 'packs' ? 'active' : '' }}" id="packs">
-                <div class="content-grid">
-                    @forelse($packs as $pack)
-                    <div class="content-card pack-card">
-                        <div class="thumbnail">
+            @if($showTabs['packs'])            <div class="tab-content {{ $activeTab == 'packs' ? 'active' : '' }}" id="packs">
+                <div class="hb-content-grid">
+                    @forelse($packs as $pack)<div class="hb-content-card hb-pack-card">
+                        <div class="hb-thumbnail">
                             <picture>
                                 <source srcset="{{ safeImageUrl($pack->thumbnail) }}" type="image/webp">
                                 <img src="{{ safeImageUrl($pack->thumbnail) }}" alt="{{ $pack->title }}" loading="lazy" width="320" height="180"
                                      onerror="this.onerror=null; this.src='{{ $fallbackImageUrl }}';">
                             </picture>
-                            <div class="thumbnail-overlay"></div>
-                            <div class="content-badge pack">PACK</div>
-                            <div class="content-items">{{ $pack->items_count }} itens</div>
-                            <div class="pack-icon">
+                            <div class="hb-thumbnail-overlay"></div>                            <div class="hb-content-badge pack">PACK</div>
+                            <div class="hb-content-items">{{ $pack->items_count }} itens</div>                            <div class="hb-pack-icon">
                                 <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
                                     <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
                                     <line x1="12" y1="22.08" x2="12" y2="12"></line>
                                 </svg>
-                            </div>
-                            <div class="content-lock">
+                            </div><div class="hb-content-lock">
                                 <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
                                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                                     <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                                 </svg>
                             </div>
                         </div>
-                        <div class="content-info">
-                            <h3 class="content-title">{{ $pack->title }}</h3>
-                            <div class="content-meta">
-                                <div class="content-price">R$ {{ number_format($pack->price, 2, ',', '.') }}</div>
-                                <div class="content-likes">
+                        <div class="hb-content-info">
+                            <h3 class="hb-content-title">{{ $pack->title }}</h3>
+                            <div class="hb-content-meta">
+                                <div class="hb-content-price">R$ {{ number_format($pack->price, 2, ',', '.') }}</div>
+                                <div class="hb-content-likes">
                                     <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
                                         <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                                     </svg>
@@ -346,10 +340,8 @@ if (!empty($creator->modelo_perfil)) {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    @empty
-                    <div class="empty-content">
-                        <div class="empty-icon">
+                    </div>                    @empty                    <div class="hb-empty-content">
+                        <div class="hb-empty-icon">
                             <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
                                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                                 <polyline points="17 8 12 3 7 8"></polyline>

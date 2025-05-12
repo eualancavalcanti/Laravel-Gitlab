@@ -12,10 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
  * Inicializa o carrossel de criadores com configurações específicas
  */
 function initCreatorsCarousel() {
-    const creatorsSection = document.querySelector('.trending-creators');
+    const creatorsSection = document.querySelector('.hb-trending-creators');
     if (!creatorsSection) return;
 
-    const carouselTrack = creatorsSection.querySelector('.creators-carousel');
+    const carouselTrack = creatorsSection.querySelector('.hb-creators-carousel');
     const prevBtn = creatorsSection.querySelector('.prev');
     const nextBtn = creatorsSection.querySelector('.next');
     const cards = creatorsSection.querySelectorAll('.creator-card-premium');

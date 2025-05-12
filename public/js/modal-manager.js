@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const modalAlvo = document.querySelector(seletorAlvo);
                 
                 if (modalAlvo) {
-                    abrirModal(modalAlvo);
+                    openModal(modalAlvo, e);
                     console.log('Modal aberto:', modalAlvo.id || 'sem id');
                 }
             });
@@ -411,4 +411,22 @@ document.addEventListener('DOMContentLoaded', function() {
         close: fecharModal,
         reset: resetModalSystem
     };
+    
+    // Adicionar verificação para links ao abrir modais:
+    function openModal(modalId, event) {
+        // Se o evento foi fornecido e o clique foi em um link, não abrir o modal
+        if (event) {
+            let target = event.target;
+            
+            while (target && target !== event.currentTarget) {
+                if (target.tagName === 'A') {
+                    // Permitir comportamento padrão do link
+                    return;
+                }
+                target = target.parentNode;
+            }
+        }
+        
+        // ... código existente para abrir o modal
+    }
 });

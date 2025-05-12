@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Configurar cards de conteúdo
-    const contentCards = document.querySelectorAll('.content-card');
+    const contentCards = document.querySelectorAll('.hb-content-card');
     contentCards.forEach(card => {
         card.addEventListener('click', function(e) {
             e.preventDefault();

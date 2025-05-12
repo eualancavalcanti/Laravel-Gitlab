@@ -6,7 +6,7 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.9);
-    z-index: 1000;
+    z-index: 9999 !important;
     display: none;
     justify-content: center;
     align-items: center;
@@ -81,8 +81,11 @@
 .teaser-container {
     position: relative;
     width: 100%;
+    height: 0;
+    padding-bottom: 56.25%; /* Proporção 16:9 */
     background-color: #000;
     overflow: hidden;
+    border-radius: 8px;
 }
 
 @media (min-width: 768px) {
@@ -161,20 +164,17 @@
 }
 
 .teaser-player {
-    position: relative;
-    width: 100%;
-    height: 0;
-    padding-bottom: 56.25%; /* 16:9 aspect ratio */
-    overflow: hidden;
-}
-
-.teaser-player iframe {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    border: none;
+}
+
+.teaser-player iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
 }
 
 .loading-indicator {
@@ -393,4 +393,99 @@
         width: 40px;
         height: 40px;
     }
+}
+
+/* Correção para modal não abrindo - Estilos críticos */
+.content-card, 
+.open-video-modal,
+.hero .btn-primary.cta,
+.hero-slide {
+    cursor: pointer !important;
+    position: relative !important;
+    z-index: 1;
+}
+
+/* Garante pointer-events para todos os cards */
+.content-card::before,
+.open-video-modal::before,
+.hero .btn-primary.cta::before,
+.hero-slide::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    cursor: pointer;
+}
+
+/* Correção de propagação de eventos para elementos filhos */
+.content-card *:not(a), 
+.open-video-modal *:not(a) {
+    pointer-events: none !important;
+}
+
+/* Correção para botões dentro de cards */
+.content-card a,
+.open-video-modal a {
+    position: relative;
+    z-index: 3;
+}
+
+/* Garante que o modal tenha z-index correto */
+#videoModal {
+    z-index: 9999 !important;
+    display: none;
+}
+
+/* Estilo para modal aberto via JavaScript */
+#videoModal.js-modal-open {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Estilos para os links dos cards */
+.content-card-link {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+    z-index: 2;
+}
+
+.content-card-link * {
+    pointer-events: auto;
+}
+
+.content-card-link:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+.content-card-link:focus {
+    outline: none;
+}
+
+.content-card-link:focus-visible {
+    outline: 2px solid var(--hot-red);
+    outline-offset: 2px;
+}
+
+/* Remover pseudo-elementos que podem estar bloqueando */
+.content-card::before,
+.content-card::after {
+    display: none;
+}
+
+/* Garantir que elementos dentro do card sejam clicáveis */
+.content-card * {
+    pointer-events: auto;
+}
+
+#videoModal.js-modal-open {
+    display: flex !important;
 }

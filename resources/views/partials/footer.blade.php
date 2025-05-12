@@ -31,7 +31,8 @@
                 <h4>Navegação</h4>
                 <a href="{{ route('home') }}">Início</a>
                 <a href="{{ route('catalog') }}">Catálogo VIP</a>
-                <a href="{{ route('pay-per-view') }}">Pay-per-view</a>
+                <a href="{{ route('pay-per-view.index') }}">Pay-per-view</a>
+                <a href="{{ route('planos.index') }}">Planos</a>
                 <a href="{{ route('creators') }}">Criadores</a>
                 <a href="{{ route('news') }}">Novidades</a>
             </div>

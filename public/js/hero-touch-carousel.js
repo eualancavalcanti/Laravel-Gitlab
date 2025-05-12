@@ -12,7 +12,7 @@ class TouchCarousel {
         
         // Configurações padrão
         this.options = Object.assign({
-            slideSelector: '.content-grid, .actors-carousel, .creators-carousel', // Seletor dos slides
+            slideSelector: '.hb-content-grid, .hb-actors-carousel, .hb-creators-carousel', // Seletor dos slides
             navPrevSelector: '.prev',                         // Botão anterior
             navNextSelector: '.next',                         // Botão próximo
             itemSelector: '.content-card, .actor-card, .creator-card-premium',       // Itens dentro do slide
@@ -496,10 +496,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Inicializa explicitamente o carrossel de criadores do momento
-    const creatorContainers = document.querySelectorAll('.trending-creators .section-container');
+    const creatorContainers = document.querySelectorAll('.hb-trending-creators .section-container');
     const creatorCarousels = Array.from(creatorContainers).map(container => {
         return new TouchCarousel(container, {
-            slideSelector: '.creators-carousel',
+            slideSelector: '.hb-creators-carousel',
             itemSelector: '.creator-card-premium'
         });
     });

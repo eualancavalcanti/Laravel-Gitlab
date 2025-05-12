@@ -4,7 +4,8 @@
  */
 
 /* Estilo de fallback para imagens que não carregam */
-.fallback-image {
+.fallback-image,
+.hb-fallback-image {
     background-color: rgba(20, 20, 20, 0.9) !important;
     position: relative;
     display: flex;
@@ -18,7 +19,8 @@
 }
 
 /* Tratamento específico para cards */
-.content-card {
+.content-card,
+.hb-content-card {
     min-height: 240px;
     background-color: var(--card-bg);
     position: relative;
@@ -26,7 +28,10 @@
 
 .content-card img, 
 .actor-card img,
-.creator-card-premium img {
+.creator-card-premium img,
+.hb-content-card img, 
+.hb-actor-card img,
+.hb-creator-card-premium img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -35,7 +40,9 @@
 }
 
 /* Tratamento específico para cards com imagens quebradas */
-.content-card img.fallback-image:before {
+.content-card img.fallback-image:before,
+.hb-content-card img.fallback-image:before,
+.hb-content-card img.hb-fallback-image:before {
     content: 'Imagem não disponível';
     position: absolute;
     top: 50%;
@@ -45,19 +52,22 @@
 }
 
 /* Ajustes para vitrines do tipo trending-creators */
-.creator-card-premium .profile-photo {
+.creator-card-premium .profile-photo,
+.hb-creator-card-premium .hb-profile-photo {
     background-color: var(--card-bg);
     border: 3px solid rgba(20, 20, 20, 0.9);
 }
 
-.creator-card-premium .profile-photo img {
+.creator-card-premium .profile-photo img,
+.hb-creator-card-premium .hb-profile-photo img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
 }
 
-.creator-banner {
+.creator-banner,
+.hb-creator-banner {
     background-color: rgba(20, 20, 20, 0.5);
     min-height: 100px;
 }
@@ -70,7 +80,10 @@
 
 .content-grid img, 
 .actors-carousel img,
-.creators-carousel img {
+.creators-carousel img,
+.hb-content-grid img, 
+.hb-actors-carousel img,
+.hb-creators-carousel img {
     animation: fadeIn 0.3s ease-in;
 }
 
@@ -78,25 +91,40 @@
 @supports (-webkit-touch-callout: none) {
     .content-card, 
     .actor-card,
-    .creator-card-premium {
+    .creator-card-premium,
+    .hb-content-card, 
+    .hb-actor-card,
+    .hb-creator-card-premium {
         -webkit-transform: translateZ(0);
         transform: translateZ(0);
     }
     
     .content-grid, 
     .actors-carousel,
-    .creators-carousel {
+    .creators-carousel,
+    .hb-content-grid, 
+    .hb-actors-carousel,
+    .hb-creators-carousel {
         -webkit-overflow-scrolling: touch;
         -webkit-transform: translateZ(0);
+        transform: translateZ(0);
     }
 }
 
 /* Melhorias de desempenho para imagens nos carrosséis */
 .content-grid img[loading="lazy"], 
 .actors-carousel img[loading="lazy"],
-.creators-carousel img[loading="lazy"] {
+.creators-carousel img[loading="lazy"],
+.hb-content-grid img[loading="lazy"], 
+.hb-actors-carousel img[loading="lazy"],
+.hb-creators-carousel img[loading="lazy"] {
     transform: translateZ(0);
     will-change: transform, opacity;
+}
+
+/* Fix para iOS Safari */
+.dragging {
+    -webkit-overflow-scrolling: auto !important;
 }
 
 /* Fix para iOS Safari */
@@ -112,7 +140,7 @@
 /* Desabilitar inicialização automática de carrosséis antigos */
 .content-grid:not([data-initialized]), 
 .actors-carousel:not([data-initialized]),
-.creators-carousel:not([data-initialized]) {
+.hb-creators-carousel:not([data-initialized]) {
     scroll-behavior: smooth;
 }
 
@@ -124,7 +152,7 @@
 }
 
 /* Correção para todos os carrosséis de conteúdo */
-.content-grid, .actors-carousel, .creators-carousel {
+.content-grid, .actors-carousel, .hb-creators-carousel {
     display: flex;
     gap: 1.5rem;
     overflow-x: auto;
@@ -148,7 +176,7 @@
 
 .content-grid::-webkit-scrollbar, 
 .actors-carousel::-webkit-scrollbar, 
-.creators-carousel::-webkit-scrollbar {
+.hb-creators-carousel::-webkit-scrollbar {
     display: none; /* Chrome/Safari/Opera */
 }
 
@@ -190,15 +218,15 @@
 }
 
 /* Garantir que eventos de clique funcionem corretamente */
-.content-card, 
-.actor-card, 
+.hb-content-card, 
+.hb-actor-card, 
 .creator-card-premium {
     cursor: pointer;
     z-index: 1;
 }
 
 /* Efeitos suaves para itens nos carrosséis */
-.content-card, .actor-card, .creator-card-premium {
+.hb-content-card, .hb-actor-card, .hb-creator-card-premium {
     scroll-snap-align: start;
     transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                 box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
@@ -206,16 +234,16 @@
 }
 
 /* Efeito de entrada suave ao deslizar */
-.carousel-container:hover .content-card,
-.carousel-container:hover .actor-card,
-.carousel-container:hover .creator-card-premium {
+.carousel-container:hover .hb-content-card,
+.carousel-container:hover .hb-actor-card,
+.carousel-container:hover .hb-creator-card-premium {
     transform-origin: center;
 }
 
 /* Efeito de destaque no elemento central (opcional) */
-.content-card:hover, 
-.actor-card:hover, 
-.creator-card-premium:hover {
+.hb-content-card:hover, 
+.hb-actor-card:hover, 
+.hb-creator-card-premium:hover {
     transform: translateY(-8px) scale(1.02);
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
     z-index: 2;
@@ -252,25 +280,23 @@
 
 /* Efeito de escala para itens próximos ao centro (opcional) */
 @media (min-width: 768px) {
-    .content-grid, .actors-carousel, .creators-carousel {
+    .content-grid, .actors-carousel, .hb-creators-carousel {
         padding-bottom: 20px; /* Espaço extra para o efeito de escala */
     }
-    
-    .content-card, .actor-card, .creator-card-premium {
+      .hb-content-card, .hb-actor-card, .hb-creator-card-premium {
         transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 }
 
 /* Otimizações para dispositivos móveis */
 @media (max-width: 767px) {
-    .content-grid, .actors-carousel, .creators-carousel {
+    .content-grid, .actors-carousel, .hb-creators-carousel {
         scroll-snap-type: x mandatory;
         -webkit-overflow-scrolling: touch;
         padding: 0.5rem 0;
         gap: 1rem;
     }
-    
-    .content-card, .actor-card, .creator-card-premium {
+      .hb-content-card, .hb-actor-card, .hb-creator-card-premium {
         scroll-snap-align: center;
     }
     
@@ -297,11 +323,11 @@
 
 /* Desativar animações para usuários que preferem movimento reduzido */
 @media (prefers-reduced-motion: reduce) {
-    .content-grid, .actors-carousel, .creators-carousel {
+    .content-grid, .actors-carousel, .hb-creators-carousel {
         scroll-behavior: auto;
     }
     
-    .content-card, .actor-card, .creator-card-premium {
+    .content-card, .actor-card, .hb-creator-card-premium {
         transition-duration: 0.1s;
     }
 }

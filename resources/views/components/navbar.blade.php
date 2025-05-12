@@ -7,7 +7,10 @@
             </a>
         </div>
         <div class="navbar-right">
+            <a href="{{ route('search') }}" class="hb-search-link" aria-label="Buscar conteúdo">
+                <i class="lucide-search" aria-hidden="true"></i>
+            </a>
             <button class="login-btn" aria-label="Entrar na conta">Entrar</button>
         </div>
     </div>
-</nav> 
+</nav>

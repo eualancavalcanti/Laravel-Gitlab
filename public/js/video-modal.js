@@ -427,7 +427,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window.openVideoModal = openVideoModal;
     
     // Configurar todos os cards de conteúdo
-    const contentCards = document.querySelectorAll('.content-card');
+    const contentCards = document.querySelectorAll('.hb-content-card');
     contentCards.forEach(card => {
         card.addEventListener('click', function() {
             openVideoModal(this);

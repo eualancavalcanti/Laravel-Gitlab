@@ -2,40 +2,36 @@
 
 @section('title', 'Planos e Assinaturas - HotBoys')
 
-@push('styles')
-<link rel="stylesheet" href="{{ asset('css/planos-dark-2023.css') }}">
-@endpush
-
 @section('content')
 <div class="planos-container">
     <!-- Banner Hero -->
-    <section class="planos-hero">
+    <section class="planos-hero bg-dark text-white py-5">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6">
-                    <h1>Assine o <span>HotBoys</span></h1>
-                    <p class="lead">Acesso ilimitado ao melhor conteúdo premium da plataforma</p>
+                    <h1 class="display-4 fw-bold mb-4">Assine o <span class="text-danger">HotBoys</span></h1>
+                    <p class="lead mb-4">Acesso ilimitado ao melhor conteúdo premium da plataforma</p>
                     <div class="d-flex flex-wrap gap-2 mb-4">
-                        <span class="badge">
+                        <span class="badge bg-danger p-2">
                             <i class="fas fa-fire"></i> Mais de 800 vídeos
                         </span>
-                        <span class="badge">
-                            <i class="fas fa-plus"></i> Atualizado semanalmente
+                        <span class="badge bg-danger p-2">
+                            <i class="fas fa-plus"></i> Conteúdo atualizado semanalmente
                         </span>
-                        <span class="badge">
+                        <span class="badge bg-danger p-2">
                             <i class="fas fa-lock"></i> Acesso exclusivo
                         </span>
-                        <span class="badge">
-                            <i class="fas fa-video"></i> 4K Ultra HD
+                        <span class="badge bg-danger p-2">
+                            <i class="fas fa-video"></i> Qualidade 4K Ultra HD
                         </span>
                     </div>
-                    <a href="#planos-section" class="btn btn-danger">
-                        Ver planos disponíveis <i class="fas fa-arrow-right"></i>
+                    <a href="#planos-section" class="btn btn-danger btn-lg px-4 py-2">
+                        Ver planos disponíveis <i class="fas fa-arrow-right ms-2"></i>
                     </a>
                 </div>
                 <div class="col-lg-6 d-none d-lg-block">
-                    <div class="bg-dark rounded-3 shadow-lg d-flex align-items-center justify-content-center position-relative overflow-hidden" style="height: 300px;">
-                        <div class="position-absolute w-100 h-100" style="background: radial-gradient(circle at center, rgba(255, 0, 51, 0.2) 0%, transparent 70%);"></div>
+                    <!-- Removendo referência à imagem que não existe -->
+                    <div class="bg-dark rounded-3 shadow-lg d-flex align-items-center justify-content-center" style="height: 300px;">
                         <i class="fas fa-photo-video fa-4x text-danger"></i>
                     </div>
                 </div>
@@ -79,7 +75,7 @@
     @endif
 
     <!-- Vantagens -->
-    <section class="vantagens">
+    <section class="vantagens py-5 bg-dark-secondary">
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="fw-bold text-white">Por que assinar o <span class="text-danger">HotBoys</span>?</h2>
@@ -89,10 +85,10 @@
             <div class="row g-4">
                 @foreach($vantagens as $vantagem)
                 <div class="col-md-6 col-lg-4">
-                    <div class="card h-100">
+                    <div class="card h-100 border-0 shadow-sm hover-scale bg-dark-card">
                         <div class="card-body text-center p-4">
-                            <div class="feature-icon mx-auto">
-                                <i class="fas {{ $vantagem['icone'] }}"></i>
+                            <div class="feature-icon bg-danger text-white rounded-circle mb-3 mx-auto">
+                                <i class="fas {{ $vantagem['icone'] }} fa-lg"></i>
                             </div>
                             <h4 class="fw-bold mb-3 text-white">{{ $vantagem['titulo'] }}</h4>
                             <p class="text-light-muted mb-0">{{ $vantagem['descricao'] }}</p>
@@ -105,28 +101,15 @@
     </section>
 
     <!-- Lista de Planos -->
-    <section id="planos-section" class="planos">
+    <section id="planos-section" class="planos py-5 bg-dark-primary">
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="fw-bold text-white">Escolha seu plano</h2>
                 <p class="lead text-light-muted">Temos opções que cabem no seu bolso</p>
             </div>
 
-            <!-- Botões de filtro por tipo de pagamento -->
-            <div class="tipo-pagamento-filter mb-4 text-center">
-                <div class="btn-group" role="group" aria-label="Filtro por tipo de pagamento">
-                    <button type="button" class="btn btn-outline-light active" data-filter="todos">Todos</button>
-                    <button type="button" class="btn btn-outline-light" data-filter="pix">
-                        <i class="fas fa-exchange-alt me-1"></i> PIX
-                    </button>
-                    <button type="button" class="btn btn-outline-light" data-filter="cartao">
-                        <i class="fas fa-credit-card me-1"></i> Cartão
-                    </button>
-                </div>
-            </div>
-
             <!-- Tabs para tipos de período -->
-            <ul class="nav nav-pills" id="planosTab" role="tablist">
+            <ul class="nav nav-pills mb-4 justify-content-center" id="planosTab" role="tablist">
                 @php $firstTab = true; @endphp
                 @foreach($planosPorPeriodo as $periodo => $planosPeriodo)
                 <li class="nav-item" role="presentation">
@@ -157,8 +140,8 @@
                     
                     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                         @foreach($planosPeriodo as $plano)
-                        <div class="col plano-item" data-tipo-pagamento="{{ $plano->tipo_pagamento }}">
-                            <div class="card h-100 plano-card {{ isset($plano->destaque) && $plano->destaque ? 'plano-destaque' : '' }} {{ isset($plano->popular) && $plano->popular ? 'plano-popular' : '' }}">
+                        <div class="col">
+                            <div class="card h-100 plano-card border-0 shadow-custom {{ isset($plano->destaque) && $plano->destaque ? 'plano-destaque' : '' }} {{ isset($plano->popular) && $plano->popular ? 'plano-popular' : '' }} bg-dark-card">
                                 @if(isset($plano->destaque) && $plano->destaque)
                                 <div class="destaque-badge">
                                     <span>Destaque</span>
@@ -185,7 +168,7 @@
                                     <h2 class="card-price mb-1">
                                         R$ {{ number_format($plano->preco_promocional, 2, ',', '.') }}
                                     </h2>
-                                    <p class="economia-texto">
+                                    <p class="economia-texto small">
                                         Economia de R$ {{ number_format($plano->preco - $plano->preco_promocional, 2, ',', '.') }}
                                     </p>
                                     @else
@@ -284,7 +267,7 @@
     </section>
 
     <!-- Formas de Pagamento -->
-    <section class="formas-pagamento">
+    <section class="formas-pagamento py-5 bg-dark-secondary">
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="fw-bold text-white">Formas de Pagamento</h2>
@@ -294,7 +277,7 @@
             <div class="row g-4">
                 @foreach($tiposPagamento as $tipo => $info)
                 <div class="col-md-6">
-                    <div class="card h-100">
+                    <div class="card h-100 border-0 shadow-custom bg-dark-card">
                         <div class="card-body p-4">
                             <div class="d-flex align-items-center mb-3">
                                 <div class="pagamento-icon me-3 bg-danger text-white">
@@ -310,7 +293,7 @@
             </div>
 
             <div class="text-center mt-5">
-                <div class="p-4 bg-dark-card rounded-3 shadow-custom d-inline-block">
+                <div class="seguranca-pagamento p-4 bg-dark-card rounded-3 shadow-custom d-inline-block">
                     <div class="d-flex align-items-center justify-content-center flex-wrap gap-4">
                         <div class="d-flex align-items-center text-light">
                             <i class="fas fa-lock text-danger me-2"></i>
@@ -331,7 +314,7 @@
     </section>
 
     <!-- FAQ -->
-    <section class="faq">
+    <section class="faq py-5 bg-dark-primary">
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="fw-bold text-white">Perguntas Frequentes</h2>
@@ -341,66 +324,66 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="accordion" id="faqAccordion">
-                        <div class="accordion-item border-0 mb-3">
+                        <div class="accordion-item border-0 mb-3 shadow-custom bg-dark-card">
                             <h2 class="accordion-header" id="faq1">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1Collapse" aria-expanded="false" aria-controls="faq1Collapse">
+                                <button class="accordion-button collapsed dark-accordion" type="button" data-bs-toggle="collapse" data-bs-target="#faq1Collapse" aria-expanded="false" aria-controls="faq1Collapse">
                                     Como funciona a assinatura?
                                 </button>
                             </h2>
                             <div id="faq1Collapse" class="accordion-collapse collapse" aria-labelledby="faq1" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
+                                <div class="accordion-body text-light">
                                     Após realizar o pagamento, você receberá acesso imediato à plataforma. Basta fazer login com seu e-mail e senha para desfrutar de todo o conteúdo disponível.
                                 </div>
                             </div>
                         </div>
 
-                        <div class="accordion-item border-0 mb-3">
+                        <div class="accordion-item border-0 mb-3 shadow-custom bg-dark-card">
                             <h2 class="accordion-header" id="faq2">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2Collapse" aria-expanded="false" aria-controls="faq2Collapse">
+                                <button class="accordion-button collapsed dark-accordion" type="button" data-bs-toggle="collapse" data-bs-target="#faq2Collapse" aria-expanded="false" aria-controls="faq2Collapse">
                                     Posso cancelar minha assinatura?
                                 </button>
                             </h2>
                             <div id="faq2Collapse" class="accordion-collapse collapse" aria-labelledby="faq2" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
+                                <div class="accordion-body text-light">
                                     Sim, você pode cancelar sua assinatura a qualquer momento diretamente em sua conta. No entanto, não fazemos reembolsos proporcionais de períodos não utilizados.
                                 </div>
                             </div>
                         </div>
 
-                        <div class="accordion-item border-0 mb-3">
+                        <div class="accordion-item border-0 mb-3 shadow-custom bg-dark-card">
                             <h2 class="accordion-header" id="faq3">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3Collapse" aria-expanded="false" aria-controls="faq3Collapse">
+                                <button class="accordion-button collapsed dark-accordion" type="button" data-bs-toggle="collapse" data-bs-target="#faq3Collapse" aria-expanded="false" aria-controls="faq3Collapse">
                                     Qual a diferença entre os planos?
                                 </button>
                             </h2>
                             <div id="faq3Collapse" class="accordion-collapse collapse" aria-labelledby="faq3" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
+                                <div class="accordion-body text-light">
                                     A principal diferença entre os planos é a duração da assinatura e a forma de pagamento. Planos mais longos (trimestral, semestral e anual) oferecem melhor custo-benefício. Todos os planos dão acesso ao mesmo conteúdo, exceto os planos Patrocinador que incluem conteúdos exclusivos.
                                 </div>
                             </div>
                         </div>
 
-                        <div class="accordion-item border-0 mb-3">
+                        <div class="accordion-item border-0 mb-3 shadow-custom bg-dark-card">
                             <h2 class="accordion-header" id="faq4">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4Collapse" aria-expanded="false" aria-controls="faq4Collapse">
+                                <button class="accordion-button collapsed dark-accordion" type="button" data-bs-toggle="collapse" data-bs-target="#faq4Collapse" aria-expanded="false" aria-controls="faq4Collapse">
                                     Em quais dispositivos posso assistir?
                                 </button>
                             </h2>
                             <div id="faq4Collapse" class="accordion-collapse collapse" aria-labelledby="faq4" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
+                                <div class="accordion-body text-light">
                                     Você pode assistir em qualquer dispositivo com acesso à internet, incluindo smartphones, tablets, computadores e smart TVs compatíveis. Nossa plataforma é responsiva e se adapta a diferentes tamanhos de tela.
                                 </div>
                             </div>
                         </div>
 
-                        <div class="accordion-item border-0">
+                        <div class="accordion-item border-0 shadow-custom bg-dark-card">
                             <h2 class="accordion-header" id="faq5">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5Collapse" aria-expanded="false" aria-controls="faq5Collapse">
+                                <button class="accordion-button collapsed dark-accordion" type="button" data-bs-toggle="collapse" data-bs-target="#faq5Collapse" aria-expanded="false" aria-controls="faq5Collapse">
                                     Como aparece na minha fatura?
                                 </button>
                             </h2>
                             <div id="faq5Collapse" class="accordion-collapse collapse" aria-labelledby="faq5" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
+                                <div class="accordion-body text-light">
                                     A cobrança aparecerá em sua fatura como "HOTB*CONTEUDO" ou similar, garantindo total discrição.
                                 </div>
                             </div>
@@ -419,7 +402,7 @@
     </section>
 
     <!-- CTA Final -->
-    <section class="cta-final">
+    <section class="cta-final bg-dark text-white py-5">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-8 mx-auto text-center">
@@ -435,6 +418,187 @@
     </section>
 </div>
 @endsection
+
+@push('styles')
+<style>
+    /* Estilos para a página de planos - Tema Escuro */
+    .planos-container {
+        overflow-x: hidden;
+    }
+
+    /* Cores do tema escuro */
+    .bg-dark-primary {
+        background-color: #121212;
+    }
+    
+    .bg-dark-secondary {
+        background-color: #1a1a1a;
+    }
+    
+    .bg-dark-card {
+        background-color: #212121;
+    }
+    
+    .text-light-muted {
+        color: #adb5bd;
+    }
+    
+    .shadow-custom {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
+    }
+
+    .planos-hero {
+        background: linear-gradient(135deg, #151515, #380000);
+        position: relative;
+    }
+
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    /* Estilos dos cards de planos */
+    .plano-card {
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .plano-card:hover {
+        transform: translateY(-10px);
+    }
+
+    .plano-destaque {
+        border: 2px solid #dc3545 !important;
+    }
+
+    .destaque-badge, .popular-badge {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background: #dc3545;
+        color: white;
+        padding: 5px 15px;
+        font-weight: bold;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        z-index: 10;
+    }
+
+    .popular-badge {
+        background: #ffc107;
+        color: #212529;
+    }
+
+    .card-price {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #dc3545;
+    }
+
+    .economia-texto {
+        color: #28a745;
+        font-weight: bold;
+    }
+
+    /* Tabs de planos */
+    .nav-pills .nav-link {
+        background-color: rgba(33, 33, 33, 0.8);
+        color: #adb5bd;
+        border: 1px solid #343a40;
+        margin: 0 5px;
+        border-radius: 30px;
+        padding: 8px 20px;
+        transition: all 0.3s ease;
+    }
+
+    .nav-pills .nav-link.active {
+        background-color: #dc3545;
+        color: white;
+        border-color: #dc3545;
+    }
+
+    .nav-pills .nav-link:hover:not(.active) {
+        background-color: rgba(220, 53, 69, 0.2);
+        color: #dc3545;
+    }
+
+    /* Ícones de forma de pagamento */
+    .pagamento-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Acordeon de FAQ */
+    .dark-accordion {
+        background-color: #212121;
+        color: #fff;
+    }
+
+    .dark-accordion:not(.collapsed) {
+        background-color: rgba(220, 53, 69, 0.2);
+        color: #dc3545;
+        box-shadow: none;
+    }
+
+    .accordion-button:focus {
+        box-shadow: none;
+        border-color: rgba(220, 53, 69, 0.25);
+    }
+
+    .accordion-button::after {
+        filter: brightness(0) invert(1);
+    }
+
+    .accordion-button:not(.collapsed)::after {
+        filter: brightness(0) saturate(100%) invert(21%) sepia(80%) saturate(3641%) hue-rotate(343deg) brightness(87%) contrast(98%);
+    }
+
+    /* Efeito hover */
+    .hover-scale {
+        transition: transform 0.3s ease;
+    }
+
+    .hover-scale:hover {
+        transform: scale(1.03);
+    }
+
+    /* Media queries para responsividade */
+    @media (max-width: 767.98px) {
+        .card-price {
+            font-size: 2rem;
+        }
+        
+        .nav-pills .nav-link {
+            margin-bottom: 5px;
+        }
+    }
+
+    /* Elementos pequenos */
+    .pequeno {
+        font-size: 0.85rem;
+    }
+
+    /* Melhorando os botões outline */
+    .btn-outline-danger {
+        color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #dc3545;
+        color: #fff;
+    }
+</style>
+@endpush
 
 @push('scripts')
 <script>
@@ -460,107 +624,12 @@
         const planoCards = document.querySelectorAll('.plano-card');
         planoCards.forEach(card => {
             card.addEventListener('mouseenter', function() {
-                planoCards.forEach(c => {
-                    c.classList.remove('hover-focus');
-                });
-                this.classList.add('hover-focus');
+                planoCards.forEach(c => c.classList.remove('shadow-lg'));
+                this.classList.add('shadow-lg');
             });
             
             card.addEventListener('mouseleave', function() {
-                this.classList.remove('hover-focus');
-            });
-        });
-        
-        // Adicionar efeito de entrada com delay para cards
-        const animateCards = () => {
-            document.querySelectorAll('.plano-card').forEach((card, index) => {
-                setTimeout(() => {
-                    card.classList.add('animate-in');
-                }, 100 * index);
-            });
-            
-            document.querySelectorAll('.vantagens .card').forEach((card, index) => {
-                setTimeout(() => {
-                    card.classList.add('animate-in');
-                }, 100 * index);
-            });
-        };
-        
-        // Chamar animação quando o conteúdo estiver visível
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animateCards();
-                    observer.disconnect();
-                }
-            });
-        });
-        
-        observer.observe(document.querySelector('.vantagens'));
-    });
-    
-    // Adicionar classe para animação de entrada
-    document.addEventListener('DOMContentLoaded', function() {
-        document.body.classList.add('loaded');
-    });
-
-    // Filtrar planos por tipo de pagamento
-    document.addEventListener('DOMContentLoaded', function() {
-        const filtroButtons = document.querySelectorAll('.tipo-pagamento-filter .btn');
-        const planoItems = document.querySelectorAll('.plano-item');
-
-        filtroButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const filterValue = this.getAttribute('data-filter');
-
-                // Atualizar estado dos botões
-                filtroButtons.forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                this.classList.add('active');
-
-                // Filtrar planos
-                planoItems.forEach(item => {
-                    if (filterValue === 'todos' || item.getAttribute('data-tipo-pagamento') === filterValue) {
-                        item.closest('.col').style.display = 'block';
-                    } else {
-                        item.closest('.col').style.display = 'none';
-                    }
-                });
-            });
-        });
-    });
-
-    $(document).ready(function() {
-        // Filtro por tipo de pagamento
-        $('.tipo-pagamento-filter .btn').on('click', function() {
-            const filtro = $(this).data('filter');
-            
-            // Ativar botão selecionado
-            $('.tipo-pagamento-filter .btn').removeClass('active');
-            $(this).addClass('active');
-            
-            // Filtrar planos
-            if (filtro === 'todos') {
-                $('.plano-item').fadeIn(300);
-            } else {
-                $('.plano-item').hide();
-                $('.plano-item[data-tipo-pagamento="' + filtro + '"]').fadeIn(300);
-            }
-            
-            // Verificar se há planos visíveis em cada tab
-            $('.tab-pane').each(function() {
-                const tabId = $(this).attr('id');
-                const visiblePlans = $(this).find('.plano-item:visible').length;
-                
-                // Se não houver planos visíveis, exibir mensagem
-                if (visiblePlans === 0) {
-                    if ($(this).find('.no-plans-message').length === 0) {
-                        $(this).append('<div class="no-plans-message alert alert-info mt-4 text-center">Nenhum plano disponível para este tipo de pagamento neste período.</div>');
-                    }
-                } else {
-                    $(this).find('.no-plans-message').remove();
-                }
+                this.classList.remove('shadow-lg');
             });
         });
     });

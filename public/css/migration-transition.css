@@ -1,0 +1,144 @@
+/**
+ * HotBoys - CSS de Transição para Migração de Classes
+ * Este arquivo fornece suporte para as classes antigas e novas simultaneamente
+ * durante o período de migração.
+ */
+
+/**
+ * Estilos para cards de conteúdo
+ */
+.content-card, .hb-content-card {
+    /* Ambas as classes mantêm o mesmo estilo durante a transição */
+}
+
+.content-card-link, .hb-content-card-link {
+    /* Preservar comportamento de links em cards */
+}
+
+.content-badge, .hb-content-badge {
+    /* Manter badges consistentes */
+}
+
+.content-lock, .hb-content-lock {
+    /* Garantir que ícones de bloqueio permaneçam visíveis */
+}
+
+.content-info, .hb-content-info {
+    /* Informações de conteúdo devem manter o mesmo estilo */
+}
+
+.content-title, .hb-content-title,
+.content-meta, .hb-content-meta,
+.content-price, .hb-content-price,
+.content-likes, .hb-content-likes {
+    /* Estilos de texto consistentes */
+}
+
+/**
+ * Carousel principal
+ */
+.hero-slide, .hb-hero-slide {
+    /* Slides do carrossel principal */
+}
+
+/**
+ * Carrosséis de atores e criadores
+ */
+.actors-carousel, .hb-actors-carousel,
+.creators-carousel, .hb-creators-carousel {
+    /* Configuração de carrosséis especializados */
+}
+
+.actor-card, .hb-actor-card,
+.creator-card, .hb-creator-card,
+.creator-card-premium, .hb-creator-card-premium {
+    /* Cards específicos */
+}
+
+.profile-photo, .hb-profile-photo {
+    /* Fotos de perfil */
+}
+
+/**
+ * Dicas visuais para modo de depuração
+ * Estas regras só se aplicam quando a classe 'debug-migration' está no body
+ */
+body.debug-migration .content-card:not(.hb-content-card) {
+    border: 2px solid red !important;
+    position: relative;
+}
+
+body.debug-migration .content-card:not(.hb-content-card)::before {
+    content: "Classe antiga";
+    position: absolute;
+    top: -20px;
+    left: 0;
+    background: red;
+    color: white;
+    font-size: 10px;
+    padding: 2px 5px;
+    border-radius: 3px;
+    z-index: 100;
+}
+
+body.debug-migration .hb-content-card {
+    border: 2px solid green !important;
+    position: relative;
+}
+
+body.debug-migration .hb-content-card::before {
+    content: "Classe nova";
+    position: absolute;
+    top: -20px;
+    left: 0;
+    background: green;
+    color: white;
+    font-size: 10px;
+    padding: 2px 5px;
+    border-radius: 3px;
+    z-index: 100;
+}
+
+/**
+ * Utilitários para migração
+ */
+.hb-migration-debug {
+    display: none;
+}
+
+body.debug-migration .hb-migration-debug {
+    display: block;
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    font-family: monospace;
+    font-size: 12px;
+    z-index: 9999;
+    border-radius: 5px;
+}
+
+/**
+ * Ajustes para elementos específicos durante a migração
+ */
+.hb-content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 15px;
+}
+
+@media (max-width: 576px) {
+    .hb-content-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 10px;
+    }
+}
+
+/* Correções para elementos específicos que podem quebrar durante a migração */
+.content-grid.row,
+.hb-content-grid.row {
+    display: flex;
+    flex-wrap: wrap;
+}

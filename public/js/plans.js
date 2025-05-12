@@ -33,21 +33,9 @@ const PlansPage = () => {
         const plansMap = new Map();
         
         response.data.forEach(plan => {
-          // Verificar se já existe um plano com esta duração
-          const existingPlan = plansMap.get(plan.duracao_dias);
-          
-          // Substituir o plano existente apenas se: 
-          // 1. Não existe plano para esta duração ainda, ou
-          // 2. O tipo de pagamento do plano coincide com o selecionado e difere do existente
-          if (!existingPlan || 
-              (existingPlan.tipo_pagamento !== plan.tipo_pagamento && 
+          if (!plansMap.has(plan.duracao_dias) || 
+              (plansMap.get(plan.duracao_dias).tipo_pagamento !== plan.tipo_pagamento && 
                plan.tipo_pagamento === selectedPaymentType)) {
-            plansMap.set(plan.duracao_dias, plan);
-          }
-          
-          // Caso especial: Se este plano for marcado como popular (180 dias) e tiver o tipo
-          // de pagamento selecionado, garantimos que ele seja usado
-          if (plan.popular === 1 && plan.tipo_pagamento === selectedPaymentType) {
             plansMap.set(plan.duracao_dias, plan);
           }
         });
@@ -200,11 +188,8 @@ const PlansPage = () => {
       >
         <AnimatePresence>
           {plans.map((plan, index) => {
-            // Determinar se é plano em destaque com base no atributo popular ou outros critérios
-            // Agora permitimos que outros planos também sejam destacados
-            const isFeatured = plan.popular === 1 || 
-                              (plan.duracao_dias === 90) || // Adiciona destaque para planos trimestrais
-                              (plan.duracao_dias === 365 && plan.tipo === 'premium'); // Adiciona destaque para planos anuais premium
+            // Determinar se é plano em destaque
+            const isFeatured = plan.duracao_dias === 180;
             
             // Calcular economia (comparado com mensal)
             const monthlyPlan = plans.find(p => p.duracao_dias === 30);
@@ -278,7 +263,7 @@ const PlansPage = () => {
                     </li>
                   )}
                   
-                  {isFeatured && (
+                  {plan.duracao_dias === 180 && (
                     <li className="feature-item highlight">
                       <i className="fas fa-star"></i>
                       <span>Plano Mais Escolhido</span>

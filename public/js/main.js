@@ -6,7 +6,7 @@ function initHeroCarousel() {
     if (!slidesContainer) return; // Prevenção de erro se o elemento não existir
     
     // Não criar slides novamente - usar os que já existem do backend
-    const slides = slidesContainer.querySelectorAll('.hero-slide');
+    const slides = slidesContainer.querySelectorAll('.hb-hero-slide');
     if (slides.length === 0) return; // Se não houver slides, sair
     
     const indicatorsContainer = document.createElement('div');
@@ -129,7 +129,7 @@ function initHeroCarousel() {
         if (isTransitioning) return;
         isTransitioning = true;
     
-        const slides = document.querySelectorAll('.hero-slide');
+        const slides = document.querySelectorAll('.hb-hero-slide');
         const indicators = document.querySelectorAll('.indicator');
         
         if (slides.length === 0 || indicators.length === 0) {
@@ -422,7 +422,7 @@ function handleImageError(img, fallbackUrl) {
     // Aplicar tratamento de imagens quebradas nos carrosséis existentes
     function applyBrokenImageHandling() {
         // Seleciona todas as imagens em carrosséis
-        const carouselImages = document.querySelectorAll('.content-grid img, .actors-carousel img, .creators-grid img');
+        const carouselImages = document.querySelectorAll('.hb-content-grid img, .hb-actors-carousel img, .creators-grid img');
         
         // Aplica tratamento para cada imagem
         carouselImages.forEach(img => {
@@ -434,7 +434,7 @@ function handleImageError(img, fallbackUrl) {
 
     // Função para renderizar conteúdos sendo assistidos - Otimizada
     function renderWatchingContent() {
-        const grid = document.querySelector('.content-grid');
+        const grid = document.querySelector('.hb-content-grid');
         if (!grid) return;
         
         grid.innerHTML = '';
@@ -705,7 +705,7 @@ function renderActors() {
             '.hero',
             '.hero-slides',
             '.hero-content',
-            '.content-grid',
+            '.hb-content-grid',
             '.actors-carousel',
             '.creators-grid'
         ];
@@ -730,7 +730,7 @@ function renderActors() {
     function setupCarousel(container, scrollAmount = 300) {
         if (!container) return;
         
-        const content = container.querySelector('.content-grid, .actors-carousel');
+        const content = container.querySelector('.hb-content-grid, .hb-actors-carousel');
         const prevBtn = container.querySelector('.prev');
         const nextBtn = container.querySelector('.next');
 
@@ -911,7 +911,7 @@ function renderActors() {
         });
         
         // Observar mudanças no DOM para os contêineres de carrossel
-        const carouselContainers = document.querySelectorAll('.content-grid, .actors-carousel, .creators-grid');
+        const carouselContainers = document.querySelectorAll('.hb-content-grid, .hb-actors-carousel, .creators-grid');
         carouselContainers.forEach(container => {
             observer.observe(container, { childList: true, subtree: true });
         });

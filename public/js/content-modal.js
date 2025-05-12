@@ -30,51 +30,41 @@ document.addEventListener('DOMContentLoaded', function() {
             playButton: !!playButton
         });
     }
-    
-    console.log('[content-modal] Registrando manipuladores de clique para todos os tipos de cards...');
+      console.log('[content-modal] Registrando manipuladores de clique para todos os tipos de cards...');
     
     // A solução mais eficaz - usar um event listener único no documento
-    document.addEventListener('click', function(e) {
-        // Verificar todos os possíveis seletores de cards em ordem de especificidade
-        const targetSelectors = [
-            '.content-card',                // Cards de conteúdo padrão
-            '.open-video-modal',            // Classe genérica para abrir modal
-            '.hero .btn-primary.cta',       // Botão CTA do Hero
-            '.hero-slide'                   // Slide do Hero (clicável)
-        ];
-        
-        // Encontrar o elemento clicável mais próximo
-        let clickedElement = null;
-        
-        for (const selector of targetSelectors) {
-            if (e.target.matches(selector) || e.target.closest(selector)) {
-                clickedElement = e.target.matches(selector) ? e.target : e.target.closest(selector);
-                break;
+    document.querySelectorAll('.content-card.open-video-modal').forEach(card => {
+        card.addEventListener('click', function(event) {
+            // Verificar se o clique foi em um link ou dentro de um link
+            let target = event.target;
+            let isLink = false;
+            
+            // Verificar se o elemento clicado ou algum de seus pais é um link
+            while (target && target !== this) {
+                if (target.tagName === 'A') {
+                    isLink = true;
+                    break;
+                }
+                target = target.parentNode;
             }
-        }
-        
-        // Se não encontramos nenhum elemento clicável, retornar
-        if (!clickedElement) return;
-        
-        console.log('[content-modal] Clique detectado em:', clickedElement);
-        
-        // Verificar se é um elemento de pay-per-view
-        const isPpv = clickedElement.getAttribute('data-ppv') === 'true';
-        
-        // Se for PPV, redirecionar para a página de pay-per-view
-        if (isPpv) {
-            const videoId = clickedElement.getAttribute('data-video-id') || '';
-            console.log('[content-modal] Elemento PPV detectado, redirecionando para:', '/pay-per-view/' + videoId);
-            window.location.href = '/pay-per-view/' + videoId;
-            return;
-        }
-        
-        // Impedir comportamento padrão para evitar navegação
-        e.preventDefault();
-        e.stopPropagation();
-        
-        // Abrir o modal
-        openVideoModal(clickedElement);
+            
+            // Se for um link, permitir comportamento padrão (não abrir modal)
+            if (isLink) {
+                console.log('[content-modal] Clique em link detectado, permitindo comportamento padrão');
+                return;
+            }
+            
+            // Se não for link, abrir o modal
+            event.preventDefault();
+            const contentId = this.getAttribute('data-content-id');
+            if (contentId) {
+                openContentModal(contentId);
+            } else {
+                // Fallback para abrir o modal com o próprio card
+                openVideoModal(this);
+            }
+        });
+        });
     });
     
     /**
@@ -152,8 +142,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Mostrar o modal
+        videoModal.classList.add('js-modal-open');
         videoModal.style.display = 'flex';
-        document.body.style.overflow = 'hidden'; // Prevenir rolagem da página
+        document.body.style.overflow = 'hidden';
     }
     
     /**
@@ -315,8 +306,9 @@ document.addEventListener('DOMContentLoaded', function() {
         players.forEach(player => player.remove());
         
         // Esconder o modal
+        videoModal.classList.remove('js-modal-open');
         videoModal.style.display = 'none';
-        document.body.style.overflow = 'auto'; // Restaurar rolagem da página
+        document.body.style.overflow = 'auto';
     }
     
     // Configurar botão de fechar

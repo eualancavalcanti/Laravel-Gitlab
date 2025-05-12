@@ -3,7 +3,7 @@
  * Sistema unificado de inicialização e gerenciamento de carrosséis
  * 
  * @version 1.0.1
- * @date 2023-07-15
+ * @date 2023-07-1    const creatorCarousels = document.querySelectorAll('.hb-trending-creators');
  */
 
 // Armazenar todas as instâncias de carrossel para gerenciamento global
@@ -37,12 +37,11 @@ function initializeUniqueCarousels() {
     // Buscar todos os carrosséis com IDs únicos
     const uniqueCarousels = document.querySelectorAll('.continue-watching[id^="carousel-"]');
     console.log(`Encontrados ${uniqueCarousels.length} carrosséis com IDs únicos`);
-    
-    uniqueCarousels.forEach(carousel => {
+      uniqueCarousels.forEach(carousel => {
         const carouselId = carousel.id;
         console.log(`Inicializando carrossel único: ${carouselId}`);
         
-        const contentGrid = carousel.querySelector('.content-grid');
+        const contentGrid = carousel.querySelector('.hb-content-grid');
         const prevBtn = carousel.querySelector('.nav-btn.prev');
         const nextBtn = carousel.querySelector('.nav-btn.next');
         
@@ -87,13 +86,12 @@ function initializeContentCarousels() {
     // Seletor que exclui os carrosséis com IDs únicos
     const contentCarousels = document.querySelectorAll('.continue-watching:not([id^="carousel-"]), .featured-content');
     console.log(`Encontrados ${contentCarousels.length} carrosséis de conteúdo tradicionais`);
-    
-    contentCarousels.forEach((carousel, index) => {
+      contentCarousels.forEach((carousel, index) => {
         // Criar um ID simulado para facilitar tracking
         const carouselId = `traditional-content-${index}`;
         console.log(`Inicializando carrossel de conteúdo tradicional: ${carouselId}`);
         
-        const contentGrid = carousel.querySelector('.content-grid');
+        const contentGrid = carousel.querySelector('.hb-content-grid');
         const prevBtn = carousel.querySelector('.nav-btn.prev');
         const nextBtn = carousel.querySelector('.nav-btn.next');
         
@@ -128,7 +126,7 @@ function initializeActorCarousels() {
         const carouselId = `traditional-actor-${index}`;
         console.log(`Inicializando carrossel de atores: ${carouselId}`);
         
-        const actorsGrid = carousel.querySelector('.actors-carousel');
+        const actorsGrid = carousel.querySelector('.hb-actors-carousel');
         const prevBtn = carousel.querySelector('.nav-btn.prev');
         const nextBtn = carousel.querySelector('.nav-btn.next');
         
@@ -156,14 +154,14 @@ function initializeActorCarousels() {
  * Inicializa carrosséis de criadores
  */
 function initializeCreatorCarousels() {
-    const creatorCarousels = document.querySelectorAll('.trending-creators');
+    const creatorCarousels = document.querySelectorAll('.hb-trending-creators');
     console.log(`Encontrados ${creatorCarousels.length} carrosséis de criadores`);
     
     creatorCarousels.forEach((carousel, index) => {
         const carouselId = `traditional-creator-${index}`;
         console.log(`Inicializando carrossel de criadores: ${carouselId}`);
         
-        const creatorGrid = carousel.querySelector('.creators-carousel');
+        const creatorGrid = carousel.querySelector('.hb-creators-carousel');
         const prevBtn = carousel.querySelector('.nav-btn.prev');
         const nextBtn = carousel.querySelector('.nav-btn.next');
         
@@ -199,7 +197,7 @@ function initializeHeroCarousel() {
     
     console.log('Inicializando hero carrossel');
     
-    const slides = heroSection.querySelectorAll('.hero-slide');
+    const slides = heroSection.querySelectorAll('.hb-hero-slide');
     const indicators = heroSection.querySelectorAll('.indicator');
     
     if (!slides.length) {
@@ -290,7 +288,7 @@ function setupNavigation(track, prevBtn, nextBtn) {
     // Calcular quantos itens são visíveis e o tamanho do scroll
     function calculateScrollMetrics() {
         const trackWidth = track.offsetWidth;
-        const items = track.querySelectorAll('.content-card, .actor-card, .creator-card-premium');
+        const items = track.querySelectorAll('.hb-content-card, .hb-actor-card, .creator-card-premium');
         
         if (items.length === 0) return;
         
@@ -462,7 +460,7 @@ function setupNavigation(track, prevBtn, nextBtn) {
         // Evitar snap automático em dispositivos móveis
         if (window.innerWidth < 768) return;
         
-        const itemWidth = track.querySelector('.content-card, .actor-card, .creator-card-premium')?.offsetWidth || 0;
+        const itemWidth = track.querySelector('.hb-content-card, .hb-actor-card, .creator-card-premium')?.offsetWidth || 0;
         if (!itemWidth) return;
         
         const currentPosition = track.scrollLeft;

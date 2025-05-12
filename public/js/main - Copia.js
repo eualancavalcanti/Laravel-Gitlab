@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isTransitioning) return;
         isTransitioning = true;
 
-        const slides = document.querySelectorAll('.hero-slide');
+        const slides = document.querySelectorAll('.hb-hero-slide');
         const indicators = document.querySelectorAll('.indicator');
         
         if (slides.length === 0 || indicators.length === 0) {
@@ -352,7 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Função para renderizar conteúdos sendo assistidos - Otimizada
     function renderWatchingContent() {
-        const grid = document.querySelector('.content-grid');
+        const grid = document.querySelector('.hb-content-grid');
         if (!grid) return;
         
         grid.innerHTML = '';
@@ -607,7 +607,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '.hero',
             '.hero-slides',
             '.hero-content',
-            '.content-grid',
+            '.hb-content-grid',
             '.actors-carousel',
             '.creators-grid'
         ];
@@ -632,7 +632,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function setupCarousel(container, scrollAmount = 300) {
         if (!container) return;
         
-        const content = container.querySelector('.content-grid, .actors-carousel');
+        const content = container.querySelector('.hb-content-grid, .hb-actors-carousel');
         const prevBtn = container.querySelector('.prev');
         const nextBtn = container.querySelector('.next');
 
@@ -792,7 +792,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Adicione este código ao seu arquivo main.js ou crie um novo arquivo modal.js
 document.addEventListener('DOMContentLoaded', function() {
     // Referências dos elementos
-    const contentCards = document.querySelectorAll('.content-card');
+    const contentCards = document.querySelectorAll('.hb-content-card');
     const contentModal = document.getElementById('contentModal');
     const modalClose = document.querySelector('.modal-close');
     const modalTitle = document.getElementById('modalTitle');

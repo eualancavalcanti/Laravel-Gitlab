@@ -4,7 +4,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Elementos do carrossel
     const heroSection = document.querySelector('.hero');
-    const slides = document.querySelectorAll('.hero-slide');
+    const slides = document.querySelectorAll('.hb-hero-slide');
     
     // Se não encontrar elementos ou houver apenas um slide, não fazer nada
     if (!heroSection || slides.length <= 1) return;

@@ -10,8 +10,8 @@
 }
 
 /* Trilha do carrossel - rolagem suave otimizada */
-.content-grid, 
-.actors-carousel {
+.hb-content-grid, 
+.hb-actors-carousel {
     display: flex;
     gap: 1.5rem;
     overflow-x: auto;
@@ -32,21 +32,21 @@
 }
 
 /* Esconde a barra de rolagem */
-.content-grid::-webkit-scrollbar,
-.actors-carousel::-webkit-scrollbar {
+.hb-content-grid::-webkit-scrollbar,
+.hb-actors-carousel::-webkit-scrollbar {
     display: none;
 }
 
 /* Estado de arrastar ativo */
-.content-grid.dragging,
-.actors-carousel.dragging {
+.hb-content-grid.dragging,
+.hb-actors-carousel.dragging {
     cursor: grabbing !important;
     scroll-behavior: auto !important;
 }
 
 /* Items do carrossel - com transições mais suaves */
-.content-card,
-.actor-card,
+.hb-content-card,
+.hb-actor-card,
 .creator-card {
     scroll-snap-align: center; /* Alterado para center em vez de start */
     scroll-snap-stop: always; /* Garante que a rolagem sempre pare nos itens */
@@ -59,8 +59,8 @@
 }
 
 /* Estado dos cards durante arrastar */
-.dragging .content-card,
-.dragging .actor-card,
+.dragging .hb-content-card,
+.dragging .hb-actor-card,
 .dragging .creator-card {
     transition: none !important;
 }
@@ -131,8 +131,8 @@
 
 /* Feedback de toque para dispositivos mobile */
 @media (hover: none) {
-    .content-card:active,
-    .actor-card:active,
+    .hb-content-card:active,
+    .hb-actor-card:active,
     .creator-card:active {
         transform: scale(0.98);
     }
@@ -150,8 +150,8 @@
     }
 }
 
-.content-card.new-item,
-.actor-card.new-item,
+.hb-content-card.new-item,
+.hb-actor-card.new-item,
 .creator-card.new-item {
     animation: slideIn 0.5s ease forwards;
 }
@@ -161,10 +161,9 @@
     .carousel-container {
         margin: 0 -1rem;
         padding: 0 1rem;
-    }
-    
-    .content-grid, 
-    .actors-carousel {
+    }    
+    .hb-content-grid, 
+    .hb-actors-carousel {
         gap: 1rem;
         padding: 1rem;
     }
@@ -186,9 +185,8 @@
 }
 
 /* Para telas menores e toque */
-@media (max-width: 480px) {
-    .content-grid, 
-    .actors-carousel {
+@media (max-width: 480px) {    .hb-content-grid, 
+    .hb-actors-carousel {
         scroll-padding-left: 1rem;
     }
     
@@ -244,16 +242,16 @@
 }
 
 /* Melhorias de acessibilidade para cards clicáveis - Adicionado para resolver problemas de modal */
-.content-card, 
+.hb-content-card, 
 .open-video-modal,
 .hero .btn-primary.cta,
-.hero-slide {
+.hb-hero-slide {
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     position: relative;
 }
 
-.content-card:hover, 
+.hb-content-card:hover, 
 .open-video-modal:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
@@ -265,7 +263,7 @@
 }
 
 /* Adiciona um overlay de foco para melhorar acessibilidade */
-.content-card:focus, 
+.hb-content-card:focus, 
 .open-video-modal:focus,
 .hero .btn-primary.cta:focus {
     outline: 2px solid #ff3333;
@@ -273,7 +271,7 @@
 }
 
 /* Garante que todos os componentes do card acionem o evento de clique */
-.content-card *, 
+.hb-content-card *, 
 .open-video-modal * {
     pointer-events: none;
 }
@@ -293,7 +291,7 @@
     transition: opacity 0.3s ease;
 }
 
-.content-card:hover .play-overlay,
+.hb-content-card:hover .play-overlay,
 .open-video-modal:hover .play-overlay {
     opacity: 1;
 }

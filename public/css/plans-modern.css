@@ -1,124 +1,64 @@
-/* HotBoys GEN-Z Plans Showcase - Versão 2.0 */
-
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+/* Estilização moderna para o componente de Planos HotBoys */
 
 :root {
-  /* Paleta de cores atualizada e vibrante */
   --primary-color: #ff0033;
-  --primary-glow: rgba(255, 0, 51, 0.8);
-  --primary-dark: #c50028;
+  --primary-dark: #d60029;
   --primary-light: #ff3355;
-  --secondary-color: #0f0f14;
-  --tertiary-color: #292933;
-  --text-color: #ffffff;
-  --text-muted: rgba(255, 255, 255, 0.7);
-  --card-bg: #1a1a24;
-  --card-bg-hover: #23232f;
-  --card-border: rgba(255, 255, 255, 0.08);
-  --card-shadow: rgba(0, 0, 0, 0.7);
-  --card-glow: 0 0 30px rgba(255, 0, 51, 0.15);
-  
-  /* Gradientes modernos e vibrantes */
-  --gradient-dark: linear-gradient(170deg, #1a1a24 0%, #0f0f14 100%);
-  --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, #c50028 100%);
-  --gradient-shine: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.1) 100%);
-  --gradient-featured: linear-gradient(170deg, #2a2a35 0%, #1a1a24 100%);
-  --gradient-badge: linear-gradient(135deg, #ff3355 30%, #ff0033 100%);
-  --gradient-glow: radial-gradient(circle, var(--primary-glow) 0%, rgba(255, 0, 51, 0) 70%);
-  
-  /* Elementos de design */
-  --badge-bg: var(--gradient-badge);
+  --secondary-color: #111;
+  --text-color: #f5f5f5;
+  --card-bg: #1a1a1a;
+  --card-bg-hover: #222;
+  --card-border: #333;
+  --card-shadow: rgba(0, 0, 0, 0.5);
+  --gradient-dark: linear-gradient(135deg, #1a1a1a 0%, #000 100%);
+  --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  --gradient-featured: linear-gradient(135deg, #333 0%, #111 100%);
+  --badge-bg: var(--primary-color);
   --badge-text: #fff;
-  --success-color: #22ee77;
-  --info-color: #3a86ff;
-  --warning-color: #ffbe0b;
-  
-  /* Dimensões e transições */
-  --border-radius-sm: 8px;
-  --border-radius: 16px;
-  --border-radius-lg: 24px;
-  --border-radius-xl: 32px;
-  --border-radius-full: 9999px;
-  --transition-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --transition-smooth: cubic-bezier(0.65, 0, 0.35, 1);
-  --transition-fast: 0.2s;
-  --transition-normal: 0.4s;
-  --transition-slow: 0.6s;
-  
-  /* Espaçamento */
-  --space-xs: 0.25rem;
-  --space-sm: 0.5rem;
-  --space-md: 1rem;
-  --space-lg: 1.5rem;
-  --space-xl: 2rem;
-  --space-xxl: 3rem;
+  --success-color: #22c55e;
+  --border-radius: 12px;
+  --transition-speed: 0.3s;
 }
 
-/* Estilos base melhorados */
-.plans-container {
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: var(--space-xl);
-  font-family: 'Outfit', -apple-system, system-ui, sans-serif;
-  color: var(--text-color);
-  background-color: var(--secondary-color);
-  border-radius: var(--border-radius);
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
-}
-
+/* Reset e estilos base */
 .plans-container * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Efeito de fundo abstrato */
-.plans-container::before {
-  content: "";
-  position: absolute;
-  width: 120%;
-  height: 100%;
-  top: -10%;
-  left: -10%;
-  background: 
-    radial-gradient(circle at 20% 20%, rgba(255, 0, 51, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(255, 0, 51, 0.07) 0%, transparent 70%);
-  filter: blur(40px);
-  z-index: -1;
-  pointer-events: none;
+.plans-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  color: var(--text-color);
+  background-color: var(--secondary-color);
+  border-radius: var(--border-radius);
+  overflow: hidden;
 }
 
-/* Cabeçalho com efeito de texto moderno */
+/* Cabeçalho */
 .plans-header {
   text-align: center;
-  margin-bottom: var(--space-xxl);
-  position: relative;
+  margin-bottom: 3rem;
 }
 
 .plans-title {
-  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-size: 2.5rem;
   font-weight: 800;
-  margin-bottom: var(--space-lg);
-  line-height: 1.1;
-  background: linear-gradient(to right, #fff 10%, rgba(255, 255, 255, 0.8) 50%, #fff 90%);
+  margin-bottom: 1rem;
+  background: linear-gradient(to right, #fff, #ccc);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  position: relative;
-  letter-spacing: -0.03em;
-  text-transform: uppercase;
-  animation: shimmer 3s infinite;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .plans-title span {
-  position: relative;
   color: var(--primary-color);
-  display: inline-block;
-  transform-origin: bottom;
-  animation: pulse-grow 3s var(--transition-smooth) infinite;
+  position: relative;
 }
 
 .plans-title span::after {
@@ -127,332 +67,228 @@
   bottom: -5px;
   left: 0;
   width: 100%;
-  height: 4px;
+  height: 3px;
   background: var(--primary-color);
-  border-radius: var(--border-radius-full);
-  transform: scaleX(0);
-  transform-origin: left;
-  opacity: 0;
-  animation: line-appear 0.5s var(--transition-bounce) forwards 0.5s;
+  border-radius: 3px;
 }
 
 .plans-subtitle {
-  font-size: clamp(1.1rem, 2vw, 1.3rem);
-  color: var(--text-muted);
+  font-size: 1.1rem;
+  color: #aaa;
   max-width: 800px;
   margin: 0 auto;
   line-height: 1.6;
-  font-weight: 300;
 }
 
-/* Tabs para período/método de pagamento */
+/* Tabs para método de pagamento */
 .tabs-header {
   display: flex;
   justify-content: center;
-  gap: var(--space-md);
-  margin-bottom: var(--space-xxl);
+  gap: 1rem;
+  margin-bottom: 2.5rem;
   position: relative;
-  flex-wrap: wrap;
 }
 
 .tab-link {
   background: var(--card-bg);
-  border: 1px solid var(--card-border);
+  border: 2px solid var(--card-border);
   color: var(--text-color);
-  padding: var(--space-md) var(--space-xl);
-  border-radius: var(--border-radius-full);
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: all var(--transition-normal) var(--transition-bounce);
+  transition: all var(--transition-speed) ease;
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
-  z-index: 1;
-  transform: translateY(0);
-}
-
-.tab-link::before {
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background: var(--gradient-primary);
-  opacity: 0;
-  transition: opacity var(--transition-normal);
-  z-index: -1;
+  gap: 0.5rem;
 }
 
 .tab-link:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), var(--card-glow);
-  border-color: var(--primary-light);
-}
-
-.tab-link:hover::before {
-  opacity: 0.1;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
 }
 
 .tab-link.active {
   background: var(--primary-color);
   border-color: var(--primary-color);
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(255, 0, 51, 0.3);
-}
-
-.tab-link.active::before {
-  opacity: 1;
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 15px rgba(255, 0, 51, 0.3);
 }
 
 .tab-link i {
-  font-size: 1.2rem;
-  transition: transform var(--transition-fast) var(--transition-bounce);
+  font-size: 1.1rem;
 }
 
-.tab-link:hover i {
-  transform: translateY(-2px);
-}
-
-/* Grid de planos com efeito de destaque */
+/* Grid de planos */
 .plans-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
-  margin-bottom: var(--space-xxl);
+  margin-bottom: 3rem;
   perspective: 1000px;
-  position: relative;
 }
 
-/* Card de plano com efeitos 3D e glassmorphism */
+/* Cartão de plano */
 .plan-card {
   position: relative;
   background: var(--gradient-dark);
   border-radius: var(--border-radius);
-  padding: var(--space-xl);
+  padding: 2rem;
   display: flex;
   flex-direction: column;
   border: 1px solid var(--card-border);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-  transition: all var(--transition-normal) var(--transition-bounce);
+  box-shadow: 0 15px 25px var(--card-shadow);
+  transition: all var(--transition-speed) cubic-bezier(0.23, 1, 0.32, 1);
   overflow: hidden;
   z-index: 1;
-  min-height: 500px;
-  transform: translateZ(0);
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
+  min-height: 450px;
 }
 
-/* Efeito de brilho de vidro */
 .plan-card::before {
   content: '';
   position: absolute;
-  top: 0;
+  top: -50%;
   left: -50%;
   width: 200%;
   height: 200%;
-  background: var(--gradient-shine);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
   opacity: 0;
-  transition: opacity var(--transition-normal), transform var(--transition-slow);
-  transform: rotate(30deg) translateY(100%);
+  transition: opacity 0.8s ease;
   pointer-events: none;
-  z-index: 1;
+  z-index: -1;
 }
 
 .plan-card:hover::before {
-  opacity: 0.3;
-  transform: rotate(30deg) translateY(-100%);
-}
-
-/* Efeito de "glow" na borda quando hover */
-.plan-card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: var(--border-radius);
-  padding: 1px;
-  background: linear-gradient(135deg, transparent 40%, rgba(255, 51, 85, 0.3), transparent 60%);
-  -webkit-mask: 
-    linear-gradient(#fff 0 0) content-box, 
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0;
-  transition: opacity var(--transition-normal);
-}
-
-.plan-card:hover::after {
-  opacity: 1;
+  opacity: 0.5;
+  animation: spin 5s linear infinite;
 }
 
 .plan-card:hover {
-  transform: translateY(-15px) translateZ(20px);
-  box-shadow: 0 30px 50px rgba(0, 0, 0, 0.5), var(--card-glow);
-  border-color: rgba(255, 51, 85, 0.2);
+  transform: translateY(-15px) rotateX(5deg);
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.5);
+  border-color: rgba(255, 0, 51, 0.3);
 }
 
-/* Plano destacado */
 .plan-card.featured {
   background: var(--gradient-featured);
-  border: 1px solid rgba(255, 51, 85, 0.3);
-  transform: scale(1.05) translateZ(30px);
+  border: 2px solid var(--primary-color);
+  transform: scale(1.05);
   z-index: 2;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), var(--card-glow);
 }
 
 .plan-card.featured:hover {
-  transform: scale(1.05) translateY(-15px) translateZ(40px);
-  box-shadow: 0 35px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(255, 0, 51, 0.2);
+  transform: scale(1.05) translateY(-15px) rotateX(5deg);
 }
 
-/* Efeito spotlight melhorado */
 .spotlight {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--gradient-glow);
+  background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
+              rgba(255, 0, 51, 0.1) 0%, 
+              rgba(255, 0, 51, 0) 60%);
   opacity: 0;
-  transition: opacity var(--transition-normal);
+  transition: opacity 0.5s;
   pointer-events: none;
-  z-index: 0;
-  mix-blend-mode: soft-light;
+  z-index: -1;
 }
 
 .plan-card:hover .spotlight {
   opacity: 1;
 }
 
-/* Badges e elementos visuais do cartão */
-.plan-badge {
-  position: absolute;
-  top: var(--space-md);
-  right: var(--space-md);
-  background: var(--badge-bg);
-  color: var(--badge-text);
-  font-size: 0.85rem;
-  font-weight: 700;
-  padding: var(--space-xs) var(--space-md);
-  border-radius: var(--border-radius-full);
-  box-shadow: 0 5px 15px rgba(255, 0, 51, 0.4);
-  z-index: 3;
-  animation: pulse-subtle 2s infinite;
-}
-
-/* Cabeçalho do card com efeitos de texto */
+/* Cabeçalho do cartão */
 .plan-head {
   position: relative;
-  padding-bottom: var(--space-lg);
-  margin-bottom: var(--space-lg);
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
   text-align: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.plan-badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: var(--badge-bg);
+  color: var(--badge-text);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  box-shadow: 0 3px 6px rgba(255, 0, 51, 0.3);
+  transform: rotate(5deg);
+  z-index: 3;
+}
+
 .plan-name {
-  font-size: 1.7rem;
-  font-weight: 800;
-  margin-bottom: var(--space-lg);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
   color: white;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
-  position: relative;
-  display: inline-block;
-  z-index: 1;
-  transform-style: preserve-3d;
+  letter-spacing: 1px;
 }
 
-/* Efeito de texto 3D sutíl */
-.plan-name::before {
-  content: attr(data-text);
-  position: absolute;
-  left: 0;
-  top: 0;
-  color: var(--primary-color);
-  transform: translateZ(-10px);
-  opacity: 0.7;
-  filter: blur(4px);
-  z-index: -1;
-}
-
-/* Preço com layout moderno e animações */
 .plan-price {
-  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-size: 2.5rem;
   font-weight: 800;
   color: white;
-  margin-bottom: var(--space-xs);
+  margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-xs);
-  transition: transform var(--transition-normal) var(--transition-bounce);
-}
-
-.plan-card:hover .plan-price {
-  transform: scale(1.05);
+  gap: 0.2rem;
 }
 
 .currency {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: 500;
   align-self: flex-start;
-  margin-top: 0.7rem;
+  margin-top: 0.5rem;
   color: rgba(255, 255, 255, 0.8);
 }
 
 .price-value {
   position: relative;
-  display: inline-block;
-  background: linear-gradient(to bottom, #fff, rgba(255, 255, 255, 0.8));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
 }
 
 .plan-period {
-  font-size: 1rem;
-  color: var(--text-muted);
-  margin-bottom: var(--space-md);
-  letter-spacing: 0.02em;
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-bottom: 1rem;
 }
 
-/* Badge de economia com animação */
 .save-badge {
   display: inline-block;
-  background: rgba(34, 238, 119, 0.15);
+  background: rgba(34, 197, 94, 0.2);
   color: var(--success-color);
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  padding: var(--space-xs) var(--space-md);
-  border-radius: var(--border-radius-full);
-  border: 1px solid rgba(34, 238, 119, 0.3);
-  margin-top: var(--space-sm);
-  animation: pulse-grow 2s infinite;
-  transform-origin: center;
+  padding: 0.3rem 0.8rem;
+  border-radius: 100px;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  margin-top: 0.5rem;
 }
 
-/* Lista de recursos com ícones animados */
+/* Lista de características */
 .plan-features {
   list-style: none;
-  margin-bottom: var(--space-xl);
+  margin-bottom: 2rem;
   flex-grow: 1;
 }
 
 .feature-item {
   display: flex;
-  align-items: flex-start;
-  gap: var(--space-md);
-  margin-bottom: var(--space-md);
-  font-size: 1rem;
-  color: var(--text-muted);
-  transition: transform var(--transition-fast) var(--transition-bounce);
-}
-
-.plan-card:hover .feature-item {
-  transform: translateZ(10px);
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  color: #ccc;
 }
 
 .feature-item.highlight {
@@ -462,85 +298,56 @@
 
 .feature-item i {
   color: var(--success-color);
-  font-size: 1.1rem;
+  font-size: 1rem;
   flex-shrink: 0;
-  transform: translateZ(20px);
-  transition: transform var(--transition-fast) var(--transition-bounce);
-}
-
-.plan-card:hover .feature-item i {
-  transform: translateZ(30px) scale(1.2);
 }
 
 .feature-item.highlight i {
   color: var(--primary-light);
 }
 
-/* Botão de ação com efeitos modernos */
+/* Botão de ação */
 .plan-action {
   margin-top: auto;
-  position: relative;
-  z-index: 2;
 }
 
 .plan-button {
   width: 100%;
-  padding: var(--space-md) var(--space-lg);
-  border-radius: var(--border-radius);
+  padding: 1rem;
+  border-radius: 8px;
   border: none;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
   text-transform: uppercase;
   cursor: pointer;
-  transition: all var(--transition-normal) var(--transition-bounce);
+  transition: all var(--transition-speed) ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-sm);
-  letter-spacing: 0.05em;
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
-}
-
-/* Efeito de ondulação no botão */
-.plan-button::after {
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: -100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.7s;
-  z-index: -1;
-}
-
-.plan-button:hover::after {
-  left: 100%;
+  gap: 0.5rem;
+  letter-spacing: 0.5px;
 }
 
 .primary-button {
   background: var(--gradient-primary);
   color: white;
-  box-shadow: 0 10px 20px rgba(255, 0, 51, 0.3);
+  box-shadow: 0 8px 15px rgba(255, 0, 51, 0.3);
 }
 
 .secondary-button {
   background: rgba(255, 255, 255, 0.1);
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
 }
 
 .plan-button:hover {
   transform: translateY(-5px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), var(--card-glow);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.4);
 }
 
 .primary-button:hover {
-  background-image: linear-gradient(135deg, #ff3355 0%, #c50028 100%);
-  box-shadow: 0 15px 30px rgba(255, 0, 51, 0.4);
+  background: var(--primary-color);
+  box-shadow: 0 12px 20px rgba(255, 0, 51, 0.4);
 }
 
 .secondary-button:hover {
@@ -549,52 +356,30 @@
 }
 
 .plan-button i {
-  font-size: 1.2rem;
-  transition: transform var(--transition-fast) var(--transition-bounce);
+  font-size: 1.1rem;
 }
 
-.plan-button:hover i {
-  transform: translateX(3px);
-}
-
-/* Seção CTA melhorada */
+/* Seção CTA */
 .plans-cta {
   text-align: center;
-  margin-top: var(--space-xxl);
-  padding: var(--space-xl) var(--space-lg);
+  margin-top: 3rem;
+  padding: 2rem;
   background: rgba(0, 0, 0, 0.3);
   border-radius: var(--border-radius);
   border: 1px solid var(--card-border);
-  position: relative;
-  overflow: hidden;
-}
-
-.plans-cta::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: 
-    radial-gradient(circle at 20% 20%, rgba(255, 0, 51, 0.1) 0%, transparent 30%),
-    radial-gradient(circle at 80% 80%, rgba(255, 0, 51, 0.07) 0%, transparent 30%);
-  opacity: 0.5;
-  z-index: -1;
 }
 
 .cta-title {
-  font-size: clamp(1.8rem, 4vw, 2.5rem);
-  font-weight: 800;
-  margin-bottom: var(--space-md);
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
   color: white;
-  letter-spacing: -0.01em;
 }
 
 .cta-text {
-  font-size: clamp(1rem, 2vw, 1.2rem);
-  color: var(--text-muted);
-  margin-bottom: var(--space-xl);
+  font-size: 1rem;
+  color: #aaa;
+  margin-bottom: 1.5rem;
   max-width: 700px;
   margin-left: auto;
   margin-right: auto;
@@ -604,273 +389,96 @@
 .cta-button {
   background: var(--gradient-primary);
   color: white;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
-  padding: var(--space-md) var(--space-xl);
+  padding: 0.8rem 2rem;
   border: none;
-  border-radius: var(--border-radius-full);
+  border-radius: 8px;
   cursor: pointer;
-  transition: all var(--transition-normal) var(--transition-bounce);
+  transition: all var(--transition-speed) ease;
   display: inline-flex;
   align-items: center;
-  gap: var(--space-sm);
-  position: relative;
-  overflow: hidden;
-}
-
-.cta-button::after {
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: -100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.7s;
-}
-
-.cta-button:hover::after {
-  left: 100%;
+  gap: 0.5rem;
 }
 
 .cta-button:hover {
-  transform: translateY(-5px) scale(1.05);
-  box-shadow: 0 15px 30px rgba(255, 0, 51, 0.3);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(255, 0, 51, 0.3);
 }
 
 .cta-button i {
-  font-size: 1.1rem;
-  transition: transform var(--transition-fast) var(--transition-bounce);
+  font-size: 1rem;
 }
 
-.cta-button:hover i {
-  transform: translateX(4px);
-}
-
-/* Estados de UI melhorados */
+/* Estados de UI */
 .loading-state {
   text-align: center;
-  padding: var(--space-xxl) var(--space-xl);
-  min-height: 50vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  padding: 4rem 2rem;
 }
 
 .loader-container {
-  margin-top: var(--space-xl);
-  position: relative;
+  margin-top: 2rem;
 }
 
 .pulse-loader {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   background: var(--primary-color);
-  box-shadow: 0 0 30px var(--primary-glow);
   margin: 0 auto;
-  animation: pulse-3d 1.5s var(--transition-smooth) infinite;
+  animation: pulse 1.5s ease infinite;
 }
 
-.pulse-loader::before, 
-.pulse-loader::after {
-  content: '';
-  position: absolute;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: var(--primary-color);
-  opacity: 0.7;
-  filter: blur(10px);
-}
-
-.pulse-loader::before {
-  animation: pulse-3d 1.5s var(--transition-smooth) infinite 0.3s;
-}
-
-.pulse-loader::after {
-  animation: pulse-3d 1.5s var(--transition-smooth) infinite 0.6s;
-}
-
-/* Alertas melhorados */
-.plans-container .plan-alert {
-  padding: var(--space-xl);
-  margin-bottom: var(--space-xl);
-  border-radius: var(--border-radius);
+.error-state {
   text-align: center;
-  font-size: 1.1rem;
-  border: 1px solid transparent;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(5px);
-  transform: translateZ(0);
-  position: relative;
-  overflow: hidden;
+  padding: 4rem 2rem;
 }
 
-.plans-container .plan-alert::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-  -webkit-mask: 
-    linear-gradient(#fff 0 0) content-box, 
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-}
-
-.plans-container .plan-alert i.fa-3x {
-  display: block;
-  margin-bottom: var(--space-md);
-  animation: alert-icon-float 3s infinite;
-}
-
-.plans-container .plan-alert i:not(.fa-3x) {
-  margin-right: var(--space-sm);
-  font-size: 1.2em;
-}
-
-.plans-container .plan-alert-error {
-  background-color: rgba(255, 0, 51, 0.07);
-  color: var(--primary-light);
-  border-color: rgba(255, 0, 51, 0.3);
-}
-
-.plans-container .plan-alert-error i {
-  color: var(--primary-color);
-}
-
-.plans-container .plan-alert-info {
-  background-color: rgba(58, 134, 255, 0.07);
-  color: var(--text-color);
-  border-color: rgba(58, 134, 255, 0.3);
-}
-
-.plans-container .plan-alert-info i {
-  color: var(--info-color);
-}
-
-.plans-container .plan-alert h4 {
-  color: var(--text-color);
-  font-weight: 700;
-  margin-top: var(--space-sm);
-  margin-bottom: var(--space-sm);
-  font-size: 1.3rem;
-}
-
-.plans-container .plan-alert p {
-  color: var(--text-muted);
-  font-size: 1.1rem;
-  margin-bottom: 0;
-  max-width: 600px;
-}
-
-/* Animações avançadas */
-@keyframes pulse-3d {
+/* Animações */
+@keyframes pulse {
   0% {
-    transform: translateZ(0) scale(0.8);
+    transform: scale(0.8);
     opacity: 0.5;
   }
   50% {
-    transform: translateZ(50px) scale(1);
+    transform: scale(1);
     opacity: 1;
   }
   100% {
-    transform: translateZ(0) scale(0.8);
+    transform: scale(0.8);
     opacity: 0.5;
   }
 }
 
-@keyframes pulse-grow {
-  0%, 100% {
-    transform: scale(1);
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
   }
-  50% {
-    transform: scale(1.05);
-  }
-}
-
-@keyframes pulse-subtle {
-  0%, 100% {
-    opacity: 0.9;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.05);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -300% 0;
-  }
-  100% {
-    background-position: 300% 0;
-  }
-}
-
-@keyframes line-appear {
   to {
-    transform: scaleX(1);
-    opacity: 1;
+    transform: rotate(360deg);
   }
 }
 
-@keyframes float-in {
-  0% {
+.animate-in {
+  animation: fadeUp 0.6s ease forwards;
+}
+
+@keyframes fadeUp {
+  from {
     opacity: 0;
     transform: translateY(30px);
   }
-  100% {
+  to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-@keyframes alert-icon-float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-/* Entrada animada */
-.animate-in {
-  opacity: 0;
-  animation: float-in 0.8s var(--transition-bounce) forwards;
-}
-
-/* Atraso escalonado para cards */
-.plan-card:nth-child(1) {
-  animation-delay: 0.1s;
-}
-
-.plan-card:nth-child(2) {
-  animation-delay: 0.3s;
-}
-
-.plan-card:nth-child(3) {
-  animation-delay: 0.5s;
-}
-
-.plan-card:nth-child(4) {
-  animation-delay: 0.7s;
-}
-
-/* Responsividade aprimorada */
-@media (max-width: 1200px) {
+/* Responsividade */
+@media (max-width: 991px) {
   .plans-grid {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: var(--space-lg);
+    gap: 1.5rem;
   }
   
   .plan-card.featured {
@@ -878,37 +486,13 @@
   }
   
   .plan-card.featured:hover {
-    transform: scale(1.03) translateY(-15px);
-  }
-}
-
-@media (max-width: 992px) {
-  :root {
-    --space-xxl: 2.5rem;
-  }
-  
-  .plans-container {
-    padding: var(--space-lg);
-  }
-  
-  .plans-title {
-    font-size: 2.5rem;
+    transform: scale(1.03) translateY(-15px) rotateX(5deg);
   }
 }
 
 @media (max-width: 768px) {
-  :root {
-    --space-lg: 1.25rem;
-    --space-xl: 1.5rem;
-    --space-xxl: 2rem;
-  }
-  
   .plans-title {
-    font-size: 2.2rem;
-  }
-  
-  .plan-card {
-    min-height: 450px;
+    font-size: 2rem;
   }
   
   .plan-card.featured {
@@ -916,13 +500,13 @@
   }
   
   .plan-card.featured:hover {
-    transform: translateY(-15px);
+    transform: translateY(-15px) rotateX(5deg);
   }
   
   .tabs-header {
     flex-direction: column;
     align-items: center;
-    gap: var(--space-sm);
+    gap: 0.8rem;
   }
   
   .tab-link {
@@ -932,13 +516,7 @@
   }
 }
 
-@media (max-width: 576px) {
-  :root {
-    --space-md: 0.75rem;
-    --space-lg: 1rem;
-    --space-xl: 1.25rem;
-  }
-  
+@media (max-width: 480px) {
   .plans-title {
     font-size: 1.8rem;
   }
@@ -948,107 +526,75 @@
   }
   
   .plan-name {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
   }
   
   .plan-price {
-    font-size: 2.2rem;
+    font-size: 2rem;
   }
   
   .plan-card {
-    padding: var(--space-lg);
-    min-height: 420px;
-  }
-  
-  .feature-item {
-    font-size: 0.95rem;
-  }
-  
-  .cta-button, .plan-button {
-    font-size: 1rem;
-    padding: 0.75rem 1.25rem;
+    padding: 1.5rem;
   }
 }
 
-/* Efeito de toque em dispositivos móveis */
+/* Efeito de brilho para toque em dispositivos móveis */
 @media (hover: none) {
-  .plan-card:active {
-    transform: translateY(-5px) scale(0.98);
-  }
-  
   .plan-card:active::before {
-    opacity: 0.2;
+    opacity: 0.3;
   }
   
   .plan-button:active {
-    transform: scale(0.95);
-  }
-
-  .tab-link:active {
     transform: translateY(-2px);
   }
 }
 
-/* Efeito de foco nos cards */
+/* Adicionando efeito spotlight hover no mouse */
 .plans-grid:hover .plan-card:not(:hover) {
-  filter: brightness(0.75);
-  transform: scale(0.98) translateZ(0);
+  filter: brightness(0.8);
 }
 
-/* Prefere redução de movimento */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* Suporte para tema claro */
+/* Adicionando suporte para tema claro (opcional) */
 @media (prefers-color-scheme: light) {
   :root {
-    --secondary-color: #f8f9ff;
-    --tertiary-color: #edf0ff;
-    --card-bg: #ffffff;
-    --card-bg-hover: #f8f9ff;
-    --card-border: rgba(0, 0, 0, 0.08);
-    --card-shadow: rgba(0, 0, 0, 0.1);
-    --text-color: #252525;
-    --text-muted: rgba(0, 0, 0, 0.6);
-    --gradient-dark: linear-gradient(170deg, #ffffff 0%, #f0f3ff 100%);
-    --gradient-featured: linear-gradient(170deg, #f5f7ff 0%, #ffffff 100%);
+    --card-bg: #f8f8f8;
+    --card-bg-hover: #fff;
+    --card-border: #ddd;
+    --card-shadow: rgba(0, 0, 0, 0.2);
+    --text-color: #333;
+    --gradient-dark: linear-gradient(135deg, #f8f8f8 0%, #eee 100%);
+    --gradient-featured: linear-gradient(135deg, #f0f0f0 0%, #fff 100%);
   }
   
   .plans-container {
-    background-color: var(--secondary-color);
+    background-color: #fff;
   }
   
   .plans-title {
-    background: linear-gradient(to right, #252525 10%, #505050 50%, #252525 90%);
+    background: linear-gradient(to right, #333, #666);
     -webkit-background-clip: text;
     background-clip: text;
   }
   
   .plans-subtitle {
-    color: var(--text-muted);
+    color: #666;
   }
   
   .feature-item {
-    color: var(--text-muted);
+    color: #666;
   }
   
   .secondary-button {
     background: rgba(0, 0, 0, 0.05);
-    color: var(--text-color);
+    color: #333;
     border: 1px solid rgba(0, 0, 0, 0.1);
   }
   
   .plans-cta {
-    background: rgba(0, 0, 0, 0.02);
+    background: rgba(0, 0, 0, 0.03);
   }
   
   .cta-text {
-    color: var(--text-muted);
+    color: #666;
   }
 }

@@ -1,5 +1,5 @@
 <!-- resources/views/components/actors-carousel.blade.php -->
-<section class="featured-actors">
+<section class="hb-featured-actors">
     <div class="section-container">
         <div class="section-header">
             <h2><i class="lucide-users" aria-hidden="true"></i> {{ $title ?? 'Atores em Destaque' }}</h2>
@@ -7,38 +7,35 @@
                 <button class="nav-btn prev" aria-label="Atores anteriores"><i class="lucide-chevron-left" aria-hidden="true"></i></button>
                 <button class="nav-btn next" aria-label="Próximos atores"><i class="lucide-chevron-right" aria-hidden="true"></i></button>
             </div>
-        </div>
-        <div class="carousel-container">
-            <div class="actors-carousel">
+        </div>        <div class="carousel-container">
+            <div class="hb-actors-carousel">
                 @forelse($actors as $actor)
-                    <div class="actor-card">
-                        <div class="actor-image">
+                    <div class="hb-actor-card">
+                        <div class="hb-actor-image">
                             <img src="{{ $actor->image ?? '' }}" 
                                  alt="{{ $actor->name ?? 'Ator' }}" 
                                  loading="lazy"
                                  onerror="this.onerror=null; this.src='/images/placeholder-actor.jpg'; this.classList.add('fallback-image');">
                             
-                            @if(isset($actor->exclusive) && $actor->exclusive)
-                                <span class="exclusive-badge">Exclusivo</span>
+                            @if(isset($actor->exclusive) && $actor->exclusive)                                <span class="hb-exclusive-badge">Exclusivo</span>
                             @endif
                             
-                            <div class="actor-overlay">
-                                <a href="/modelo/{{ strtolower(str_replace(' ', '-', $actor->name ?? 'ator')) }}" class="view-profile-btn">Ver Perfil</a>
+                            <div class="hb-actor-overlay">
+                                <a href="/modelo/{{ strtolower(str_replace(' ', '-', $actor->name ?? 'ator')) }}" class="hb-view-profile-btn">Ver Perfil</a>
                             </div>
                         </div>
-                        <div class="actor-info">
+                        <div class="hb-actor-info">
                             <h3>{{ $actor->name ?? 'Nome do Ator' }}</h3>
-                            <div class="actor-stats">
+                            <div class="hb-actor-stats">
                                 <span><i class="lucide-film" aria-hidden="true"></i> {{ $actor->videos_count ?? 0 }}</span>
                                 <span><i class="lucide-gem" aria-hidden="true"></i> {{ $actor->vip_count ?? 0 }}</span>
                                 <span><i class="lucide-star" aria-hidden="true"></i> {{ $actor->exclusive_count ?? 0 }}</span>
                             </div>
                         </div>
-                    </div>
-                @empty
+                    </div>                @empty
                     <!-- Cards de placeholder quando não há dados -->
                     @for($i = 0; $i < 5; $i++)
-                        <div class="actor-card skeleton" aria-hidden="true"></div>
+                        <div class="hb-actor-card hb-skeleton" aria-hidden="true"></div>
                     @endfor
                 @endforelse
             </div>
@@ -57,12 +54,11 @@
         align-items: center;
         gap: 0.5rem;
     }
-    
-    .section-header h2 i {
+      .section-header h2 i {
         color: #e50914;
     }
     
-    .actors-carousel {
+    .hb-actors-carousel {
         display: flex;
         gap: 1.2rem;
         padding: 1rem 0;
@@ -72,11 +68,11 @@
         scrollbar-width: none;
     }
     
-    .actors-carousel::-webkit-scrollbar {
+    .hb-actors-carousel::-webkit-scrollbar {
         display: none;
     }
     
-    .actor-card {
+    .hb-actor-card {
         flex: 0 0 200px;
         border-radius: 12px;
         overflow: hidden;
@@ -87,30 +83,29 @@
         border: 1px solid rgba(255, 255, 255, 0.08);
     }
     
-    .actor-card:hover {
+    .hb-actor-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 8px 20px rgba(229, 9, 20, 0.2);
         border-color: rgba(229, 9, 20, 0.4);
     }
     
-    .actor-image {
+    .hb-actor-image {
         position: relative;
         height: 270px;
         overflow: hidden;
     }
-    
-    .actor-image img {
+      .hb-actor-image img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         transition: transform 0.5s ease;
     }
     
-    .actor-card:hover .actor-image img {
+    .hb-actor-card:hover .hb-actor-image img {
         transform: scale(1.05);
     }
     
-    .actor-overlay {
+    .hb-actor-overlay {
         position: absolute;
         top: 0;
         left: 0;
@@ -125,11 +120,11 @@
         transition: opacity 0.3s ease;
     }
     
-    .actor-card:hover .actor-overlay {
+    .hb-actor-card:hover .hb-actor-overlay {
         opacity: 1;
     }
     
-    .view-profile-btn {
+    .hb-view-profile-btn {
         background-color: #e50914;
         color: white;
         border: none;
@@ -142,11 +137,11 @@
         text-decoration: none;
     }
     
-    .view-profile-btn:hover {
+    .hb-view-profile-btn:hover {
         background-color: #f50f0f;
     }
     
-    .exclusive-badge {
+    .hb-exclusive-badge {
         position: absolute;
         top: 10px;
         right: 10px;
@@ -159,12 +154,11 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
         z-index: 1;
     }
-    
-    .actor-info {
+      .hb-actor-info {
         padding: 1rem;
     }
     
-    .actor-info h3 {
+    .hb-actor-info h3 {
         margin: 0 0 0.5rem 0;
         font-size: 1.1rem;
         font-weight: 600;
@@ -174,14 +168,14 @@
         white-space: nowrap;
     }
     
-    .actor-stats {
+    .hb-actor-stats {
         display: flex;
         justify-content: space-between;
         font-size: 0.8rem;
         color: rgba(255, 255, 255, 0.7);
     }
     
-    .actor-stats span {
+    .hb-actor-stats span {
         display: flex;
         align-items: center;
         gap: 0.25rem;
@@ -207,11 +201,10 @@
     }
     
     .nav-btn:hover {
-        background-color: #e50914;
-    }
+        background-color: #e50914;    }
     
     /* Placeholder skeleton */
-    .skeleton {
+    .hb-skeleton {
         background: linear-gradient(90deg, #222 0%, #333 50%, #222 100%);
         background-size: 200% 100%;
         animation: shine 1.5s infinite;
@@ -224,11 +217,11 @@
     }
     
     @media (max-width: 768px) {
-        .actor-card {
+        .hb-actor-card {
             flex: 0 0 160px;
         }
         
-        .actor-image {
+        .hb-actor-image {
             height: 220px;
         }
     }

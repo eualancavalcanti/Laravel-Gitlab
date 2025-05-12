@@ -14,14 +14,14 @@
 }
 
 /* Container Principal */
-.profile-container {
+.hb-profile-container {
     min-height: 100vh;
     background-color: var(--dark-bg);
     padding-bottom: 3rem;
 }
 
 /* Banner de Capa */
-.profile-banner {
+.hb-profile-banner {
     height: 35vh;
     min-height: 280px;
     width: 100%;

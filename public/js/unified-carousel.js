@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Aplicar tratamento de imagens quebradas nos carrosséis existentes
     function applyBrokenImageHandling() {
         // Seleciona todas as imagens em carrosséis
-        const carouselImages = document.querySelectorAll('.content-grid img, .actors-carousel img, .creators-carousel img, .trending-creators img, .featured-content img');
+        const carouselImages = document.querySelectorAll('.hb-content-grid img, .hb-actors-carousel img, .hb-creators-carousel img, .hb-trending-creators img, .featured-content img');
         
         // Aplica tratamento para cada imagem
         carouselImages.forEach(img => {
@@ -110,9 +110,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function checkElementsExist() {
         const requiredElements = [
             '.hero',
-            '.content-grid',
+            '.hb-content-grid',
             '.actors-carousel',
-            '.creators-carousel'
+            '.hb-creators-carousel'
         ];
         
         const missingElements = [];
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Configurações padrão
             this.options = Object.assign({
-                slideSelector: '.content-grid, .actors-carousel, .creators-carousel', // Seletor dos slides
+                slideSelector: '.hb-content-grid, .hb-actors-carousel, .hb-creators-carousel', // Seletor dos slides
                 navPrevSelector: '.prev',                         // Botão anterior
                 navNextSelector: '.next',                         // Botão próximo
                 itemSelector: '.content-card, .actor-card, .creator-card-premium',       // Itens dentro do slide
@@ -600,7 +600,7 @@ document.addEventListener('DOMContentLoaded', () => {
         constructor() {
             this.container = document.querySelector('.hero');
             this.slidesContainer = document.querySelector('.hero-slides');
-            this.slides = this.slidesContainer ? this.slidesContainer.querySelectorAll('.hero-slide') : [];
+            this.slides = this.slidesContainer ? this.slidesContainer.querySelectorAll('.hb-hero-slide') : [];
             this.content = document.querySelector('.hero-content');
             
             if (!this.container || !this.slidesContainer || this.slides.length === 0) {
@@ -855,12 +855,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         // Inicializar carrosséis de criadores
-        const creatorContainers = document.querySelectorAll('.trending-creators .section-container');
+        const creatorContainers = document.querySelectorAll('.hb-trending-creators .section-container');
         if (creatorContainers.length > 0) {
             console.log(`Inicializando ${creatorContainers.length} carrosséis de criadores`);
             const creatorCarousels = Array.from(creatorContainers).map(container => {
                 return new TouchCarousel(container, {
-                    slideSelector: '.creators-carousel',
+                    slideSelector: '.hb-creators-carousel',
                     itemSelector: '.creator-card-premium'
                 });
             });
@@ -886,7 +886,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         // Observar mudanças no DOM
-        const carouselContainers = document.querySelectorAll('.content-grid, .actors-carousel, .creators-carousel, .creators-grid');
+        const carouselContainers = document.querySelectorAll('.hb-content-grid, .hb-actors-carousel, .hb-creators-carousel, .creators-grid');
         carouselContainers.forEach(container => {
             if (container) {
                 observer.observe(container, { childList: true, subtree: true });
@@ -907,7 +907,7 @@ document.addEventListener('DOMContentLoaded', () => {
             resizeTimeout = setTimeout(() => {
                 // Recalcular todas as instâncias de TouchCarousel 
                 document.querySelectorAll('.section-container').forEach(container => {
-                    const trackSelector = '.content-grid, .actors-carousel, .creators-carousel';
+                    const trackSelector = '.hb-content-grid, .hb-actors-carousel, .hb-creators-carousel';
                     const track = container.querySelector(trackSelector);
                     
                     if (track) {
@@ -920,6 +920,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 applyBrokenImageHandling();
             }, 300);
         });
+    }
+
+    // Modificar o handler de eventos de arrastar/touch para verificar links:
+    function handleDragStart(e) {
+        // Verificar se o clique começou em um link ou dentro de um link
+        let target = e.target;
+        
+        while (target && target !== this) {
+            if (target.tagName === 'A') {
+                // Se for um link, não iniciar o arrastar
+                return;
+            }
+            target = target.parentNode;
+        }
+        
+        // Continuar com o comportamento de arrastar para outros elementos
+        isDragging = true;
+        startPosX = getPositionX(e);
+        // ... resto do código existente
     }
 
     // Iniciar todos os carrosséis

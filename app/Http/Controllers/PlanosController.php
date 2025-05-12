@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Plano; // Adicionado para usar o Model Plano
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB; // Adicionando para usar o DB
+use Illuminate\Support\Facades\DB;
 
 class PlanosController extends Controller
 {
@@ -13,17 +12,34 @@ class PlanosController extends Controller
      */
     public function index()
     {
-        // Buscar todos os planos ativos usando o Model Plano
-        $planos = Plano::where('status', 'ativo')
+        // Buscar todos os planos ativos
+        $planos = DB::table('planos')
+            ->where('status', 'ativo')
             ->orderBy('ordem', 'asc')
             ->get();
         
-        // Separar os planos por tipo de pagamento
-        $planosPix = $planos->where('tipo_pagamento', 'pix');
-        $planosCartao = $planos->where('tipo_pagamento', 'cartao');
+        // Agrupar planos por período
+        $planosPorPeriodo = [
+            'anual' => $planos->where('periodo_recorrencia', 'anual'),
+            'semestral' => $planos->where('periodo_recorrencia', 'semestral'),
+            'trimestral' => $planos->where('periodo_recorrencia', 'trimestral'),
+            'mensal' => $planos->where('periodo_recorrencia', 'mensal'),
+        ];
         
-        // Passar os planos para a view
-        return view('planos.index', compact('planos', 'planosPix', 'planosCartao'));
+        // Estatísticas para debug (remover em produção)
+        $totalPlanos = $planos->count();
+        $categorias = $planos->pluck('periodo_recorrencia')->unique()->count();
+        
+        $planosPorPeriodoCount = [
+            'anual' => $planosPorPeriodo['anual']->count(),
+            'semestral' => $planosPorPeriodo['semestral']->count(),
+            'trimestral' => $planosPorPeriodo['trimestral']->count(),
+            'mensal' => $planosPorPeriodo['mensal']->count(),
+        ];
+        
+        $primeiroPlanoDB = $planos->first();
+        
+        return view('planos.index', compact('planos', 'planosPorPeriodo', 'totalPlanos', 'categorias', 'planosPorPeriodoCount', 'primeiroPlanoDB'));
     }
     
     /**
@@ -31,8 +47,9 @@ class PlanosController extends Controller
      */
     public function assinar($codigo)
     {
-        // Buscar o plano pelo código usando o Model Plano
-        $plano = Plano::where('codigo', $codigo)
+        // Buscar o plano pelo código
+        $plano = DB::table('planos')
+            ->where('codigo', $codigo)
             ->where('status', 'ativo')
             ->first();
         
@@ -48,8 +65,9 @@ class PlanosController extends Controller
      */
     public function pagamento($codigo)
     {
-        // Buscar o plano pelo código usando o Model Plano
-        $plano = Plano::where('codigo', $codigo)
+        // Buscar o plano pelo código
+        $plano = DB::table('planos')
+            ->where('codigo', $codigo)
             ->where('status', 'ativo')
             ->first();
         
@@ -57,47 +75,6 @@ class PlanosController extends Controller
             return redirect()->route('planos.index')->with('error', 'Plano não encontrado ou indisponível.');
         }
         
-        // Assumindo que você tenha uma view 'pagamento.blade.php' ou similar
-        // Se a view se chamar 'pagamento.index' ou estiver em um subdiretório, ajuste aqui.
         return view('pagamento', compact('plano'));
-    }
-
-    /**
-     * Retorna os planos principais do HotBoys (mensal, semestral e anual)
-     * com os melhores preços para cartão e PIX
-     * 
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getPrincipais()
-    {
-        // Consulta modificada para destacar APENAS planos de 6 meses (180 dias) como populares
-        $planos = DB::select("
-            SELECT 
-                p1.id,
-                p1.nome,
-                p1.descricao,
-                p1.preco,
-                p1.duracao_dias,
-                p1.tipo_pagamento,
-                CASE 
-                    WHEN p1.duracao_dias = 180 THEN 1 
-                    ELSE 0 
-                END as popular,
-                p1.status,
-                p1.created_at,
-                p1.updated_at
-            FROM planos p1
-            JOIN (
-                SELECT duracao_dias, 
-                       MIN(CASE WHEN tipo_pagamento = 'cartao' THEN id ELSE NULL END) as id_cartao,
-                       MIN(CASE WHEN tipo_pagamento = 'pix' THEN id ELSE NULL END) as id_pix
-                FROM planos
-                WHERE duracao_dias IN (30, 180, 365) AND status = 'ativo'
-                GROUP BY duracao_dias
-            ) p2 ON p1.duracao_dias = p2.duracao_dias AND (p1.id = p2.id_cartao OR p1.id = p2.id_pix)
-            ORDER BY p1.duracao_dias, p1.tipo_pagamento
-        ");
-
-        return response()->json($planos);
     }
 }
